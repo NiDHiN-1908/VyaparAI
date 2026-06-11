@@ -1,0 +1,69 @@
+{
+  "businesses": [
+    {
+      "name": "Kochi Spice Farm",
+      "location": "Kochi, Kerala",
+      "contact": "+91 9447012345",
+      "industry": "Agriculture & Retail"
+    },
+    {
+      "name": "Munnar Tea Gardens",
+      "location": "Idukki, Kerala",
+      "contact": "+91 9447098765",
+      "industry": "Beverages"
+    }
+  ],
+  "products": [
+    {
+      "name": "Organic Cardamom",
+      "description": "Handpicked fresh green cardamom sourced directly from the hills of Idukki.",
+      "price": 350.00,
+      "image_url": "/static/media/cardamom.jpg"
+    },
+    {
+      "name": "Pure Virgin Coconut Oil",
+      "description": "100% natural cold-pressed virgin coconut oil, ideal for cooking and hair care.",
+      "price": 299.00,
+      "image_url": "/static/media/coconut_oil.jpg"
+    }
+  ],
+  "comments": [
+    {
+      "username": "rahul_sharma",
+      "comment_text": "What is the price of this cardamom? Do you ship to Delhi?",
+      "intent_class": "HIGH_INTENT"
+    },
+    {
+      "username": "karthik_v",
+      "comment_text": "Is this product genuine organic?",
+      "intent_class": "MEDIUM_INTENT"
+    },
+    {
+      "username": "spam_bot_99",
+      "comment_text": "Earn money working from home! Click here: http://spam.xyz",
+      "intent_class": "SPAM"
+    }
+  ],
+  "leads": [
+    {
+      "username": "rahul_sharma",
+      "language": "Hindi",
+      "intent": "HIGH_INTENT",
+      "status": "new"
+    },
+    {
+      "username": "karthik_v",
+      "language": "Tamil",
+      "intent": "MEDIUM_INTENT",
+      "status": "contacting"
+    }
+  ],
+  "orders": [
+    {
+      "amount": 350.00,
+      "status": "pending",
+      "address": "Flat 402, Sector 12, Dwarka, New Delhi - 110075",
+      "payment_method": "upi"
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: vyaparai_backend
+    ports:
+      - "8000:8000"
+    environment:
+      - SUPABASE_URL=${SUPABASE_URL:-https://your-supabase-project.supabase.co}
+      - SUPABASE_KEY=${SUPABASE_KEY:-your-supabase-anon-or-service-key}
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - OLLAMA_MODEL=llama3.1
+    volumes:
+      - ./media_volume:/app/backend/static/media
+    depends_on:
+      - ollama
+    networks:
+      - vyaparai_net
+
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    container_name: vyaparai_frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend:8000
+    depends_on:
+      - backend
+    networks:
+      - vyaparai_net
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: vyaparai_ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - vyaparai_net
+
+  n8n:
+    image: docker.n8n.io/n8nio/n8n:latest
+    container_name: vyaparai_n8n
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=false
+    volumes:
+      - n8n_data:/home/node/.n8n
+    networks:
+      - vyaparai_net
+
+volumes:
+  ollama_data:
+  n8n_data:
+
+networks:
+  vyaparai_net:
+    driver: bridge

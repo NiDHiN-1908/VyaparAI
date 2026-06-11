@@ -1,0 +1,126 @@
+{
+  "name": "VyaparAI Comment Monitor & Lead Alerter",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "social-comment-webhook",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Social Comment Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://backend:8000/comment",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"video_id\": \"={{ $json.body.video_id }}\",\n  \"username\": \"={{ $json.body.username }}\",\n  \"comment_text\": \"={{ $json.body.comment_text }}\"\n}",
+        "options": {}
+      },
+      "id": "backend-post",
+      "name": "Classify Comment & Create Lead",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        480,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.lead_created }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "intent-condition",
+      "name": "Is Hot Lead?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        700,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.whatsapp.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer MOCK_WHATSAPP_TOKEN"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"to\": \"owner_phone_number\",\n  \"type\": \"text\",\n  \"text\": {\n    \"body\": \"VyaparAI Alert! 🔥 New HOT lead detected: @{{ $json.lead.username }} spoke in {{ $json.lead.language }} expressing interest in your product! Reply to initiate SalesAgent loop.\"\n  }\n}",
+        "options": {}
+      },
+      "id": "owner-notification",
+      "name": "Notify Owner (WhatsApp/Slack)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        920,
+        200
+      ]
+    }
+  ],
+  "connections": {
+    "Social Comment Webhook": {
+      "main": [
+        [
+          {
+            "node": "Classify Comment & Create Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Classify Comment & Create Lead": {
+      "main": [
+        [
+          {
+            "node": "Is Hot Lead?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Hot Lead?": {
+      "main": [
+        [
+          {
+            "node": "Notify Owner (WhatsApp/Slack)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {},
+  "staticData": {},
+  "meta": {
+    "templateId": ""
+  },
+  "pinData": {}
+}

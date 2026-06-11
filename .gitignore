@@ -1,0 +1,29 @@
+# Dependency directories
+node_modules/
+jspm_packages/
+web_modules/
+venv/
+.venv/
+env/
+.env
+
+# Next.js build files
+.next/
+out/
+
+# Python cache and build files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local static media (keep directories but ignore generated media if large)
+# backend/static/media/*.mp3
+# backend/static/media/*.mp4
+
+# OS files
+.DS_Store
+Thumbs.db
