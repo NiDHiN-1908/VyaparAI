@@ -1,6 +1,7 @@
 # backend/config.py
 import os
 from pathlib import Path
+from typing import Optional
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
@@ -12,6 +13,12 @@ class Settings(BaseSettings):
     # Supabase Settings
     SUPABASE_URL: str = "https://your-supabase-project.supabase.co"
     SUPABASE_KEY: str = "your-supabase-anon-or-service-key"
+
+    # Google / YouTube OAuth Settings
+    GOOGLE_CLIENT_ID: Optional[str] = None
+    GOOGLE_CLIENT_SECRET: Optional[str] = None
+    GOOGLE_REDIRECT_URI: str = "http://localhost:8000/auth/youtube/callback"
+    AUTO_REPLY: bool = False
 
     # Ollama LLM Settings
     OLLAMA_BASE_URL: str = "http://localhost:11434"

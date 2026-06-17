@@ -11,23 +11,106 @@ import {
   RefreshCw, 
   Youtube, 
   ArrowRight,
-  TrendingUp
+  TrendingUp,
+  Film,
+  Image as ImageIcon
 } from "lucide-react";
 
 const API_BASE = "http://localhost:8000";
 
 export default function ApprovalPage() {
+  const [productId, setProductId] = useState<string | null>(null);
+  const [campaignData, setCampaignData] = useState<any>(null);
   const [selectedCampaign, setSelectedCampaign] = useState<any>({
     id: "campaign_1",
     product_name: "Organic Cardamom",
-    language: "Hindi",
+    language: "English",
     version: 1,
     qa_score: 85,
     status: "draft",
-    script: "क्या आपकी चाय में केरल की असली खुशबू गायब है? ☕ बाजार में मिलने वाली इलायची कृत्रिम रूप से रंगी हुई होती है। व्यापारएआई जैविक इलायची इडुक्की में चुनी जाती है, वैक्यूम पैक करके भेजी जाती है। अभी उत्तर दें और अपने पहले पैक पर 10% की छूट पाएं!",
+    script: "Is your tea missing that authentic kerala aroma? ☕ Most market cardamom is artificially colored, stale, and completely flavorless. VyaparAI organic cardamom is handpicked in Idukki, vacuum sealed, and shipped fresh. Reply now to get 10% off and free shipping on your first pack!",
     youtube_url: null,
-    youtube_id: null
+    youtube_id: null,
+    video_id: null,
+    video_url: "/static/media/video_english_v2_3ce14206.mp4"
   });
+
+  useEffect(() => {
+    const fetchCampaign = async () => {
+      try {
+        let pId = null;
+        if (typeof window !== "undefined") {
+          const params = new URLSearchParams(window.location.search);
+          pId = params.get("product_id");
+          if (!pId) {
+            pId = localStorage.getItem("latest_product_id");
+          }
+        }
+
+        if (!pId) {
+          const prodRes = await fetch(`${API_BASE}/product`);
+          const prodList = await prodRes.json();
+          if (prodList && prodList.length > 0) {
+            pId = prodList[prodList.length - 1].id;
+          }
+        }
+
+        const updateStateWithCampaign = (data: any, checkId: string) => {
+          setCampaignData(data);
+          setProductId(checkId);
+          
+          const lang = "English";
+          const dynamicText = data.translations?.[lang];
+          const scriptText = dynamicText 
+            ? `Title: ${data.script.title}\nHook: ${dynamicText.youtube_script}\nReel: ${dynamicText.reel_script}\nWhatsApp: ${dynamicText.whatsapp_post}\nGoogle: ${dynamicText.google_business_post}`
+            : `Title: ${data.script.title}\nHook: ${data.script.hook}\nScript: ${data.script.script_text}`;
+            
+          setSelectedCampaign({
+            id: data.script.id,
+            product_name: data.product.name,
+            language: lang,
+            version: data.script.version || 1,
+            qa_score: data.qa_score || 85,
+            status: data.videos?.[lang]?.approval_status || "draft",
+            script: scriptText,
+            youtube_url: data.videos?.[lang]?.youtube_url || null,
+            youtube_id: data.videos?.[lang]?.youtube_id || null,
+            video_id: data.videos?.[lang]?.id || null,
+            video_url: data.videos?.[lang]?.video_url || null,
+            thumbnail_url: data.thumbnail?.image_url || null
+          });
+        };
+
+        if (pId) {
+          setProductId(pId);
+          const campRes = await fetch(`${API_BASE}/campaign/${pId}`);
+          if (campRes.ok) {
+            const data = await campRes.json();
+            updateStateWithCampaign(data, pId);
+          } else {
+            console.warn(`Campaign for product ${pId} not found, trying latest available product instead.`);
+            const prodRes = await fetch(`${API_BASE}/product`);
+            const prodList = await prodRes.json();
+            if (prodList && prodList.length > 0) {
+              for (let i = prodList.length - 1; i >= 0; i--) {
+                const checkId = prodList[i].id;
+                const checkRes = await fetch(`${API_BASE}/campaign/${checkId}`);
+                if (checkRes.ok) {
+                  const checkData = await checkRes.json();
+                  updateStateWithCampaign(checkData, checkId);
+                  break;
+                }
+              }
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load generated campaign on approval page:", err);
+      }
+    };
+
+    fetchCampaign();
+  }, []);
 
   const [loading, setLoading] = useState(false);
   const [publishStatus, setPublishStatus] = useState("");
@@ -65,7 +148,8 @@ export default function ApprovalPage() {
           status: "draft",
           script: `[Version ${data.version} Script]\nTitle: ${data.script.title}\nHook: ${data.script.hook}\nScript: ${data.script.script_text}`,
           youtube_url: null,
-          youtube_id: null
+          youtube_id: null,
+          thumbnail_url: data.thumbnail?.image_url || null
         });
         setPublishStatus("Campaign Version 2 generated successfully!");
       } else {
@@ -90,7 +174,8 @@ export default function ApprovalPage() {
       status: "draft",
       script: "[Version 2 Script]\nHook: Tired of dusty, stale spices? 📦\nProblem: Mainstream brand cardamoms lose flavor in warehouses.\nSolution: Idukki direct farm cardamom has a double locked fresh-seal. Order today!",
       youtube_url: null,
-      youtube_id: null
+      youtube_id: null,
+      thumbnail_url: null
     });
     setPublishStatus("Campaign Version 2 generated successfully!");
   };
@@ -99,12 +184,16 @@ export default function ApprovalPage() {
     setLoading(true);
     setPublishStatus("Publishing video and custom thumbnail draft to YouTube...");
     try {
-      // Find latest video UUID if available
-      const videoRes = await fetch(`${API_BASE}/video`);
-      const videoList = await videoRes.json();
-      let videoId = "vid_uuid_placeholder";
-      if (videoList && videoList.length > 0) {
-        videoId = videoList[videoList.length - 1].id;
+      let videoId = selectedCampaign.video_id;
+      if (!videoId) {
+        // Find latest video UUID if available
+        const videoRes = await fetch(`${API_BASE}/video`);
+        const videoList = await videoRes.json();
+        if (videoList && videoList.length > 0) {
+          videoId = videoList[videoList.length - 1].id;
+        } else {
+          videoId = "vid_uuid_placeholder";
+        }
       }
 
       const res = await fetch(`${API_BASE}/publish`, {
@@ -228,6 +317,101 @@ export default function ApprovalPage() {
             <span className="text-[10px] font-bold px-3 py-1.5 rounded-full uppercase bg-slate-900 border border-slate-800 text-slate-400">
               {selectedCampaign.status}
             </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {(() => {
+              const youtubeUrl = selectedCampaign.youtube_url;
+              const youtubeId = selectedCampaign.youtube_id || (youtubeUrl ? (() => {
+                const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+                const match = youtubeUrl.match(regExp);
+                return (match && match[2].length === 11) ? match[2] : null;
+              })() : null);
+
+              if (youtubeId) {
+                return (
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                      <Film className="w-4 h-4 text-indigo-400" />
+                      Audited Video (YouTube Uploaded)
+                    </label>
+                    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex justify-center h-[470px] items-center">
+                      <div className="w-full h-full rounded-xl overflow-hidden border border-slate-800 bg-black shadow-lg">
+                        <iframe
+                          className="w-full h-full"
+                          src={`https://www.youtube.com/embed/${youtubeId}`}
+                          title="YouTube video player"
+                          frameBorder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        ></iframe>
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
+
+              if (selectedCampaign.video_url) {
+                return (
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                      <Film className="w-4 h-4 text-indigo-400" />
+                      Audited Video Preview (Draft)
+                    </label>
+                    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex justify-center h-[470px] items-center">
+                      <video
+                        controls
+                        className="w-full max-h-full rounded-xl"
+                        src={selectedCampaign.video_url.startsWith("http") ? selectedCampaign.video_url : `${API_BASE}${selectedCampaign.video_url}`}
+                      >
+                        Your browser does not support the video tag.
+                      </video>
+                    </div>
+                  </div>
+                );
+              }
+
+              return (
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                    <Film className="w-4 h-4 text-indigo-400" />
+                    Audited Video Preview
+                  </label>
+                  <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex flex-col justify-center h-[470px] items-center text-center space-y-4 shadow-xl">
+                    <div className="w-12 h-12 rounded-full bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+                      <Film className="w-6 h-6 animate-pulse" />
+                    </div>
+                    <div>
+                      <h4 className="font-extrabold text-sm text-slate-200">Video Asset Compiled</h4>
+                      <span className="text-[10px] text-indigo-400 font-bold block mt-1 uppercase tracking-wide">
+                        Status: Pending Publish
+                      </span>
+                      <p className="text-xs text-slate-450 mt-3 max-w-xs mx-auto leading-relaxed">
+                        This local draft has placeholder content and synthetic layers. To ensure visual excellence and absolute compliance, you can watch it once published to YouTube.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
+
+            {selectedCampaign.thumbnail_url && (
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                  <ImageIcon className="w-4 h-4 text-indigo-400" />
+                  Audited Thumbnail Preview
+                </label>
+                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex justify-center h-[470px] items-center">
+                  <div className="w-full aspect-video rounded-xl overflow-hidden border border-slate-800 bg-slate-950 shadow-lg relative group">
+                    <img 
+                      src={`${API_BASE}${selectedCampaign.thumbnail_url}`} 
+                      alt="Campaign Thumbnail" 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="space-y-2">

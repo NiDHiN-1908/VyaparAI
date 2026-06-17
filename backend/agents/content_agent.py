@@ -1,6 +1,7 @@
 # backend/agents/content_agent.py
 import logging
 from crewai import Agent
+# pyrefly: ignore [missing-import]
 from langchain_openai import ChatOpenAI
 from backend.config import settings
 
@@ -8,8 +9,11 @@ logger = logging.getLogger("vyaparai.agents.content_agent")
 
 def get_ollama_llm() -> ChatOpenAI:
     """Helper to initialize Ollama LLM using the OpenAI-compatible endpoint."""
+    model_name = settings.OLLAMA_MODEL
+    if "/" not in model_name:
+        model_name = f"ollama/{model_name}"
     return ChatOpenAI(
-        model=settings.OLLAMA_MODEL,
+        model=model_name,
         openai_api_key="ollama",  # Placeholder key
         openai_api_base=f"{settings.OLLAMA_BASE_URL}/v1",
         temperature=0.7

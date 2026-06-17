@@ -44,6 +44,9 @@ def translate_content_indictrans2(text: str, target_lang: str) -> str:
     Otherwise, falls back to a clean dictionary mapper or OpenAI/Ollama fallback translation.
     """
     lang_lower = target_lang.lower()
+    if lang_lower == "english":
+        return text
+    
     # Attempt to look up pre-translated clean blocks to guarantee beautiful translations in demo
     for phrase_key, translation_dict in FALLBACK_TRANSLATIONS.get(lang_lower, {}).items():
         if phrase_key in text.lower() or len(text) < 150: # Match short phrases/menus

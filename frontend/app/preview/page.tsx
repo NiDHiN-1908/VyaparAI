@@ -19,9 +19,65 @@ import {
 const API_BASE = "http://localhost:8000";
 
 export default function PreviewPage() {
-  const [selectedLang, setSelectedLang] = useState("Hindi");
+  const [selectedLang, setSelectedLang] = useState("English");
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [version, setVersion] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [productId, setProductId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchCampaign = async () => {
+      try {
+        let pId = null;
+        if (typeof window !== "undefined") {
+          const params = new URLSearchParams(window.location.search);
+          pId = params.get("product_id");
+          if (!pId) {
+            pId = localStorage.getItem("latest_product_id");
+          }
+        }
+
+        if (!pId) {
+          const prodRes = await fetch(`${API_BASE}/product`);
+          const prodList = await prodRes.json();
+          if (prodList && prodList.length > 0) {
+            pId = prodList[prodList.length - 1].id;
+          }
+        }
+
+        if (pId) {
+          setProductId(pId);
+          const campRes = await fetch(`${API_BASE}/campaign/${pId}`);
+          if (campRes.ok) {
+            const data = await campRes.json();
+            setCampaignData(data);
+          } else {
+            console.warn(`Campaign for product ${pId} not found, trying latest available product instead.`);
+            const prodRes = await fetch(`${API_BASE}/product`);
+            const prodList = await prodRes.json();
+            if (prodList && prodList.length > 0) {
+              for (let i = prodList.length - 1; i >= 0; i--) {
+                const checkId = prodList[i].id;
+                const checkRes = await fetch(`${API_BASE}/campaign/${checkId}`);
+                if (checkRes.ok) {
+                  const checkData = await checkRes.json();
+                  setCampaignData(checkData);
+                  setProductId(checkId);
+                  break;
+                }
+              }
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load generated campaign:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCampaign();
+  }, []);
   
   const [campaignData, setCampaignData] = useState<any>({
     product: { name: "Organic Cardamom", price: 350.00 },
@@ -42,8 +98,16 @@ export default function PreviewPage() {
       cta: "Reply now to get 10% off and free shipping on your first pack!",
       thumbnail_text: "Pure Elaichi!",
       thumbnail_prompt: "Cardamom pods overflowing from a clay bowl, dark rustic background, high resolution, macro photography"
+    },
+    videos: {
+      English: { video_url: "/static/media/video_english_v2_3ce14206.mp4" },
+      Hindi: { video_url: "/static/media/video_hindi_v2_63b2d922.mp4" },
+      Tamil: { video_url: "/static/media/video_tamil_v2_12efcce8.mp4" },
+      Telugu: { video_url: "/static/media/video_telugu_v2_6a2efde3.mp4" },
+      Malayalam: { video_url: "/static/media/video_malayalam_v2_b9304c03.mp4" }
     }
   });
+
 
   const handleCopy = (text: string, key: string) => {
     navigator.clipboard.writeText(text);
@@ -51,9 +115,16 @@ export default function PreviewPage() {
     setTimeout(() => setCopiedKey(null), 2000);
   };
 
-  const languages = ["Hindi", "Tamil", "Telugu", "Malayalam"];
+  const languages = ["English", "Hindi", "Tamil", "Telugu", "Malayalam"];
 
   const activeTranslations = {
+    English: {
+      title: "Festive Spice Campaign",
+      hook: "Is your tea missing that authentic kerala aroma? ☕",
+      problem: "Most market cardamom is artificially colored, stale, and completely flavorless.",
+      solution: "VyaparAI organic cardamom is handpicked in Idukki, vacuum sealed, and shipped fresh.",
+      cta: "Reply now to get 10% off and free shipping on your first pack!"
+    },
     Hindi: {
       title: "उत्सव मसाला अभियान",
       hook: "क्या आपकी चाय में केरल की असली खुशबू गायब है? ☕",
@@ -84,7 +155,27 @@ export default function PreviewPage() {
     }
   };
 
-  const activeText = activeTranslations[selectedLang as keyof typeof activeTranslations] || activeTranslations.Hindi;
+  const dynamicText = campaignData?.translations?.[selectedLang];
+  
+  const activeText = dynamicText ? {
+    youtube_script: dynamicText.youtube_script,
+    reel_script: dynamicText.reel_script,
+    whatsapp_post: dynamicText.whatsapp_post,
+    google_business_post: dynamicText.google_business_post,
+    hook: dynamicText.youtube_script,
+    problem: dynamicText.reel_script,
+    solution: dynamicText.whatsapp_post,
+    cta: dynamicText.google_business_post
+  } : {
+    youtube_script: activeTranslations[selectedLang as keyof typeof activeTranslations]?.hook || "",
+    reel_script: activeTranslations[selectedLang as keyof typeof activeTranslations]?.solution || "",
+    whatsapp_post: activeTranslations[selectedLang as keyof typeof activeTranslations]?.cta || "",
+    google_business_post: activeTranslations[selectedLang as keyof typeof activeTranslations]?.title || "",
+    hook: activeTranslations[selectedLang as keyof typeof activeTranslations]?.hook || "",
+    problem: activeTranslations[selectedLang as keyof typeof activeTranslations]?.problem || "",
+    solution: activeTranslations[selectedLang as keyof typeof activeTranslations]?.solution || "",
+    cta: activeTranslations[selectedLang as keyof typeof activeTranslations]?.cta || ""
+  };
 
   return (
     <div className="space-y-8">
@@ -191,28 +282,28 @@ export default function PreviewPage() {
             </h3>
 
             <div className="space-y-4">
-              {/* Hook */}
+              {/* YouTube Script */}
               <div className="p-4 rounded-xl bg-slate-900/50 border border-slate-800/80">
-                <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest block mb-1">Hook (0-10 sec)</span>
-                <p className="text-sm text-slate-200">{activeText.hook}</p>
+                <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest block mb-1">YouTube Campaign Voiceover Script</span>
+                <p className="text-sm text-slate-200">{activeText.youtube_script || activeText.hook || ""}</p>
               </div>
 
-              {/* Problem */}
+              {/* Reel Script */}
               <div className="p-4 rounded-xl bg-slate-900/50 border border-slate-800/80">
-                <span className="text-[10px] font-bold text-amber-400 uppercase tracking-widest block mb-1">Problem Bridge</span>
-                <p className="text-sm text-slate-200">{activeText.problem}</p>
+                <span className="text-[10px] font-bold text-purple-400 uppercase tracking-widest block mb-1">Instagram Reel / Shorts Script</span>
+                <p className="text-sm text-slate-200">{activeText.reel_script || activeText.solution || ""}</p>
               </div>
 
-              {/* Solution */}
+              {/* WhatsApp Post */}
               <div className="p-4 rounded-xl bg-slate-900/50 border border-slate-800/80">
-                <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest block mb-1">Solution Showcase</span>
-                <p className="text-sm text-slate-200">{activeText.solution}</p>
+                <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest block mb-1">WhatsApp Broadcast Post</span>
+                <p className="text-sm text-slate-200 whitespace-pre-wrap">{activeText.whatsapp_post || activeText.cta || ""}</p>
               </div>
 
-              {/* CTA */}
+              {/* Google Business Post */}
               <div className="p-4 rounded-xl bg-slate-900/50 border border-slate-800/80">
-                <span className="text-[10px] font-bold text-purple-400 uppercase tracking-widest block mb-1">Call to Action</span>
-                <p className="text-sm text-slate-200">{activeText.cta}</p>
+                <span className="text-[10px] font-bold text-sky-400 uppercase tracking-widest block mb-1">Google Business Update Post</span>
+                <p className="text-sm text-slate-200">{activeText.google_business_post || activeText.title || ""}</p>
               </div>
             </div>
           </div>
@@ -227,6 +318,20 @@ export default function PreviewPage() {
             </h3>
             
             <div className="space-y-3">
+              {campaignData?.thumbnail?.image_url && (
+                <div>
+                  <span className="text-xs font-bold text-slate-400 uppercase tracking-wide block mb-1.5">Generated Thumbnail Image</span>
+                  <div className="rounded-xl overflow-hidden border border-slate-800 bg-slate-950 aspect-video relative group mb-3">
+                    <img 
+                      src={`${API_BASE}${campaignData.thumbnail.image_url}`} 
+                      alt="Generated Campaign Thumbnail" 
+                      className="w-full h-full object-cover transition duration-300 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-slate-950/20 group-hover:bg-transparent transition" />
+                  </div>
+                </div>
+              )}
+
               <div>
                 <span className="text-xs font-bold text-slate-400 uppercase tracking-wide">Text Overlay</span>
                 <div className="bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-white font-bold mt-1.5 uppercase">
@@ -244,17 +349,64 @@ export default function PreviewPage() {
           </div>
 
           <div className="glass-panel rounded-2xl p-6 text-center">
-            <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wide mb-4 text-left">Vertical Video Mock</h3>
-            <div className="w-[200px] h-[350px] mx-auto rounded-2xl bg-slate-950 border-4 border-slate-900 flex flex-col justify-end p-4 relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-indigo-950/20 to-transparent flex flex-col justify-end p-3 text-center space-y-2">
-                <span className="text-[9px] bg-indigo-500/20 text-indigo-400 border border-indigo-500/20 px-2 py-0.5 rounded w-max mx-auto">Hindi Voiceover</span>
-                <p className="text-[10px] text-slate-100 bg-slate-950/70 p-2 rounded-lg border border-slate-850 truncate">
-                  {activeText.hook}
-                </p>
-              </div>
-            </div>
+            <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wide mb-4 text-left">Vertical Video Preview</h3>
+            {(() => {
+              const videoObj = campaignData?.videos?.[selectedLang];
+              const youtubeUrl = videoObj?.youtube_url;
+              const youtubeId = videoObj?.youtube_id || (youtubeUrl ? (() => {
+                const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+                const match = youtubeUrl.match(regExp);
+                return (match && match[2].length === 11) ? match[2] : null;
+              })() : null);
+
+              if (youtubeId) {
+                return (
+                  <div className="w-full aspect-video rounded-2xl bg-slate-950 border border-slate-800 overflow-hidden relative shadow-2xl">
+                    <iframe
+                      className="w-full h-full"
+                      src={`https://www.youtube.com/embed/${youtubeId}`}
+                      title="YouTube video player"
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    ></iframe>
+                  </div>
+                );
+              }
+
+              if (videoObj?.video_url) {
+                return (
+                  <div className="w-full rounded-2xl bg-slate-950 border border-slate-800 overflow-hidden relative shadow-2xl flex items-center justify-center p-2">
+                    <video
+                      controls
+                      className="w-full max-h-[450px] rounded-xl"
+                      src={videoObj.video_url.startsWith("http") ? videoObj.video_url : `${API_BASE}${videoObj.video_url}`}
+                    >
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                );
+              }
+
+              return (
+                <div className="glass-panel bg-slate-900/60 border border-slate-800 rounded-2xl p-6 text-center flex flex-col items-center justify-center min-h-[300px] space-y-4 shadow-xl">
+                  <div className="w-12 h-12 rounded-full bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+                    <Film className="w-6 h-6 animate-pulse" />
+                  </div>
+                  <div>
+                    <h4 className="font-extrabold text-sm text-slate-200">Video Draft Stitched</h4>
+                    <span className="text-[10px] text-indigo-400 font-bold block mt-1 uppercase tracking-wide">
+                      Status: Ready for Publishing
+                    </span>
+                    <p className="text-xs text-slate-450 mt-3 max-w-xs mx-auto leading-relaxed">
+                      This localized video draft is successfully compiled. To ensure visual excellence and compliance, you can watch it once published to YouTube.
+                    </p>
+                  </div>
+                </div>
+              );
+            })()}
             
-            <Link href="/approval" className="w-full mt-6 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 rounded-xl block transition">
+            <Link href={`/approval?product_id=${productId || ""}`} className="w-full mt-6 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 rounded-xl block transition">
               Verify and Approve Campaign
             </Link>
           </div>

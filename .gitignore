@@ -21,8 +21,30 @@ __pycache__/
 htmlcov/
 
 # Local static media (keep directories but ignore generated media if large)
-# backend/static/media/*.mp3
-# backend/static/media/*.mp4
+backend/static/media/*.mp3
+backend/static/media/*.mp4
+backend/static/media/*.m4a
+backend/static/media/thumbnail_*.png
+backend/static/media/prod_*.png
+
+# Google API Credentials
+client_secrets.json
+
+# Chroma Database
+backend/database/chroma_db/
+
+# Diagnostics & temporary helper/test scripts
+diagnose.py
+diagnose2.py
+diagnose_sys.py
+cleanup_videos.py
+fix_monitor_video.py
+republish.py
+set_actual_video.py
+test_api.py
+test_upload.py
+test_upload2.py
+backend/startup_debug.txt
 
 # OS files
 .DS_Store

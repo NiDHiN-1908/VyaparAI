@@ -13,21 +13,17 @@ export default function UploadPage() {
   const [currentStep, setCurrentStep] = useState(0);
 
   // Form states
-  const [businessName, setBusinessName] = useState("Kochi Spice Farm");
-  const [location, setLocation] = useState("Kochi, Kerala");
-  const [contact, setContact] = useState("+91 9447012345");
-  const [industry, setIndustry] = useState("Spices & Agri");
+  const [businessName, setBusinessName] = useState("");
+  const [location, setLocation] = useState("");
+  const [contact, setContact] = useState("");
+  const [industry, setIndustry] = useState("");
 
-  const [productName, setProductName] = useState("Organic Cardamom");
-  const [description, setDescription] = useState("Handpicked fresh green cardamom sourced directly from the hills of Idukki.");
-  const [price, setPrice] = useState("350");
+  const [productName, setProductName] = useState("");
+  const [description, setDescription] = useState("");
+  const [price, setPrice] = useState("");
   
   // Image file paths simulation
-  const [images, setImages] = useState<string[]>([
-    "/static/media/cardamom_close.jpg",
-    "/static/media/cardamom_farm.jpg",
-    "/static/media/cardamom_pack.jpg"
-  ]);
+  const [images, setImages] = useState<string[]>([]);
 
   const pipelineSteps = [
     "Registering Business Profile...",
@@ -40,6 +36,30 @@ export default function UploadPage() {
     "Stitching MP4 video clips with regional voiceovers (VideoAgent)...",
     "Registering YouTube publication hook (YouTubePublishingAgent)..."
   ];
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    const formData = new FormData();
+    formData.append("file", file);
+    
+    try {
+      const res = await fetch(`${API_BASE}/upload-image`, {
+        method: "POST",
+        body: formData,
+      });
+      const data = await res.json();
+      if (res.ok && data.url) {
+        setImages(prev => [...prev, data.url]);
+      } else {
+        alert("Failed to upload image.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error uploading image.");
+    }
+  };
 
   const handleAddMockImage = () => {
     if (images.length >= 10) return;
@@ -124,7 +144,8 @@ export default function UploadPage() {
       setCurrentStep(pipelineSteps.length);
 
       if (crewRes.ok) {
-        router.push("/preview");
+        localStorage.setItem("latest_product_id", prodId);
+        router.push(`/preview?product_id=${prodId}`);
       } else {
         alert("Failed to execute 8-agent pipeline.");
       }
@@ -164,6 +185,7 @@ export default function UploadPage() {
                   type="text"
                   value={businessName}
                   onChange={(e) => setBusinessName(e.target.value)}
+                  placeholder="e.g., Kochi Spice Farm"
                   className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:border-indigo-500 transition"
                   required
                 />
@@ -175,6 +197,7 @@ export default function UploadPage() {
                   type="text"
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
+                  placeholder="e.g., Kochi, Kerala"
                   className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:border-indigo-500 transition"
                   required
                 />
@@ -187,6 +210,7 @@ export default function UploadPage() {
                     type="text"
                     value={industry}
                     onChange={(e) => setIndustry(e.target.value)}
+                    placeholder="e.g., Spices & Agri"
                     className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:border-indigo-500 transition"
                   />
                 </div>
@@ -196,6 +220,7 @@ export default function UploadPage() {
                     type="text"
                     value={contact}
                     onChange={(e) => setContact(e.target.value)}
+                    placeholder="e.g., +91 7306796590"
                     className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:border-indigo-500 transition"
                   />
                 </div>
@@ -217,6 +242,7 @@ export default function UploadPage() {
                   type="text"
                   value={productName}
                   onChange={(e) => setProductName(e.target.value)}
+                  placeholder="e.g., Organic Cardamom"
                   className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:border-indigo-500 transition"
                   required
                 />
@@ -228,6 +254,7 @@ export default function UploadPage() {
                   type="number"
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
+                  placeholder="e.g., 350"
                   className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:border-indigo-500 transition"
                   required
                 />
@@ -238,6 +265,7 @@ export default function UploadPage() {
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
+                  placeholder="e.g., Handpicked fresh green cardamom sourced directly from the hills of Idukki."
                   rows={2}
                   className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:border-indigo-500 transition"
                   required
@@ -268,14 +296,16 @@ export default function UploadPage() {
               ))}
               
               {images.length < 10 && (
-                <button
-                  type="button"
-                  onClick={handleAddMockImage}
-                  className="aspect-video rounded-xl bg-slate-900/40 border border-dashed border-slate-800 hover:border-indigo-500/40 hover:bg-slate-900/80 transition flex flex-col items-center justify-center gap-1 text-xs text-slate-500 hover:text-indigo-400"
-                >
+                <label className="aspect-video rounded-xl bg-slate-900/40 border border-dashed border-slate-800 hover:border-indigo-500/40 hover:bg-slate-900/80 transition flex flex-col items-center justify-center gap-1 text-xs text-slate-500 hover:text-indigo-400 cursor-pointer">
                   <Upload className="w-5 h-5" />
                   Add Image
-                </button>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                  />
+                </label>
               )}
             </div>
           </div>

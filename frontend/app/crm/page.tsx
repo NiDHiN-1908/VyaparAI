@@ -68,7 +68,7 @@ export default function CRMPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          video_id: "vid_mock_uuid_here", # Fallback business logic parses this
+          video_id: "vid_mock_uuid_here", // Fallback business logic parses this
           username: simUsername,
           comment_text: simComment
         })

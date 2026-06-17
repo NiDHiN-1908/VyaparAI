@@ -7,6 +7,11 @@ from backend.database.connection import db_conn
 
 logger = logging.getLogger("vyaparai.supabase_service")
 
+import os
+import json
+
+MOCK_DB_PATH = os.path.join(os.path.dirname(__file__), "..", "database", "mock_db.json")
+
 # In-Memory database for mock operations
 MOCK_DB: Dict[str, List[Dict[str, Any]]] = {
     "businesses": [],
@@ -21,8 +26,33 @@ MOCK_DB: Dict[str, List[Dict[str, Any]]] = {
     "leads": [],
     "conversations": [],
     "orders": [],
-    "analytics": []
+    "analytics": [],
+    "youtube_channels": [],
+    "youtube_videos": [],
+    "youtube_comments": [],
+    "youtube_replies": [],
+    "youtube_leads": [],
+    "youtube_analytics": []
 }
+
+def load_mock_db():
+    global MOCK_DB
+    if os.path.exists(MOCK_DB_PATH):
+        try:
+            with open(MOCK_DB_PATH, "r", encoding="utf-8") as f:
+                MOCK_DB = json.load(f)
+        except Exception as e:
+            logger.error(f"Failed to load mock DB: {e}")
+
+def save_mock_db():
+    try:
+        os.makedirs(os.path.dirname(MOCK_DB_PATH), exist_ok=True)
+        with open(MOCK_DB_PATH, "w", encoding="utf-8") as f:
+            json.dump(MOCK_DB, f, indent=2)
+    except Exception as e:
+        logger.error(f"Failed to save mock DB: {e}")
+
+load_mock_db()
 
 class SupabaseService:
     def __init__(self):
@@ -38,6 +68,7 @@ class SupabaseService:
         if self.is_mock:
             MOCK_DB[table].append(data)
             logger.info(f"[MOCK DB] Inserted into {table}: {data['id']}")
+            save_mock_db()
             return data
         else:
             try:
@@ -48,6 +79,7 @@ class SupabaseService:
             except Exception as e:
                 logger.error(f"Supabase error inserting into {table}: {e}")
                 MOCK_DB[table].append(data)
+                save_mock_db()
                 return data
 
     def _select_all(self, table: str) -> List[Dict[str, Any]]:
@@ -88,6 +120,7 @@ class SupabaseService:
                     if "updated_at" in item or table == "conversations":
                         item["updated_at"] = datetime.now().isoformat()
                     logger.info(f"[MOCK DB] Updated {table}: {record_id}")
+                    save_mock_db()
                     return item
             return None
         else:
@@ -101,6 +134,7 @@ class SupabaseService:
                 for item in MOCK_DB[table]:
                     if item.get("id") == record_id:
                         item.update(data)
+                        save_mock_db()
                         return item
                 return None
 
@@ -402,6 +436,7 @@ class SupabaseService:
                     "created_at": datetime.now().isoformat()
                 }
                 MOCK_DB["analytics"].append(row)
+                save_mock_db()
                 rows = [row]
             return rows
         else:
@@ -434,6 +469,7 @@ class SupabaseService:
                 MOCK_DB["analytics"].append(row)
             if metric in row:
                 row[metric] += amount
+            save_mock_db()
         else:
             try:
                 res = self.client.table("analytics").select("*").eq("business_id", business_id).eq("date", today_str).execute()
@@ -450,5 +486,288 @@ class SupabaseService:
                     self.client.table("analytics").insert(new_row).execute()
             except Exception as e:
                 logger.error(f"Failed to increment analytics: {e}")
+
+    # --- YouTube Channels ---
+    def create_youtube_channel(self, channel_id: str, channel_name: str, thumbnail: str, subscriber_count: int, access_token: str, refresh_token: str, token_uri: str = None, client_id: str = None, client_secret: str = None, scopes: List[str] = None) -> Dict[str, Any]:
+        data = {
+            "channel_id": channel_id,
+            "channel_name": channel_name,
+            "thumbnail": thumbnail,
+            "subscriber_count": subscriber_count,
+            "access_token": access_token,
+            "refresh_token": refresh_token,
+            "token_uri": token_uri,
+            "client_id": client_id,
+            "client_secret": client_secret,
+            "scopes": scopes or []
+        }
+        if self.is_mock:
+            MOCK_DB["youtube_channels"] = [c for c in MOCK_DB["youtube_channels"] if c.get("channel_id") != channel_id]
+        else:
+            try:
+                self.client.table("youtube_channels").delete().eq("channel_id", channel_id).execute()
+            except Exception as e:
+                logger.error(f"Failed to delete duplicate youtube channel: {e}")
+        return self._insert("youtube_channels", data)
+
+    def get_youtube_channels(self) -> List[Dict[str, Any]]:
+        return self._select_all("youtube_channels")
+
+    def get_youtube_channel(self, channel_id: str) -> Optional[Dict[str, Any]]:
+        if self.is_mock:
+            for item in MOCK_DB["youtube_channels"]:
+                if item.get("channel_id") == channel_id:
+                    return item
+            return None
+        else:
+            try:
+                res = self.client.table("youtube_channels").select("*").eq("channel_id", channel_id).execute()
+                return res.data[0] if res.data else None
+            except Exception as e:
+                logger.error(f"Failed to get youtube channel: {e}")
+                return None
+
+    def delete_youtube_channel(self, channel_id: str) -> bool:
+        if self.is_mock:
+            MOCK_DB["youtube_channels"] = [c for c in MOCK_DB["youtube_channels"] if c.get("channel_id") != channel_id]
+            MOCK_DB["youtube_videos"] = [v for v in MOCK_DB["youtube_videos"] if v.get("channel_id") != channel_id]
+            MOCK_DB["youtube_analytics"] = [a for a in MOCK_DB["youtube_analytics"] if a.get("channel_id") != channel_id]
+            logger.info(f"[MOCK DB] Disconnected YouTube channel: {channel_id}")
+            save_mock_db()
+            return True
+        else:
+            try:
+                self.client.table("youtube_channels").delete().eq("channel_id", channel_id).execute()
+                return True
+            except Exception as e:
+                logger.error(f"Failed to delete channel: {e}")
+                return False
+
+    # --- YouTube Videos ---
+    def create_youtube_video(self, channel_id: str, video_id: str, title: str, publish_date: str, status: str = "monitored") -> Dict[str, Any]:
+        data = {
+            "channel_id": channel_id,
+            "video_id": video_id,
+            "title": title,
+            "publish_date": publish_date,
+            "status": status
+        }
+        return self._insert("youtube_videos", data)
+
+    def get_youtube_videos(self) -> List[Dict[str, Any]]:
+        return self._select_all("youtube_videos")
+
+    def get_youtube_video(self, video_id: str) -> Optional[Dict[str, Any]]:
+        if self.is_mock:
+            for item in MOCK_DB["youtube_videos"]:
+                if item.get("video_id") == video_id:
+                    return item
+            return None
+        else:
+            try:
+                res = self.client.table("youtube_videos").select("*").eq("video_id", video_id).execute()
+                return res.data[0] if res.data else None
+            except Exception as e:
+                logger.error(f"Failed to get youtube video: {e}")
+                return None
+
+    def delete_youtube_video(self, video_id: str) -> bool:
+        if self.is_mock:
+            MOCK_DB["youtube_videos"] = [v for v in MOCK_DB["youtube_videos"] if v.get("video_id") != video_id]
+            logger.info(f"[MOCK DB] Removed deleted YouTube video: {video_id}")
+            save_mock_db()
+            return True
+        else:
+            try:
+                self.client.table("youtube_videos").delete().eq("video_id", video_id).execute()
+                return True
+            except Exception as e:
+                logger.error(f"Failed to delete youtube video: {e}")
+                return False
+
+    # --- YouTube Comments ---
+    def create_youtube_comment(self, video_id: str, comment_id: str, username: str, text: str, timestamp: str, intent: str = "SPAM", confidence: float = 1.0, status: str = "pending_approval") -> Dict[str, Any]:
+        data = {
+            "video_id": video_id,
+            "comment_id": comment_id,
+            "username": username,
+            "text": text,
+            "timestamp": timestamp,
+            "intent": intent,
+            "confidence": confidence,
+            "status": status
+        }
+        return self._insert("youtube_comments", data)
+
+    def get_youtube_comments(self) -> List[Dict[str, Any]]:
+        return self._select_all("youtube_comments")
+
+    def get_youtube_comment(self, comment_id: str) -> Optional[Dict[str, Any]]:
+        if self.is_mock:
+            for item in MOCK_DB["youtube_comments"]:
+                if item.get("comment_id") == comment_id:
+                    return item
+            return None
+        else:
+            try:
+                res = self.client.table("youtube_comments").select("*").eq("comment_id", comment_id).execute()
+                return res.data[0] if res.data else None
+            except Exception as e:
+                logger.error(f"Failed to get youtube comment: {e}")
+                return None
+
+    def update_youtube_comment_status(self, comment_id: str, status: str) -> Optional[Dict[str, Any]]:
+        comment = self.get_youtube_comment(comment_id)
+        if not comment:
+            return None
+        return self._update("youtube_comments", comment["id"], {"status": status})
+
+    def update_youtube_comment_intent(self, comment_id: str, intent: str, confidence: float) -> Optional[Dict[str, Any]]:
+        comment = self.get_youtube_comment(comment_id)
+        if not comment:
+            return None
+        return self._update("youtube_comments", comment["id"], {"intent": intent, "confidence": confidence})
+
+    # --- YouTube Replies ---
+    def create_youtube_reply(self, comment_id: str, suggested_reply: str, actual_reply: str = None, reply_id: str = None, status: str = "draft", published_at: str = None) -> Dict[str, Any]:
+        data = {
+            "comment_id": comment_id,
+            "suggested_reply": suggested_reply,
+            "actual_reply": actual_reply,
+            "reply_id": reply_id,
+            "status": status,
+            "published_at": published_at
+        }
+        return self._insert("youtube_replies", data)
+
+    def get_youtube_replies(self) -> List[Dict[str, Any]]:
+        return self._select_all("youtube_replies")
+
+    def get_youtube_reply_by_comment(self, comment_id: str) -> Optional[Dict[str, Any]]:
+        if self.is_mock:
+            for item in MOCK_DB["youtube_replies"]:
+                if item.get("comment_id") == comment_id:
+                    return item
+            return None
+        else:
+            try:
+                res = self.client.table("youtube_replies").select("*").eq("comment_id", comment_id).execute()
+                return res.data[0] if res.data else None
+            except Exception as e:
+                logger.error(f"Failed to get youtube reply: {e}")
+                return None
+
+    def update_youtube_reply(self, reply_db_id: str, data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+        return self._update("youtube_replies", reply_db_id, data)
+
+    # --- YouTube Leads ---
+    def create_youtube_lead(self, comment_id: str, video_id: str, username: str, intent: str = "HIGH_INTENT", reply: str = None, autopilot: bool = True) -> Dict[str, Any]:
+        data = {
+            "comment_id": comment_id,
+            "video_id": video_id,
+            "username": username,
+            "intent": intent,
+            "reply": reply,
+            "autopilot": autopilot
+        }
+        return self._insert("youtube_leads", data)
+
+    def get_youtube_leads(self) -> List[Dict[str, Any]]:
+        return self._select_all("youtube_leads")
+
+    def update_youtube_lead_autopilot(self, lead_id: str, autopilot: bool) -> Optional[Dict[str, Any]]:
+        return self._update("youtube_leads", lead_id, {"autopilot": autopilot})
+
+    # --- YouTube Analytics ---
+    def create_youtube_analytics(self, channel_id: str, comments_processed: int = 0, reply_rate: float = 0.0, lead_count: int = 0, conversion_rate: float = 0.0, top_videos: List[Dict[str, Any]] = None) -> Dict[str, Any]:
+        data = {
+            "channel_id": channel_id,
+            "comments_processed": comments_processed,
+            "reply_rate": reply_rate,
+            "lead_count": lead_count,
+            "conversion_rate": conversion_rate,
+            "top_videos": top_videos or []
+        }
+        return self._insert("youtube_analytics", data)
+
+    def get_youtube_analytics(self, channel_id: str) -> Optional[Dict[str, Any]]:
+        if self.is_mock:
+            for item in MOCK_DB["youtube_analytics"]:
+                if item.get("channel_id") == channel_id:
+                    return item
+            default_row = {
+                "id": str(uuid.uuid4()),
+                "channel_id": channel_id,
+                "comments_processed": 12,
+                "reply_rate": 75.0,
+                "lead_count": 5,
+                "conversion_rate": 41.6,
+                "top_videos": [
+                    {"video_id": "PuCb1JHpBkM", "title": "Cardamom Export Launch Campaign", "comments": 8, "leads": 4},
+                    {"video_id": "dQw4w9WgXcQ", "title": "Coconut Oil Regional Promo Clip", "comments": 4, "leads": 1}
+                ],
+                "created_at": datetime.now().isoformat(),
+                "updated_at": datetime.now().isoformat()
+            }
+            MOCK_DB["youtube_analytics"].append(default_row)
+            return default_row
+        else:
+            try:
+                res = self.client.table("youtube_analytics").select("*").eq("channel_id", channel_id).execute()
+                return res.data[0] if res.data else None
+            except Exception as e:
+                logger.error(f"Failed to get youtube analytics: {e}")
+                return None
+
+    def update_youtube_analytics(self, analytics_db_id: str, data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+        return self._update("youtube_analytics", analytics_db_id, data)
+
+    # --- WhatsApp Chat History ---
+    def get_whatsapp_messages(self, lead_id: str = None) -> List[Dict[str, Any]]:
+        if self.is_mock:
+            messages = MOCK_DB.get("whatsapp_messages", [])
+            if lead_id:
+                messages = [m for m in messages if m.get("lead_id") == lead_id]
+            return messages
+        else:
+            try:
+                query = self.client.table("whatsapp_messages").select("*")
+                if lead_id:
+                    query = query.eq("lead_id", lead_id)
+                res = query.execute()
+                return res.data or []
+            except Exception as e:
+                logger.error(f"Failed to fetch whatsapp messages: {e}")
+                # Fallback to mock
+                messages = MOCK_DB.get("whatsapp_messages", [])
+                if lead_id:
+                    messages = [m for m in messages if m.get("lead_id") == lead_id]
+                return messages
+
+    def create_whatsapp_message(self, lead_id: str, sender: str, text: str) -> Dict[str, Any]:
+        data = {
+            "id": str(uuid.uuid4()),
+            "lead_id": lead_id,
+            "sender": sender,  # "business" or "customer"
+            "text": text,
+            "created_at": datetime.now().isoformat()
+        }
+        if self.is_mock:
+            if "whatsapp_messages" not in MOCK_DB:
+                MOCK_DB["whatsapp_messages"] = []
+            MOCK_DB["whatsapp_messages"].append(data)
+            save_mock_db()
+            return data
+        else:
+            try:
+                res = self.client.table("whatsapp_messages").insert(data).execute()
+                return res.data[0] if res.data else data
+            except Exception as e:
+                logger.error(f"Failed to insert whatsapp message: {e}")
+                if "whatsapp_messages" not in MOCK_DB:
+                    MOCK_DB["whatsapp_messages"] = []
+                MOCK_DB["whatsapp_messages"].append(data)
+                save_mock_db()
+                return data
 
 supabase_svc = SupabaseService()

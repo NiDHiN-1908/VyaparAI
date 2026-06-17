@@ -37,9 +37,9 @@ def test_quality_audits():
     script_pass = {
         "title": "Authentic Cardamom Campaign",
         "hook": "Are you looking for the best cardamom?",
-        "script_text": "Introducing our premium cardamom sourced from organic farms."
+        "script_text": "Introducing our premium cardamom sourced from organic farms. This is the highest quality spice you can buy online, direct from Munnar hills."
     }
-    res_pass = audit_campaign_quality(script_pass, ["cardamom"])
+    res_pass = audit_campaign_quality(script_pass, ["cardamom", "organic"])
     assert res_pass["status"] == "APPROVED"
     assert res_pass["score"] >= 80
 

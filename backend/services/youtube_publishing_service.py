@@ -38,32 +38,29 @@ class YouTubePublishingService:
         
         client_secrets_path = "client_secrets.json"
         
-        if self.api_available and os.path.exists(client_secrets_path):
+        import sys
+        
+        if self.api_available:
             try:
-                # Real OAuth2 upload flow
-                import pickle
                 from googleapiclient.discovery import build
                 from googleapiclient.http import MediaFileUpload
-                from google_auth_oauthlib.flow import InstalledAppFlow
+                from google.oauth2.credentials import Credentials
+                from backend.services.supabase_service import supabase_svc
                 
-                scopes = ["https://www.googleapis.com/auth/youtube.upload"]
-                creds = None
+                channels = supabase_svc.get_youtube_channels()
+                if not channels:
+                    raise Exception("No connected YouTube channel found in the database. Please connect via dashboard.")
+                    
+                channel = channels[0]
+                creds = Credentials(
+                    token=channel.get("access_token"),
+                    refresh_token=channel.get("refresh_token"),
+                    token_uri=channel.get("token_uri") or "https://oauth2.googleapis.com/token",
+                    client_id=channel.get("client_id"),
+                    client_secret=channel.get("client_secret"),
+                    scopes=channel.get("scopes") or ["https://www.googleapis.com/auth/youtube.force-ssl"]
+                )
                 
-                # Check for cached tokens
-                if os.path.exists("token.pickle"):
-                    with open("token.pickle", "rb") as token:
-                        creds = pickle.load(token)
-                        
-                if not creds or not creds.valid:
-                    if creds and creds.expired and creds.refresh_token:
-                        from google.auth.transport.requests import Request
-                        creds.refresh(Request())
-                    else:
-                        flow = InstalledAppFlow.from_client_secrets_file(client_secrets_path, scopes)
-                        creds = flow.run_local_server(port=0)
-                    with open("token.pickle", "wb") as token:
-                        pickle.dump(creds, token)
-                        
                 youtube = build("youtube", "v3", credentials=creds)
                 
                 body = {
@@ -74,7 +71,8 @@ class YouTubePublishingService:
                         "categoryId": "22" # People & Blogs
                     },
                     "status": {
-                        "privacyStatus": "public" # public, private, unlisted
+                        "privacyStatus": "public",
+                        "selfDeclaredMadeForKids": False
                     }
                 }
                 
@@ -104,6 +102,9 @@ class YouTubePublishingService:
                     "simulated": False
                 }
             except Exception as e:
+                import traceback
+                print(f"!!! YOUTUBE EXCEPTION CAUGHT !!!")
+                traceback.print_exc()
                 logger.error(f"YouTube real upload failed: {e}. Falling back to sandbox simulation.")
 
         # Sandbox Fallback Mode

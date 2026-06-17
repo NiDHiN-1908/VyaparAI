@@ -43,6 +43,48 @@ class VoiceService:
         clean_text = clean_text.replace("[Translated to Telugu]:", "").replace("[Translated to Malayalam]:", "")
         clean_text = clean_text.strip()[:400] # Limit length for stable generation
 
+        # edge-tts voice mapping for natural and soft voices
+        EDGE_VOICE_MAP = {
+            "english": "en-IN-NeerjaNeural",
+            "hindi": "hi-IN-SwaraNeural",
+            "tamil": "ta-IN-PallaviNeural",
+            "telugu": "te-IN-ShrutiNeural",
+            "malayalam": "ml-IN-SobhanaNeural"
+        }
+
+        # Try edge-tts first
+        try:
+            import edge_tts
+            import asyncio
+            import threading
+
+            voice_name = EDGE_VOICE_MAP.get(lang_key, "en-IN-NeerjaNeural")
+            logger.info(f"Synthesizing voiceover with edge-tts using voice: {voice_name}")
+
+            async def _synthesize_edge_tts(text_to_speak, voice_name, dest_path):
+                communicate = edge_tts.Communicate(text_to_speak, voice_name)
+                await communicate.save(dest_path)
+
+            # Run in a dedicated thread to avoid any conflicts with existing event loops in FastAPI/uvicorn
+            def run_in_thread():
+                new_loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(new_loop)
+                new_loop.run_until_complete(_synthesize_edge_tts(clean_text, voice_name, str(output_path)))
+                new_loop.close()
+
+            t = threading.Thread(target=run_in_thread)
+            t.start()
+            t.join()
+
+            if os.path.exists(output_path) and os.path.getsize(output_path) > 100:
+                logger.info(f"edge-tts successfully generated audio: {output_path}")
+                return str(output_path)
+            else:
+                raise Exception("Generated audio file is empty or missing")
+
+        except Exception as e:
+            logger.error(f"edge-tts generation failed: {e}. Falling back to Coqui/gTTS.")
+
         if self.coqui_available:
             try:
                 from TTS.api import TTS
@@ -95,3 +137,4 @@ class VoiceService:
         return str(output_path)
 
 voice_svc = VoiceService()
+

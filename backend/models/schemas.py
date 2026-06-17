@@ -5,7 +5,7 @@ from typing import List, Optional
 class BusinessCreate(BaseModel):
     name: str = Field(..., example="Ravi Organics")
     location: str = Field(..., example="Kochi, Kerala")
-    contact: Optional[str] = Field(None, example="+91 9876543210")
+    contact: Optional[str] = Field(None, example="+91 7306796590")
     industry: Optional[str] = Field(None, example="Agriculture")
 
 class ProductCreate(BaseModel):
@@ -13,7 +13,7 @@ class ProductCreate(BaseModel):
     name: str = Field(..., example="Virgin Coconut Oil")
     description: str = Field(..., example="100% natural cold pressed coconut oil.")
     price: float = Field(..., gt=0, example=299.00)
-    image_url: Optional[str] = Field(None, example="/static/media/coconut_oil.jpg")
+    images: Optional[List[str]] = Field(default=[], example=["/static/media/cardamom_close.jpg", "/static/media/cardamom_farm.jpg"])
 
 class GenerateContentRequest(BaseModel):
     product_id: str

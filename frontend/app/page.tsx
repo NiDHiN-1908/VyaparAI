@@ -1,214 +1,675 @@
 // frontend/app/page.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { 
+  Upload, 
+  Film, 
+  CheckSquare, 
+  Youtube, 
+  Activity, 
+  Inbox, 
+  MessageSquare, 
   Users, 
-  Video, 
-  TrendingUp, 
-  DollarSign, 
+  Smartphone, 
+  BarChart3, 
+  BookOpen, 
+  Lightbulb, 
   ArrowRight, 
-  PlusCircle, 
-  CheckCircle, 
-  Clock 
+  Play, 
+  Sparkles, 
+  CheckCircle,
+  HelpCircle,
+  ShieldCheck,
+  Zap,
+  Cpu,
+  Hammer,
+  MessageCircle,
+  ChevronDown,
+  ChevronUp
 } from "lucide-react";
 
-const API_BASE = "http://localhost:8000";
-
 export default function Dashboard() {
-  const [stats, setStats] = useState({
-    total_leads: 8,
-    total_conversions: 3,
-    videos_generated: 4,
-    avg_engagement_rate: 6.8,
-    conversion_rate: 37.5
-  });
-  
-  const [recentLeads, setRecentLeads] = useState<any[]>([]);
-  const [recentVideos, setRecentVideos] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [agentTab, setAgentTab] = useState("all");
+  const [activeFaq, setActiveFaq] = useState<number | null>(null);
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        // Fetch businesses first
-        const bizRes = await fetch(`${API_BASE}/business`);
-        // We look up for existing records, otherwise fallback to defaults
-        const bizList = await bizRes.json();
-        
-        let businessId = "";
-        if (bizList && bizList.data && bizList.data.length > 0) {
-          businessId = bizList.data[0].id;
+  const blueprintCategories = [
+    {
+      title: "I. Content Generation & Quality Control",
+      desc: "Autonomously script, localize, and render vertical marketing videos.",
+      modules: [
+        {
+          name: "Upload Product",
+          path: "/upload",
+          icon: Upload,
+          color: "text-blue-400",
+          bg: "bg-blue-500/10",
+          border: "hover:border-blue-500/30",
+          summary: "Submit product specs, location, and images. Initiates the KeywordAgent and TrendAgent to map search trends and write localized hooks."
+        },
+        {
+          name: "Video Drafts & Preview",
+          path: "/preview",
+          icon: Film,
+          color: "text-indigo-400",
+          bg: "bg-indigo-500/10",
+          border: "hover:border-indigo-500/30",
+          summary: "Inspect AI-generated script screenplays, custom graphics prompts, and vertical video files rendered across regional Indian languages."
+        },
+        {
+          name: "Human-in-the-Loop Approvals",
+          path: "/approval",
+          icon: CheckSquare,
+          color: "text-purple-400",
+          bg: "bg-purple-500/10",
+          border: "hover:border-purple-500/30",
+          summary: "Maintain complete control. Review generated vertical videos, listen to regional voiceovers, and approve them for automatic YouTube publishing."
         }
-
-        if (businessId) {
-          const analyticsRes = await fetch(`${API_BASE}/analytics?business_id=${businessId}`);
-          const analyticsData = await analyticsRes.json();
-          if (analyticsData && analyticsData.summary) {
-            setStats(analyticsData.summary);
-          }
+      ]
+    },
+    {
+      title: "II. Social Integration & Comment Parsing",
+      desc: "Index comments from active campaigns and classify customer buying intent.",
+      modules: [
+        {
+          name: "YouTube Connect",
+          path: "/youtube-connect",
+          icon: Youtube,
+          color: "text-rose-450",
+          bg: "bg-rose-500/10",
+          border: "hover:border-rose-500/30",
+          summary: "Link your YouTube brand channel. Supports real Google OAuth2 secure integration or a 1-click sandbox simulation for offline validation."
+        },
+        {
+          name: "Video Monitoring Feed",
+          path: "/video-monitoring",
+          icon: Activity,
+          color: "text-amber-400",
+          bg: "bg-amber-500/10",
+          border: "hover:border-amber-500/30",
+          summary: "Tracks active video links published on YouTube. Displays indexing timestamps and monitors comment counts in real-time."
+        },
+        {
+          name: "Comment Inbox & Simulator",
+          path: "/comment-inbox",
+          icon: Inbox,
+          color: "text-pink-405",
+          bg: "bg-pink-500/10",
+          border: "hover:border-pink-500/30",
+          summary: "Browse comment threads. Use the Simulator to instantly inject custom customer questions (e.g. pricing, delivery) and test the AI classification."
         }
-      } catch (err) {
-        console.warn("Could not load real-time analytics. Using simulated metrics.", err);
-      } finally {
-        setLoading(false);
-      }
+      ]
+    },
+    {
+      title: "III. Conversational Sales & CRM closing",
+      desc: "Engage leads automatically via YouTube replies and close orders over WhatsApp autopilot.",
+      modules: [
+        {
+          name: "Reply Approval Console",
+          path: "/reply-approval",
+          icon: MessageSquare,
+          color: "text-cyan-400",
+          bg: "bg-cyan-500/10",
+          border: "hover:border-cyan-500/30",
+          summary: "Inspect and edit draft comment replies generated by the AI agent. Review or regenerate comments before pushing them live to YouTube."
+        },
+        {
+          name: "Lead Dashboard (CRM)",
+          path: "/lead-dashboard",
+          icon: Users,
+          color: "text-emerald-400",
+          bg: "bg-emerald-500/10",
+          border: "hover:border-emerald-500/30",
+          summary: "Central CRM hub. Authors of qualified comments showing buyer intent are promoted to Leads with metadata, languages, and contact states."
+        },
+        {
+          name: "WhatsApp Live Chat Console",
+          path: "/live-chat",
+          icon: Smartphone,
+          color: "text-teal-400",
+          bg: "bg-teal-500/10",
+          border: "hover:border-teal-500/30",
+          summary: "Converse with leads on WhatsApp. Toggle AI sales autopilot, answer objections, collect shipping addresses, and send UPI checkout links."
+        },
+        {
+          name: "YouTube Analytics Monitor",
+          path: "/youtube-analytics",
+          icon: BarChart3,
+          color: "text-sky-400",
+          bg: "bg-sky-500/10",
+          border: "hover:border-sky-500/30",
+          summary: "Measure performance. View conversion metrics, total comments qualified, auto-reply performance, and top video campaigns."
+        }
+      ]
     }
-    fetchData();
+  ];
 
-    // Populate mock feed data for rich dashboard demonstration
-    setRecentLeads([
-      { id: "1", username: "rahul_sharma", intent: "HIGH_INTENT", language: "Hindi", status: "new", created_at: "Just Now" },
-      { id: "2", username: "priya_menon", intent: "HIGH_INTENT", language: "Malayalam", status: "contacting", created_at: "2 hours ago" },
-      { id: "3", username: "karthik_v", intent: "MEDIUM_INTENT", language: "Tamil", status: "qualified", created_at: "5 hours ago" },
-      { id: "4", username: "suresh_kumar", intent: "HIGH_INTENT", language: "Telugu", status: "customer", created_at: "1 day ago" }
-    ]);
+  const gettingStartedSteps = [
+    {
+      step: "01",
+      title: "Establish Connection",
+      desc: "Navigate to YouTube Connect and choose your connection type. Select 'Simulate Connection (Sandbox)' for offline testing, or 'Connect YouTube Channel' to link your live channel using Google OAuth."
+    },
+    {
+      step: "02",
+      title: "Submit Product Specs",
+      desc: "Head over to Upload Product. Add your product's name, pricing, photos, and location. Our agents will write marketing copies, localise them, and stitch them into a vertical promo video."
+    },
+    {
+      step: "03",
+      title: "Approve & Publish Video",
+      desc: "Go to Approvals to review your campaign assets. Watch the drafts and hit 'Approve Video'. The YouTubePublishingAgent uploads it to your channel and sets up comment monitoring."
+    },
+    {
+      step: "04",
+      title: "Inject & Qualify Comments",
+      desc: "Go to the Comment Inbox. Inject simulated queries using the Simulator (e.g. 'What is the price in Chennai?'). Watch the agent classify interest and generate local-language replies."
+    },
+    {
+      step: "05",
+      title: "Close Sales on WhatsApp",
+      desc: "Verify generated replies in Reply Approval. Once approved, the lead is pushed to your CRM. Open WhatsApp Live Chat to converse with the lead or turn on Autopilot to auto-collect payments."
+    }
+  ];
 
-    setRecentVideos([
-      { id: "1", name: "Coconut Oil Campaign (Hindi)", lang: "Hindi", approval: "approved", views: 240 },
-      { id: "2", name: "Handmade Saree Promo (Tamil)", lang: "Tamil", approval: "pending", views: 0 },
-      { id: "3", name: "Organic Soap Clip (Malayalam)", lang: "Malayalam", approval: "approved", views: 180 },
-      { id: "4", name: "Spices Intro Reel (Telugu)", lang: "Telugu", approval: "revision_requested", views: 50 }
-    ]);
-  }, []);
+  const coreAgents = [
+    {
+      name: "KeywordAgent & TrendAgent",
+      category: "marketing",
+      role: "SEO & Discovery Optimizer",
+      importance: "Ensures campaigns are grounded in actual search volume, targeting the exact terms buyers use when searching for regional Indian products.",
+      tools: ["Google Trends API", "SEO Term Classifier", "Search Intent Analyzer"],
+      why: "Instead of writing generic descriptions, we target search traffic in local markets (e.g. 'organic honey online')."
+    },
+    {
+      name: "ScriptAgent & ThumbnailAgent",
+      category: "marketing",
+      role: "Creative Content Studio",
+      importance: "Automates copywriting and visual drafts at scale, preparing vertical reel/shorts ad scripts and thumbnail layouts in seconds.",
+      tools: ["Llama 3.1 LLM model", "DALL-E Prompt Synthesizer", "AIDA Copy Frameworks"],
+      why: "Saves hours of creative planning and script-writing, structuring ads into highly engaging Hooks, Problems, and Solutions."
+    },
+    {
+      name: "QualityAgent (Human-like Auditor)",
+      category: "marketing",
+      role: "Guardrails & Content Review",
+      importance: "Maintains brand safety and high conversion quality by auditing generated scripts and rejecting any that score under 80/100.",
+      tools: ["Auto-Evaluation LLM Suite", "Score Threshold Trigger", "Error Feedback Loop"],
+      why: "Ensures the AI output does not look 'robotic' or default, dynamically forcing regeneration with constructive feedback."
+    },
+    {
+      name: "VideoAgent & VoiceoverAgent",
+      category: "marketing",
+      role: "Multilingual Video Synthesizer",
+      importance: "Builds ready-to-publish vertical MP4 ads with synced local language voiceovers (Hindi, Tamil, Telugu, Malayalam, Kannada).",
+      tools: ["Edge TTS Audio Engine", "FFmpeg Video Stitcher", "Pillow Subtitle Drawer"],
+      why: "Eliminates the need for expensive actors, cameras, or audio recording environments for small businesses."
+    },
+    {
+      name: "ScreeningAgent & IntentAgent",
+      category: "social",
+      role: "Social Comment Parser",
+      importance: "Monitors YouTube comment feeds and qualifies buyer leads instantly based on local pricing/delivery queries.",
+      tools: ["YouTube comment API fetcher", "Llama 3.1 Sentiment Classifier", "Pattern Matchers"],
+      why: "Filters out internet bots, generic spam, or simple compliments, flagging only prospective buyers."
+    },
+    {
+      name: "SalesAgent & Chat Autopilot",
+      category: "sales",
+      role: "Lead Nurturer & Checkout Clerk",
+      importance: "Interacts 24/7 on WhatsApp, answering questions, collecting addresses, and providing UPI payment links to close sales.",
+      tools: ["Meta WhatsApp Cloud API", "LangGraph State Engine", "UPI Link Compiler"],
+      why: "Captures buyers when their interest is highest, automating repetitive order-taking tasks."
+    }
+  ];
 
-  const cardStats = [
-    { name: "Total Leads", value: stats.total_leads, icon: Users, color: "text-blue-400", bg: "bg-blue-500/10" },
-    { name: "Sales Conversions", value: stats.total_conversions, icon: DollarSign, color: "text-emerald-400", bg: "bg-emerald-500/10" },
-    { name: "Videos Created", value: stats.videos_generated, icon: Video, color: "text-indigo-400", bg: "bg-indigo-500/10" },
-    { name: "Engagement Rate", value: `${stats.avg_engagement_rate}%`, icon: TrendingUp, color: "text-purple-400", bg: "bg-purple-500/10" },
+  const filteredAgents = coreAgents.filter(
+    (agent) => agentTab === "all" || agent.category === agentTab
+  );
+
+  const optimizationSuggestions = [
+    {
+      title: "Verify Core Flows in Sandbox Mode",
+      desc: "Before configuring Google APIs or setting up Supabase in production, use Sandbox mode. It populates mock records and simulates the entire 8-agent comment-to-lead flow with zero setup requirements."
+    },
+    {
+      title: "Optimize Product Descriptions",
+      desc: "Provide comprehensive product specs (price, shipping options, ingredients, unique advantages) on upload. This details the LLM knowledge base, generating higher-conversion scripts and replies."
+    },
+    {
+      title: "Use Regional Localisation",
+      desc: "Always render and preview translations in regional Indian languages (Hindi, Tamil, Telugu, Malayalam). Regional voiceovers dramatically increase viewer trust and comment engagement."
+    },
+    {
+      title: "Reviewing vs. Autopiloting Responses",
+      desc: "Keep AUTO_REPLY disabled initially (in .env) to review draft replies on the Reply Approval console. Once confident in the agent's tone, enable AUTO_REPLY to send replies directly to YouTube."
+    }
+  ];
+
+  const faqList = [
+    {
+      q: "What is VyaparAI and how does it help my business?",
+      a: "VyaparAI is an autonomous marketing and sales assistant designed for Indian manufacturers, retail merchants, and local brands. It automates the entire funnel: it drafts marketing scripts, translates them into regional languages, generates promotional vertical videos, monitors comments on YouTube, identifies potential buyers, and redirects them to a WhatsApp chat autopilot to complete the sale."
+    },
+    {
+      q: "Do I need a Google Developer or Meta Business API account to test the system?",
+      a: "No! VyaparAI includes a full Sandbox Mode. When you go to 'YouTube Connect', you can click 'Simulate Connection (Sandbox)'. You can then use the 'Comment Inbox' simulator to inject mock buyer questions (e.g. 'Do you deliver to Bangalore?') and test the entire multi-agent loop offline."
+    },
+    {
+      q: "How does the platform qualify a customer comment?",
+      a: "The IntentAgent analyzes the text of comments using specialized rules. It flags queries about price, delivery availability, contact details, or order processes as 'HIGH_INTENT'. General Q&As are labeled 'MEDIUM_INTENT', emojis/praises are 'LOW_INTENT', and bot ads are labeled 'SPAM'."
+    },
+    {
+      q: "What is the 'Human-in-the-Loop' approach?",
+      a: "While VyaparAI is highly automated, it respects your brand's voice. The system creates drafts for vertical videos and YouTube comment replies, which wait in the 'Approvals' and 'Reply Approval' queues. You can review, edit, or regenerate them before they are published."
+    },
+    {
+      q: "How does the WhatsApp sales autopilot work?",
+      a: "When a qualified buyer clicks your WhatsApp link, a LangGraph-powered conversational assistant initiates a chat. It answers queries about the product, checks shipping rates, gathers their delivery address, and generates a UPI link or QR code for payment."
+    },
+    {
+      q: "Which regional languages are supported?",
+      a: "The platform fully translates scripts, audio voiceovers, and captions into English, Hindi, Tamil, Telugu, Malayalam, and Kannada, allowing you to reach customers in their native languages."
+    }
   ];
 
   return (
-    <div className="space-y-8">
-      {/* Header bar */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h1 className="text-4xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
-            VyaparAI Dashboard
-          </h1>
-          <p className="text-slate-400 mt-2">
-            Automating SEO keyword research, localization, and automated sales loops for your products.
-          </p>
-        </div>
+    <div className="space-y-12 pb-16">
+      
+      {/* Greeting Banner */}
+      <div className="relative overflow-hidden rounded-3xl border border-indigo-500/20 bg-gradient-to-r from-indigo-950/40 via-slate-900/80 to-purple-950/40 p-8 backdrop-blur-xl shadow-2xl">
+        <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-500/10 rounded-full blur-[80px] pointer-events-none" />
+        <div className="absolute bottom-0 left-1/3 w-60 h-60 bg-purple-500/10 rounded-full blur-[60px] pointer-events-none" />
         
-        <Link href="/upload" className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-5 py-3 rounded-xl shadow-lg shadow-indigo-600/20 transition-all duration-300 transform hover:-translate-y-0.5">
-          <PlusCircle className="w-5 h-5" />
-          Create New Campaign
-        </Link>
-      </div>
-
-      {/* Grid counters */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {cardStats.map((stat) => (
-          <div key={stat.name} className="glass-panel glass-card-hover rounded-2xl p-6 relative overflow-hidden">
-            <div className="flex justify-between items-center">
-              <div>
-                <p className="text-sm font-medium text-slate-400">{stat.name}</p>
-                <h3 className="text-3xl font-bold mt-2 text-white">{stat.value}</h3>
-              </div>
-              <div className={`p-4 rounded-xl ${stat.bg}`}>
-                <stat.icon className={`w-6 h-6 ${stat.color}`} />
-              </div>
-            </div>
-            <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-indigo-500/20 to-transparent" />
-          </div>
-        ))}
-      </div>
-
-      {/* Dynamic Activity Panels */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        
-        {/* Recent CRM Leads */}
-        <div className="glass-panel rounded-2xl p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-bold text-white flex items-center gap-2">
-              <Users className="w-5 h-5 text-indigo-400" />
-              Hot Leads Queue
-            </h2>
-            <Link href="/crm" className="text-indigo-400 hover:text-indigo-300 text-xs font-semibold flex items-center gap-1">
-              View CRM
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
+        <div className="relative z-10 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+          <div className="space-y-3">
+            <span className="text-xs font-bold text-indigo-300 uppercase tracking-widest bg-indigo-500/15 border border-indigo-500/30 px-3.5 py-1 rounded-full shadow-lg shadow-indigo-500/5">
+              Operation Command Center
+            </span>
+            <h1 className="text-4xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-100 to-indigo-200 bg-clip-text text-transparent">
+              VyaparAI Automation Platform
+            </h1>
+            <p className="text-slate-350 max-w-2xl text-sm leading-relaxed font-medium">
+              VyaparAI is a professional multi-agent system built to automate digital marketing, content translation, social monitoring, and chat-based sales. Specifically customized for manufacturers, retail merchants, and local brands, it connects your video marketing pipeline directly to customer checkouts.
+            </p>
           </div>
           
-          <div className="space-y-4">
-            {recentLeads.map((lead) => (
-              <div key={lead.id} className="flex justify-between items-center p-4 rounded-xl bg-slate-900/50 border border-slate-800/80 hover:border-slate-700/60 transition-all">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center font-bold text-indigo-300 uppercase">
-                    {lead.username.slice(0, 2)}
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-sm text-slate-200">@{lead.username}</h4>
-                    <p className="text-xs text-slate-400">Lang: {lead.language} • {lead.created_at}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase ${
-                    lead.intent === "HIGH_INTENT" 
-                      ? "bg-rose-500/10 text-rose-400 border border-rose-500/20" 
-                      : "bg-amber-500/10 text-amber-400 border border-amber-500/20"
-                  }`}>
-                    {lead.intent.replace("_", " ")}
-                  </span>
-                  
-                  <Link href={`/chat?lead_id=${lead.id}`} className="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs px-3 py-1.5 rounded-lg border border-slate-700 transition">
-                    Chat
-                  </Link>
-                </div>
-              </div>
-            ))}
+          <div className="flex flex-col sm:flex-row gap-3 bg-slate-950/60 p-4 rounded-2xl border border-slate-800/80 shadow-lg w-full lg:w-auto">
+            <div className="flex items-center gap-2.5 px-3.5 py-2 bg-slate-900/40 rounded-xl border border-indigo-500/10 shadow-sm">
+              <Zap className="w-4 h-4 text-indigo-400 animate-pulse" />
+              <span className="text-xs font-bold text-slate-200">AI Agents Active</span>
+            </div>
+            <div className="flex items-center gap-2.5 px-3.5 py-2 bg-slate-900/40 rounded-xl border border-emerald-500/10 shadow-sm">
+              <ShieldCheck className="w-4 h-4 text-emerald-400" />
+              <span className="text-xs font-bold text-slate-200">Sandbox Ready</span>
+            </div>
           </div>
         </div>
-
-        {/* Video Drafts approval */}
-        <div className="glass-panel rounded-2xl p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-bold text-white flex items-center gap-2">
-              <Video className="w-5 h-5 text-indigo-400" />
-              Marketing Assets
-            </h2>
-            <Link href="/preview" className="text-indigo-400 hover:text-indigo-300 text-xs font-semibold flex items-center gap-1">
-              View Clips
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-
-          <div className="space-y-4">
-            {recentVideos.map((video) => (
-              <div key={video.id} className="flex justify-between items-center p-4 rounded-xl bg-slate-900/50 border border-slate-800/80 hover:border-slate-700/60 transition-all">
-                <div>
-                  <h4 className="font-semibold text-sm text-slate-200">{video.name}</h4>
-                  <p className="text-xs text-slate-400">Lang: {video.lang} {video.views > 0 && `• ${video.views} views`}</p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className={`flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase ${
-                    video.approval === "approved"
-                      ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                      : video.approval === "pending"
-                      ? "bg-amber-500/10 text-amber-400 border border-amber-500/20"
-                      : "bg-rose-500/10 text-rose-400 border border-rose-500/20"
-                  }`}>
-                    {video.approval === "approved" ? (
-                      <CheckCircle className="w-3 h-3" />
-                    ) : (
-                      <Clock className="w-3 h-3" />
-                    )}
-                    {video.approval.replace("_", " ")}
-                  </span>
-                  
-                  <Link href="/approval" className="text-indigo-400 hover:text-indigo-300 text-xs font-semibold px-2 py-1">
-                    Review
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
       </div>
+
+      {/* Quick Action Shortcuts */}
+      <div className="space-y-4">
+        <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Quick Action Sandbox Shortcuts</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Link href="/youtube-connect" className="glass-panel p-4 bg-slate-900/20 border border-slate-800/80 rounded-xl hover:border-rose-500/35 hover:-translate-y-0.5 transition duration-200 flex items-center justify-between group">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-lg bg-rose-500/10 text-rose-400 flex items-center justify-center border border-rose-500/20">
+                <Youtube className="w-4.5 h-4.5" />
+              </div>
+              <div>
+                <h4 className="font-extrabold text-xs text-slate-200 group-hover:text-white">1. Link Simulated Channel</h4>
+                <p className="text-[10px] text-slate-500">Enable Sandbox simulation in 1-click</p>
+              </div>
+            </div>
+            <ArrowRight className="w-4 h-4 text-slate-500 group-hover:text-rose-450 group-hover:translate-x-0.5 transition" />
+          </Link>
+          <Link href="/upload" className="glass-panel p-4 bg-slate-900/20 border border-slate-800/80 rounded-xl hover:border-blue-500/35 hover:-translate-y-0.5 transition duration-200 flex items-center justify-between group">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center border border-blue-500/20">
+                <Upload className="w-4.5 h-4.5" />
+              </div>
+              <div>
+                <h4 className="font-extrabold text-xs text-slate-200 group-hover:text-white">2. Launch Product Campaign</h4>
+                <p className="text-[10px] text-slate-500">Upload specs & write marketing scripts</p>
+              </div>
+            </div>
+            <ArrowRight className="w-4 h-4 text-slate-500 group-hover:text-blue-400 group-hover:translate-x-0.5 transition" />
+          </Link>
+          <Link href="/comment-inbox" className="glass-panel p-4 bg-slate-900/20 border border-slate-800/80 rounded-xl hover:border-pink-500/35 hover:-translate-y-0.5 transition duration-200 flex items-center justify-between group">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-lg bg-pink-500/10 text-pink-400 flex items-center justify-center border border-pink-500/20">
+                <Inbox className="w-4.5 h-4.5" />
+              </div>
+              <div>
+                <h4 className="font-extrabold text-xs text-slate-200 group-hover:text-white">3. Inject Customer Inquiries</h4>
+                <p className="text-[10px] text-slate-500">Simulate customer comments and qualify leads</p>
+              </div>
+            </div>
+            <ArrowRight className="w-4 h-4 text-slate-500 group-hover:text-pink-400 group-hover:translate-x-0.5 transition" />
+          </Link>
+        </div>
+      </div>
+
+      {/* Getting Started Guide */}
+      <div className="glass-panel rounded-3xl p-8 border border-slate-800/80 relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900/20 to-transparent">
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-500/10 via-transparent to-transparent pointer-events-none" />
+        
+        <div className="mb-8 flex items-center gap-3">
+          <div className="p-2.5 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 shadow-sm">
+            <BookOpen className="w-5 h-5" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-extrabold bg-gradient-to-r from-indigo-200 via-purple-200 to-pink-200 bg-clip-text text-transparent tracking-tight">
+              Getting Started: The End-to-End Funnel
+            </h2>
+            <p className="text-xs text-slate-400 mt-1 font-semibold">
+              Follow these sequential steps to set up campaigns, capture buying intent, and automate customer checkouts.
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mt-8 relative">
+          {gettingStartedSteps.map((step, idx) => (
+            <div key={step.step} className="relative group">
+              <div className="glass-panel bg-slate-900/30 hover:bg-slate-900/50 hover:border-indigo-500/20 border border-slate-800/60 rounded-2xl p-5 h-full transition duration-300 flex flex-col justify-between">
+                <div>
+                  <div className="text-3xl font-black text-indigo-500/20 group-hover:text-indigo-500/40 transition duration-300 mb-2 font-mono">
+                    {step.step}
+                  </div>
+                  <h3 className="font-extrabold text-sm text-slate-200 group-hover:text-white transition">
+                    {step.title}
+                  </h3>
+                  <p className="text-[11px] text-slate-400 mt-2 leading-relaxed">
+                    {step.desc}
+                  </p>
+                </div>
+              </div>
+              {idx < 4 && (
+                <div className="hidden md:block absolute top-1/2 -right-3.5 transform -translate-y-1/2 z-20 text-slate-700">
+                  <ArrowRight className="w-5 h-5" />
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Visual Pipeline Flowchart */}
+      <div className="glass-panel rounded-3xl p-8 border border-slate-800/80 bg-slate-950/20 relative overflow-hidden">
+        <div className="mb-8 flex items-center gap-3">
+          <div className="p-2.5 rounded-xl bg-purple-500/10 text-purple-400 border border-purple-500/20 shadow-sm">
+            <Activity className="w-5 h-5" />
+          </div>
+          <div>
+            <h2 className="text-xl font-extrabold text-white tracking-tight">System Data Flow Pipeline</h2>
+            <p className="text-xs text-slate-400 mt-1 font-semibold">How product specs transform automatically into WhatsApp payment checkouts.</p>
+          </div>
+        </div>
+
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-6 py-4 px-2 relative">
+          {/* Connecting Line background */}
+          <div className="hidden lg:block absolute top-1/2 left-8 right-8 h-0.5 bg-gradient-to-r from-blue-500 via-purple-500 to-emerald-500 -translate-y-1/2 z-0 opacity-20" />
+          
+          <div className="glass-panel p-4 bg-slate-900 border border-slate-800 rounded-xl text-center w-full lg:w-48 z-10 hover:border-blue-500/35 transition duration-200">
+            <span className="text-[9px] font-bold text-blue-450 uppercase">Stage 1</span>
+            <h4 className="font-extrabold text-xs text-slate-200 mt-1">Product Upload</h4>
+            <p className="text-[10px] text-slate-500 mt-1.5">Specs and targets written to database</p>
+          </div>
+
+          <div className="text-slate-700 rotate-90 lg:rotate-0 z-10">
+            <ArrowRight className="w-5 h-5" />
+          </div>
+
+          <div className="glass-panel p-4 bg-slate-900 border border-slate-800 rounded-xl text-center w-full lg:w-48 z-10 hover:border-indigo-500/35 transition duration-200">
+            <span className="text-[9px] font-bold text-indigo-400 uppercase">Stage 2</span>
+            <h4 className="font-extrabold text-xs text-slate-200 mt-1">Copy & Localization</h4>
+            <p className="text-[10px] text-slate-500 mt-1.5">AI scripting & regional voiceover synthesis</p>
+          </div>
+
+          <div className="text-slate-700 rotate-90 lg:rotate-0 z-10">
+            <ArrowRight className="w-5 h-5" />
+          </div>
+
+          <div className="glass-panel p-4 bg-slate-900 border border-slate-800 rounded-xl text-center w-full lg:w-48 z-10 hover:border-purple-500/35 transition duration-200">
+            <span className="text-[9px] font-bold text-purple-400 uppercase">Stage 3</span>
+            <h4 className="font-extrabold text-xs text-slate-200 mt-1">YouTube Publishing</h4>
+            <p className="text-[10px] text-slate-500 mt-1.5">Approved Vertical Ad uploaded and monitored</p>
+          </div>
+
+          <div className="text-slate-700 rotate-90 lg:rotate-0 z-10">
+            <ArrowRight className="w-5 h-5" />
+          </div>
+
+          <div className="glass-panel p-4 bg-slate-900 border border-slate-800 rounded-xl text-center w-full lg:w-48 z-10 hover:border-pink-500/35 transition duration-200">
+            <span className="text-[9px] font-bold text-pink-400 uppercase">Stage 4</span>
+            <h4 className="font-extrabold text-xs text-slate-200 mt-1">Social Monitoring</h4>
+            <p className="text-[10px] text-slate-500 mt-1.5">Comment qualification & auto CRM leads</p>
+          </div>
+
+          <div className="text-slate-700 rotate-90 lg:rotate-0 z-10">
+            <ArrowRight className="w-5 h-5" />
+          </div>
+
+          <div className="glass-panel p-4 bg-slate-900 border border-slate-800 rounded-xl text-center w-full lg:w-48 z-10 hover:border-emerald-500/35 transition duration-200">
+            <span className="text-[9px] font-bold text-emerald-400 uppercase">Stage 5</span>
+            <h4 className="font-extrabold text-xs text-slate-200 mt-1">WhatsApp Checkout</h4>
+            <p className="text-[10px] text-slate-500 mt-1.5">Chatbot autopilot closes UPI payments</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Functional Blueprint (Interactive Modular Tour) */}
+      <div className="space-y-8">
+        <div className="flex items-center gap-3">
+          <div className="p-2.5 rounded-xl bg-purple-500/10 text-purple-400 border border-purple-500/20 shadow-sm">
+            <Sparkles className="w-5 h-5" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-extrabold text-white tracking-tight">System Modules & Capabilities</h2>
+            <p className="text-xs text-slate-400 mt-1 font-semibold">Detailed overview of the platform interfaces, tools, and background agent roles.</p>
+          </div>
+        </div>
+
+        <div className="space-y-10">
+          {blueprintCategories.map((category) => (
+            <div key={category.title} className="space-y-4">
+              <div className="border-b border-slate-850 pb-2">
+                <h3 className="text-base font-extrabold text-indigo-300 tracking-wide">{category.title}</h3>
+                <p className="text-xs text-slate-500 mt-0.5">{category.desc}</p>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {category.modules.map((mod) => (
+                  <Link href={mod.path} key={mod.name} className="block group">
+                    <div className={`glass-panel h-full bg-slate-900/20 hover:bg-slate-900/40 border border-slate-800/80 ${mod.border} rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between hover:-translate-y-1 hover:shadow-2xl`}>
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <div className={`p-3 rounded-xl ${mod.bg}`}>
+                            <mod.icon className={`w-5 h-5 ${mod.color}`} />
+                          </div>
+                          <span className="text-[10px] font-bold text-slate-650 group-hover:text-indigo-400 transition flex items-center gap-0.5">
+                            Open Tool <ArrowRight className="w-3 h-3" />
+                          </span>
+                        </div>
+                        <div>
+                          <h4 className="font-extrabold text-sm text-slate-200 group-hover:text-white transition">
+                            {mod.name}
+                          </h4>
+                          <p className="text-xs text-slate-400 mt-2.5 leading-relaxed font-medium">
+                            {mod.summary}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* AI Agent Registry & Tooling Section */}
+      <div className="space-y-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-850 pb-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 shadow-sm">
+              <Cpu className="w-5 h-5" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-extrabold text-white tracking-tight">AI Agent Registry & Tooling Architecture</h2>
+              <p className="text-xs text-slate-400 mt-1 font-semibold">Learn about our autonomous agents, the tools they use, and why they are vital to your business.</p>
+            </div>
+          </div>
+          
+          {/* Agent Registry Filter Tabs */}
+          <div className="flex bg-slate-950 p-1 rounded-xl border border-slate-850">
+            {["all", "marketing", "social", "sales"].map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setAgentTab(tab)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition capitalize ${
+                  agentTab === tab 
+                    ? "bg-indigo-650 text-white shadow-md shadow-indigo-600/15" 
+                    : "text-slate-500 hover:text-slate-350"
+                }`}
+              >
+                {tab === "all" ? "All" : tab}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredAgents.map((agent) => (
+            <div key={agent.name} className="glass-panel bg-slate-900/35 border border-slate-850 rounded-2xl p-6 flex flex-col justify-between hover:border-slate-800 transition duration-300">
+              <div className="space-y-4">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h3 className="font-extrabold text-base text-indigo-200">{agent.name}</h3>
+                    <span className="text-[10px] text-slate-500 font-bold block mt-1 uppercase tracking-wider">{agent.role}</span>
+                  </div>
+                </div>
+
+                <div className="space-y-3 pt-2">
+                  <div>
+                    <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                      <Zap className="w-3 h-3 text-indigo-400" /> Importance & Objective
+                    </h4>
+                    <p className="text-xs text-slate-350 mt-1 leading-relaxed">
+                      {agent.importance}
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                      <Hammer className="w-3 h-3 text-indigo-400" /> Integrated Tooling
+                    </h4>
+                    <div className="flex flex-wrap gap-1.5 mt-1.5">
+                      {agent.tools.map((tool) => (
+                        <span key={tool} className="text-[9px] font-bold px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
+                          {tool}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-t border-slate-800/40 mt-5 pt-4 bg-indigo-950/10 -mx-6 -mb-6 p-4 rounded-b-2xl">
+                <h4 className="text-[10px] font-bold text-indigo-300 uppercase tracking-widest">Why We Use This</h4>
+                <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                  {agent.why}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Recommendations & Suggestions */}
+      <div className="glass-panel rounded-3xl p-8 border border-slate-800/80 bg-gradient-to-br from-indigo-950/15 via-slate-900/40 to-transparent">
+        <div className="mb-6 flex items-center gap-3">
+          <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-450 border border-emerald-500/20 shadow-sm">
+            <Lightbulb className="w-5 h-5" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-extrabold bg-gradient-to-r from-emerald-200 to-indigo-200 bg-clip-text text-transparent tracking-tight">
+              Best Practices & Optimization Suggestions
+            </h2>
+            <p className="text-xs text-slate-400 mt-1 font-semibold">
+              Crucial suggestions to configure, deploy, and scale your automated campaigns.
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+          {optimizationSuggestions.map((suggestion) => (
+            <div key={suggestion.title} className="p-5 rounded-2xl bg-slate-950/40 border border-slate-850 flex gap-4 hover:border-slate-800 transition">
+              <div className="w-8 h-8 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center flex-shrink-0 text-emerald-400">
+                <HelpCircle className="w-4.5 h-4.5" />
+              </div>
+              <div className="space-y-1.5">
+                <h4 className="font-bold text-sm text-slate-250">{suggestion.title}</h4>
+                <p className="text-xs text-slate-400 leading-relaxed font-medium">
+                  {suggestion.desc}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Frequently Asked Questions (Accordion Style) */}
+      <div className="space-y-8">
+        <div className="flex items-center gap-3">
+          <div className="p-2.5 rounded-xl bg-purple-500/10 text-purple-400 border border-purple-500/20 shadow-sm">
+            <HelpCircle className="w-5 h-5" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-extrabold text-white tracking-tight">Frequently Asked Questions</h2>
+            <p className="text-xs text-slate-400 mt-1 font-semibold">Quick answers to common questions about VyaparAI for new users.</p>
+          </div>
+        </div>
+
+        <div className="space-y-4 max-w-4xl mx-auto">
+          {faqList.map((faq, idx) => {
+            const isOpen = activeFaq === idx;
+            return (
+              <div 
+                key={faq.q} 
+                className="glass-panel bg-slate-900/20 border border-slate-800/80 rounded-2xl overflow-hidden hover:border-indigo-500/25 transition duration-300"
+              >
+                <button
+                  onClick={() => setActiveFaq(isOpen ? null : idx)}
+                  className="w-full flex justify-between items-center p-6 text-left focus:outline-none"
+                >
+                  <h4 className="font-extrabold text-sm text-indigo-200 flex items-start gap-2 pr-4">
+                    <span className="text-indigo-400 font-mono font-bold">Q.</span>
+                    {faq.q}
+                  </h4>
+                  <div className="text-slate-500 bg-slate-950 p-1.5 rounded-lg border border-slate-850 flex-shrink-0">
+                    {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                  </div>
+                </button>
+                
+                {/* Collapsible Answer */}
+                <div 
+                  className={`transition-all duration-300 ease-in-out overflow-hidden ${
+                    isOpen ? "max-h-60 border-t border-slate-850/60 opacity-100" : "max-h-0 opacity-0"
+                  }`}
+                >
+                  <p className="text-xs text-slate-400 leading-relaxed p-6 pl-10 font-medium bg-slate-950/20">
+                    {faq.a}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
     </div>
   );
 }

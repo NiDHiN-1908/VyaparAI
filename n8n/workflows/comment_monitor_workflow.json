@@ -19,7 +19,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "http://backend:8000/comment",
+        "url": "http://backend:8000/youtube/comments/inject",
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "{\n  \"video_id\": \"={{ $json.body.video_id }}\",\n  \"username\": \"={{ $json.body.username }}\",\n  \"comment_text\": \"={{ $json.body.comment_text }}\"\n}",
@@ -37,10 +37,11 @@
     {
       "parameters": {
         "conditions": {
-          "boolean": [
+          "string": [
             {
-              "value1": "={{ $json.lead_created }}",
-              "value2": true
+              "value1": "={{ $json.data.comment.intent }}",
+              "operation": "equal",
+              "value2": "HIGH_INTENT"
             }
           ]
         }
@@ -69,7 +70,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "{\n  \"to\": \"owner_phone_number\",\n  \"type\": \"text\",\n  \"text\": {\n    \"body\": \"VyaparAI Alert! 🔥 New HOT lead detected: @{{ $json.lead.username }} spoke in {{ $json.lead.language }} expressing interest in your product! Reply to initiate SalesAgent loop.\"\n  }\n}",
+        "jsonBody": "{\n  \"to\": \"owner_phone_number\",\n  \"type\": \"text\",\n  \"text\": {\n    \"body\": \"VyaparAI Alert! 🔥 New HOT lead detected: @{{ $json.data.comment.username }} just asked about your product! They wrote: '{{ $json.data.comment.text }}'. Reply from Dashboard to initiate SalesAgent loop or let AI handle it!\"\n  }\n}",
         "options": {}
       },
       "id": "owner-notification",

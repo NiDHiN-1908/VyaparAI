@@ -1,0 +1,57 @@
+{
+  "name": "VyaparAI YouTube Publisher Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "youtube-publish-webhook",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Publish Video Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://backend:8000/publish",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"video_id\": \"={{ $json.body.video_id }}\"\n}",
+        "options": {}
+      },
+      "id": "backend-publish-post",
+      "name": "Publish to YouTube",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        480,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Publish Video Webhook": {
+      "main": [
+        [
+          {
+            "node": "Publish to YouTube",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {},
+  "staticData": {},
+  "meta": {
+    "templateId": ""
+  },
+  "pinData": {}
+}

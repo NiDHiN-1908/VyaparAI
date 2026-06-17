@@ -2,9 +2,11 @@
 import logging
 import json
 from typing import TypedDict, List, Dict, Any
+# pyrefly: ignore [missing-import]
 from langgraph.graph import StateGraph, END
 from backend.agents.content_agent import get_ollama_llm
 from backend.services.supabase_service import supabase_svc
+from backend.services.rag_service import rag_svc
 
 logger = logging.getLogger("vyaparai.langgraph.sales_workflow")
 
@@ -73,12 +75,22 @@ def qa_loop_node(state: SalesState) -> SalesState:
     prod_price = product.get("price", 999.00) if product else 999.00
 
     try:
+        # Retrieve context from RAG Service
+        rag_context = rag_svc.retrieve(state["user_message"])
+        
         llm = get_ollama_llm()
         history = format_history(state["chat_history"])
+        
         prompt = (
             f"You are a sales assistant helping a customer with {prod_name}. "
             f"Price: Rs. {prod_price}. "
             f"Previous Chat History:\n{history}\n"
+        )
+        
+        if rag_context:
+            prompt += f"\nCOMPANY KNOWLEDGE BASE (Use this to answer the customer if relevant):\n{rag_context}\n\n"
+            
+        prompt += (
             f"Customer Message: \"{state['user_message']}\"\n\n"
             "Formulate a warm, helpful response answering their objection or query. "
             "Encourage them to buy and ask if they are ready to purchase and provide their shipping address."

@@ -1,12 +1,25 @@
 # backend/routers/sales.py
 import logging
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, UploadFile, File
 from backend.models.schemas import ChatRequest, PaymentRequest
 from backend.services.supabase_service import supabase_svc
+from backend.services.rag_service import rag_svc
 from backend.langgraph.sales_workflow import run_sales_chat
 
 logger = logging.getLogger("vyaparai.routers.sales")
 router = APIRouter(prefix="", tags=["LangGraph AI Sales Agent"])
+
+@router.post("/knowledge/upload")
+async def upload_knowledge(file: UploadFile = File(...)):
+    logger.info(f"Uploading knowledge file: {file.filename}")
+    try:
+        content = await file.read()
+        text = content.decode("utf-8")
+        chunks_added = rag_svc.ingest_text(text, source=file.filename)
+        return {"status": "success", "chunks_added": chunks_added}
+    except Exception as e:
+        logger.error(f"Error uploading knowledge base: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/chat")
 async def chat_sales_agent(payload: ChatRequest):

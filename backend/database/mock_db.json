@@ -1,0 +1,2252 @@
+{
+  "businesses": [
+    {
+      "name": "Kochi Spice Farm",
+      "location": "Kochi, Kerala",
+      "contact": "+91 7306796590",
+      "industry": "Agriculture",
+      "id": "66ce1957-99f6-43b6-8dae-9952201b1115",
+      "created_at": "2026-06-16T16:04:08.880602"
+    },
+    {
+      "name": "Kerala Gold Coconut Oils",
+      "location": "Kollam, Kerala, India",
+      "contact": "+91 9744506064",
+      "industry": "Food Processing & Edible Oils Manufacturing",
+      "id": "ed1b95dd-698c-492a-8e1b-8a0fd90a1b05",
+      "created_at": "2026-06-16T23:26:15.462230"
+    },
+    {
+      "name": "Malabar Coco Naturals",
+      "location": "Alappuzha, Kerala",
+      "contact": "+91 7306796590",
+      "industry": "Food & Personal Care Industry",
+      "id": "519e5910-3f07-4be9-b37c-1cf159136b12",
+      "created_at": "2026-06-17T00:08:51.221692"
+    }
+  ],
+  "products": [
+    {
+      "business_id": "66ce1957-99f6-43b6-8dae-9952201b1115",
+      "name": "Organic Cardamom",
+      "description": "Premium 8mm bold green cardamom pods, direct from Munnar hills.",
+      "price": 350.0,
+      "images": [
+        "/static/media/prod_eb2705d428d74da489cdff6685567b1a.png"
+      ],
+      "id": "b43766b9-49ec-4c71-935d-03abdd881452",
+      "created_at": "2026-06-16T16:04:08.909216"
+    },
+    {
+      "business_id": "ed1b95dd-698c-492a-8e1b-8a0fd90a1b05",
+      "name": "Kerala Gold Virgin Coconut Oil",
+      "description": "Premium cold-pressed virgin coconut oil extracted from fresh Kerala coconuts. No chemicals, preservatives, or artificial additives. Suitable for cooking, hair care, skincare, and wellness applications. Rich in natural aroma and medium-chain triglycerides (MCTs). Packaged in food-grade bottles with quality assurance.",
+      "price": 280.0,
+      "images": [
+        "/static/media/prod_f7d32e8614454d43a418dd658f0dfcea.png",
+        "/static/media/prod_b7bf71735b0841c29101404b57c89f02.png",
+        "/static/media/prod_61c269887ee940b1bd01ec82a8185557.png"
+      ],
+      "id": "7497a2e6-7192-440f-a3cb-53eaf60e1581",
+      "created_at": "2026-06-16T23:26:15.490411"
+    },
+    {
+      "business_id": "519e5910-3f07-4be9-b37c-1cf159136b12",
+      "name": "PureGold Cold-Pressed Coconut Oil",
+      "description": "PureGold Cold-Pressed Coconut Oil is made from freshly harvested coconuts sourced from the coastal farms of Kerala. Using a traditional cold-press extraction method, we preserve the natural aroma, nutrients, and purity of the oil without using chemicals or heat processing.\n\n\u2728 Key Features\n100% pure and natural\nCold-pressed for maximum nutrition\nNo chemicals, preservatives, or additives\nRich in healthy MCTs and Vitamin E\nSuitable for cooking, hair care, and skin care\n\ud83c\udf3f Why Customers Love It\n\nEnhances the flavor of traditional dishes.\n\nNourishes hair and promotes natural shine.\n\nMoisturizes and softens skin naturally.\n\nMade with sustainably sourced coconuts from Kerala.",
+      "price": 399.0,
+      "images": [
+        "/static/media/prod_82a7cdaa8e0f4cf0953ba63b3c721b1a.png",
+        "/static/media/prod_ed9d823e40034d82b786e58b35cb0e62.png",
+        "/static/media/prod_62a58ca63ddc429ba85e4df8bea1c935.png"
+      ],
+      "id": "749fe1ee-a8e6-4793-b5f6-e02e71dd8b27",
+      "created_at": "2026-06-17T00:08:51.248566"
+    }
+  ],
+  "keywords": [
+    {
+      "product_id": "7497a2e6-7192-440f-a3cb-53eaf60e1581",
+      "primary_keywords": [
+        "Kerala Gold Virgin Coconut Oil online",
+        "buy Kerala Gold Virgin Coconut Oil"
+      ],
+      "secondary_keywords": [
+        "handmade Kerala Gold Virgin Coconut Oil",
+        "traditional Kerala Gold Virgin Coconut Oil"
+      ],
+      "long_tail_keywords": [
+        "best Kerala Gold Virgin Coconut Oil in India",
+        "order organic Kerala Gold Virgin Coconut Oil online"
+      ],
+      "intent_keywords": [
+        "buy Kerala Gold Virgin Coconut Oil",
+        "order Kerala Gold Virgin Coconut Oil price"
+      ],
+      "regional_keywords": [
+        "Kerala Gold Virgin Coconut Oil south india",
+        "Kerala Gold Virgin Coconut Oil kerala"
+      ],
+      "id": "51378a8e-3643-40e8-aa49-cc918ae09c0a",
+      "created_at": "2026-06-16T23:33:13.978289"
+    },
+    {
+      "product_id": "749fe1ee-a8e6-4793-b5f6-e02e71dd8b27",
+      "primary_keywords": [
+        "PureGold Cold-Pressed Coconut Oil online",
+        "buy PureGold Cold-Pressed Coconut Oil"
+      ],
+      "secondary_keywords": [
+        "handmade PureGold Cold-Pressed Coconut Oil",
+        "traditional PureGold Cold-Pressed Coconut Oil"
+      ],
+      "long_tail_keywords": [
+        "best PureGold Cold-Pressed Coconut Oil in India",
+        "order organic PureGold Cold-Pressed Coconut Oil online"
+      ],
+      "intent_keywords": [
+        "buy PureGold Cold-Pressed Coconut Oil",
+        "order PureGold Cold-Pressed Coconut Oil price"
+      ],
+      "regional_keywords": [
+        "PureGold Cold-Pressed Coconut Oil south india",
+        "PureGold Cold-Pressed Coconut Oil kerala"
+      ],
+      "id": "f8b63d1b-6862-439f-b373-4d97d036335a",
+      "created_at": "2026-06-17T00:14:25.470738"
+    }
+  ],
+  "scripts": [
+    {
+      "product_id": "b43766b9-49ec-4c71-935d-03abdd881452",
+      "title": "Festive Spice Campaign",
+      "hook": "Is your tea missing that authentic kerala aroma? \u2615",
+      "script_text": "Are you looking for the best organic green elaichi? Introducing our premium Kochi Spice Farm cardamom. Sourced directly from local farms in Idukki. It is high quality, chemical free, and vacuum sealed. Order yours today!",
+      "scene_breakdown": [
+        {
+          "scene": 1,
+          "instruction": "Show organic cardamom pods",
+          "voiceover": "Are you looking for the best organic green elaichi?"
+        }
+      ],
+      "caption_timeline": [
+        {
+          "start": 0.0,
+          "end": 5.0,
+          "text": "Are you looking for the best organic green elaichi?"
+        }
+      ],
+      "thumbnail_text": "Pure Elaichi!",
+      "seo_description": "Buy premium quality organic cardamom online with nationwide shipping.",
+      "hashtags": [
+        "Cardamom",
+        "LocalSpices",
+        "KochiFarm"
+      ],
+      "version": 1,
+      "status": "draft",
+      "id": "c05f2e41-c7c7-4800-ac21-afb96010a413",
+      "created_at": "2026-06-16T16:04:08.934832"
+    },
+    {
+      "product_id": "7497a2e6-7192-440f-a3cb-53eaf60e1581",
+      "title": "Viral Kerala Gold Virgin Coconut Oil Campaign",
+      "hook": "Are you looking for the best Kerala Gold Virgin Coconut Oil? Look no further!",
+      "script_text": "Introducing our premium Kerala Gold Virgin Coconut Oil. Sourced directly from local farms. It is high quality, chemical free, and affordable. Order yours today!",
+      "scene_breakdown": [
+        {
+          "scene": 1,
+          "instruction": "Show product image",
+          "voiceover": "Looking for the best?"
+        },
+        {
+          "scene": 2,
+          "instruction": "Show packaging",
+          "voiceover": "Sourced directly from Munnar hills."
+        }
+      ],
+      "caption_timeline": [
+        {
+          "start": 0.0,
+          "end": 2.0,
+          "text": "Looking for the best?"
+        },
+        {
+          "start": 2.0,
+          "end": 5.0,
+          "text": "Sourced directly from hills."
+        }
+      ],
+      "thumbnail_text": "Authentic Kerala Gold Virgin Coconut Oil!",
+      "seo_description": "Buy high quality Kerala Gold Virgin Coconut Oil online. Cash on delivery available.",
+      "hashtags": [
+        "KeralaGoldVirginCoconutOil",
+        "LocalVyapar",
+        "IndianMade"
+      ],
+      "version": 1,
+      "status": "draft",
+      "id": "9b6c1016-0a5d-4e44-8bd2-76807bbca282",
+      "created_at": "2026-06-16T23:33:13.994923"
+    },
+    {
+      "product_id": "749fe1ee-a8e6-4793-b5f6-e02e71dd8b27",
+      "title": "Why everyone is switching to our PureGold Cold-Pressed Coconut Oil today! \ud83d\udd25",
+      "hook": "Is your family using stale, low-grade products? \u2615 Upgrade to our premium PureGold Cold-Pressed Coconut Oil sourced straight from Idukki hills!",
+      "script_text": "Is your family using stale, low-grade products? \u2615 Upgrade to our premium PureGold Cold-Pressed Coconut Oil sourced straight from Idukki hills! Experience the natural goodness of pure PureGold Cold-Pressed Coconut Oil. Cold-pressed and processed traditionally to maintain rich aroma and beneficial compounds. Reply now to get an exclusive 10% discount and free shipping on your first pack!",
+      "scene_breakdown": [
+        {
+          "scene": 1,
+          "instruction": "Show a high-quality visual of the fresh PureGold Cold-Pressed Coconut Oil in a beautiful rustic setting.",
+          "voiceover": "Is your family using stale, low-grade products? \u2615 Upgrade to our premium PureGold Cold-Pressed Coconut Oil sourced straight from Idukki hills!"
+        },
+        {
+          "scene": 2,
+          "instruction": "Show product packaging with close-up highlights of the organic labels and fresh seal.",
+          "voiceover": "Experience the natural goodness of pure PureGold Cold-Pressed Coconut Oil. Cold-pressed and processed traditionally to maintain rich aroma and beneficial compounds."
+        },
+        {
+          "scene": 3,
+          "instruction": "Show a clean call-to-action screen with order instructions and a discount badge.",
+          "voiceover": "Reply now to get an exclusive 10% discount and free shipping on your first pack!"
+        }
+      ],
+      "caption_timeline": [
+        {
+          "start": 0.0,
+          "end": 7.0,
+          "text": "Is your family using stale, low-grade products? \u2615 Upgrade to our premium PureGold Cold-Pressed Coconut Oil sourced straight from Idukki hills!"
+        },
+        {
+          "start": 7.0,
+          "end": 14.0,
+          "text": "Experience the natural goodness of pure PureGold Cold-Pressed Coconut Oil. Cold-pressed and processed traditionally to maintain rich aroma and beneficial compounds."
+        },
+        {
+          "start": 14.0,
+          "end": 20.0,
+          "text": "Reply now to get an exclusive 10% discount and free shipping on your first pack!"
+        }
+      ],
+      "thumbnail_text": "Double Quality!",
+      "seo_description": "Discover the health benefits of 100% natural PureGold Cold-Pressed Coconut Oil. Sourced sustainably, packed with fresh-lock seal.",
+      "hashtags": [
+        "PureGoldColdPressedCoconutOil",
+        "LocalVyapar",
+        "PremiumQuality",
+        "IndianMade"
+      ],
+      "version": 1,
+      "status": "draft",
+      "id": "e763dc6b-d22b-44ed-a923-b3bfd6174c30",
+      "created_at": "2026-06-17T00:14:25.489268"
+    }
+  ],
+  "thumbnails": [
+    {
+      "script_id": "c05f2e41-c7c7-4800-ac21-afb96010a413",
+      "layout": "Product centered with bold yellow text overlay",
+      "text": "Pure Elaichi!",
+      "prompt": "Cardamom pods overflowing from a clay bowl, dark rustic background",
+      "image_url": null,
+      "id": "472c406d-debb-4352-91da-40d8e2b9f167",
+      "created_at": "2026-06-16T16:04:08.954499"
+    },
+    {
+      "script_id": "9b6c1016-0a5d-4e44-8bd2-76807bbca282",
+      "layout": "Product centered with bold yellow text overlay on dark slate background",
+      "text": "Pure Kerala Gold Virgin Coconut Oil!",
+      "prompt": "Close-up photo of Kerala Gold Virgin Coconut Oil on a wooden table, soft warm lighting, 8k resolution",
+      "image_url": "/static/media/thumbnail_v2_2b9836cf.png",
+      "id": "386b7fd4-4c9d-4f7d-884e-0b80241d69c1",
+      "created_at": "2026-06-16T23:33:14.007599"
+    },
+    {
+      "script_id": "e763dc6b-d22b-44ed-a923-b3bfd6174c30",
+      "layout": "Premium packaging showcase with clean minimalist typography",
+      "text": "Double Quality!",
+      "prompt": "Close-up photo of PureGold Cold-Pressed Coconut Oil on a wooden table, soft warm lighting, 8k resolution",
+      "image_url": "/static/media/thumbnail_v2_7401adb1.png",
+      "id": "c6c1f554-02e5-47fc-a0f4-96185b0b8379",
+      "created_at": "2026-06-17T00:14:25.507083"
+    }
+  ],
+  "translations": [
+    {
+      "script_id": "c05f2e41-c7c7-4800-ac21-afb96010a413",
+      "language": "English",
+      "youtube_script": "Are you looking for the best organic green elaichi? Sourced directly from local farms. It is high quality, chemical free, and vacuum sealed. Order yours today!",
+      "reel_script": "Are you looking for the best organic green elaichi? Sourced directly from local farms. It is high quality, chemical free, and vacuum sealed. Order yours today!",
+      "whatsapp_post": "Are you looking for the best organic green elaichi? Sourced directly from local farms. It is high quality, chemical free, and vacuum sealed. Order yours today!",
+      "google_business_post": "Are you looking for the best organic green elaichi? Sourced directly from local farms. It is high quality, chemical free, and vacuum sealed. Order yours today!",
+      "id": "4b60101f-ab3c-42d3-878a-ac5b6c7050b2",
+      "created_at": "2026-06-16T16:04:08.970089"
+    },
+    {
+      "script_id": "c05f2e41-c7c7-4800-ac21-afb96010a413",
+      "language": "Hindi",
+      "youtube_script": "\u0915\u094d\u092f\u093e \u0906\u092a\u0915\u0940 \u091a\u093e\u092f \u092e\u0947\u0902 \u0915\u0947\u0930\u0932 \u0915\u0940 \u0905\u0938\u0932\u0940 \u0916\u0941\u0936\u092c\u0942 \u0917\u093e\u092f\u092c \u0939\u0948? \u0939\u092e\u093e\u0930\u0940 \u092a\u094d\u0930\u0940\u092e\u093f\u092f\u092e \u0907\u0932\u093e\u092f\u091a\u0940 \u0938\u0940\u0927\u0947 \u0907\u0921\u0941\u0915\u094d\u0915\u0940 \u0915\u0947 \u0916\u0947\u0924\u094b\u0902 \u0938\u0947 \u0932\u093e\u0908 \u0917\u0908 \u0939\u0948\u0964",
+      "reel_script": "\u0915\u094d\u092f\u093e \u0906\u092a\u0915\u0940 \u091a\u093e\u092f \u092e\u0947\u0902 \u0915\u0947\u0930\u0932 \u0915\u0940 \u0905\u0938\u0932\u0940 \u0916\u0941\u0936\u092c\u0942 \u0917\u093e\u092f\u092c \u0939\u0948? \u0939\u092e\u093e\u0930\u0940 \u092a\u094d\u0930\u0940\u092e\u093f\u092f\u092e \u0907\u0932\u093e\u092f\u091a\u0940 \u0938\u0940\u0927\u0947 \u0907\u0921\u0941\u0915\u094d\u0915\u0940 \u0915\u0947 \u0916\u0947\u0924\u094b\u0902 \u0938\u0947 \u0932\u093e\u0908 \u0917\u0908 \u0939\u0948\u0964",
+      "whatsapp_post": "\u0915\u094d\u092f\u093e \u0906\u092a\u0915\u0940 \u091a\u093e\u092f \u092e\u0947\u0902 \u0915\u0947\u0930\u0932 \u0915\u0940 \u0905\u0938\u0932\u0940 \u0916\u0941\u0936\u092c\u0942 \u0917\u093e\u092f\u092c \u0939\u0948? \u0939\u092e\u093e\u0930\u0940 \u092a\u094d\u0930\u0940\u092e\u093f\u092f\u092e \u0907\u0932\u093e\u092f\u091a\u0940 \u0938\u0940\u0927\u0947 \u0907\u0921\u0941\u0915\u094d\u0915\u0940 \u0915\u0947 \u0916\u0947\u0924\u094b\u0902 \u0938\u0947 \u0932\u093e\u0908 \u0917\u0908 \u0939\u0948\u0964",
+      "google_business_post": "\u0915\u094d\u092f\u093e \u0906\u092a\u0915\u0940 \u091a\u093e\u092f \u092e\u0947\u0902 \u0915\u0947\u0930\u0932 \u0915\u0940 \u0905\u0938\u0932\u0940 \u0916\u0941\u0936\u092c\u0942 \u0917\u093e\u092f\u092c \u0939\u0948? \u0939\u092e\u093e\u0930\u0940 \u092a\u094d\u0930\u0940\u092e\u093f\u092f\u092e \u0907\u0932\u093e\u092f\u091a\u0940 \u0938\u0940\u0927\u0947 \u0907\u0921\u0941\u0915\u094d\u0915\u0940 \u0915\u0947 \u0916\u0947\u0924\u094b\u0902 \u0938\u0947 \u0932\u093e\u0908 \u0917\u0908 \u0939\u0948\u0964",
+      "id": "efa5dce3-196d-4201-a6d3-6b14a52a15d4",
+      "created_at": "2026-06-16T16:04:09.060422"
+    },
+    {
+      "script_id": "c05f2e41-c7c7-4800-ac21-afb96010a413",
+      "language": "Tamil",
+      "youtube_script": "\u0b89\u0b99\u0bcd\u0b95\u0bb3\u0bcd \u0ba4\u0bc7\u0ba8\u0bc0\u0bb0\u0bbf\u0bb2\u0bcd \u0b95\u0bc7\u0bb0\u0bb3\u0bbe \u0b8f\u0bb2\u0b95\u0bcd\u0b95\u0bbe\u0baf\u0bbf\u0ba9\u0bcd \u0ba8\u0bb1\u0bc1\u0bae\u0ba3\u0bae\u0bcd \u0b87\u0bb2\u0bcd\u0bb2\u0bc8\u0baf\u0bbe? \u0b8e\u0b99\u0bcd\u0b95\u0bb3\u0ba4\u0bc1 \u0b8f\u0bb2\u0b95\u0bcd\u0b95\u0bbe\u0baf\u0bcd \u0b87\u0b9f\u0bc1\u0b95\u0bcd\u0b95\u0bbf\u0baf\u0bbf\u0bb2\u0bcd \u0b85\u0bb1\u0bc1\u0bb5\u0b9f\u0bc8 \u0b9a\u0bc6\u0baf\u0bcd\u0baf\u0baa\u0bcd\u0baa\u0b9f\u0bc1\u0b95\u0bbf\u0bb1\u0ba4\u0bc1.",
+      "reel_script": "\u0b89\u0b99\u0bcd\u0b95\u0bb3\u0bcd \u0ba4\u0bc7\u0ba8\u0bc0\u0bb0\u0bbf\u0bb2\u0bcd \u0b95\u0bc7\u0bb0\u0bb3\u0bbe \u0b8f\u0bb2\u0b95\u0bcd\u0b95\u0bbe\u0baf\u0bbf\u0ba9\u0bcd \u0ba8\u0bb1\u0bc1\u0bae\u0ba3\u0bae\u0bcd \u0b87\u0bb2\u0bcd\u0bb2\u0bc8\u0baf\u0bbe? \u0b8e\u0b99\u0bcd\u0b95\u0bb3\u0ba4\u0bc1 \u0b8f\u0bb2\u0b95\u0bcd\u0b95\u0bbe\u0baf\u0bcd \u0b87\u0b9f\u0bc1\u0b95\u0bcd\u0b95\u0bbf\u0baf\u0bbf\u0bb2\u0bcd \u0b85\u0bb1\u0bc1\u0bb5\u0b9f\u0bc8 \u0b9a\u0bc6\u0baf\u0bcd\u0baf\u0baa\u0bcd\u0baa\u0b9f\u0bc1\u0b95\u0bbf\u0bb1\u0ba4\u0bc1.",
+      "whatsapp_post": "\u0b89\u0b99\u0bcd\u0b95\u0bb3\u0bcd \u0ba4\u0bc7\u0ba8\u0bc0\u0bb0\u0bbf\u0bb2\u0bcd \u0b95\u0bc7\u0bb0\u0bb3\u0bbe \u0b8f\u0bb2\u0b95\u0bcd\u0b95\u0bbe\u0baf\u0bbf\u0ba9\u0bcd \u0ba8\u0bb1\u0bc1\u0bae\u0ba3\u0bae\u0bcd \u0b87\u0bb2\u0bcd\u0bb2\u0bc8\u0baf\u0bbe? \u0b8e\u0b99\u0bcd\u0b95\u0bb3\u0ba4\u0bc1 \u0b8f\u0bb2\u0b95\u0bcd\u0b95\u0bbe\u0baf\u0bcd \u0b87\u0b9f\u0bc1\u0b95\u0bcd\u0b95\u0bbf\u0baf\u0bbf\u0bb2\u0bcd \u0b85\u0bb1\u0bc1\u0bb5\u0b9f\u0bc8 \u0b9a\u0bc6\u0baf\u0bcd\u0baf\u0baa\u0bcd\u0baa\u0b9f\u0bc1\u0b95\u0bbf\u0bb1\u0ba4\u0bc1.",
+      "google_business_post": "\u0b89\u0b99\u0bcd\u0b95\u0bb3\u0bcd \u0ba4\u0bc7\u0ba8\u0bc0\u0bb0\u0bbf\u0bb2\u0bcd \u0b95\u0bc7\u0bb0\u0bb3\u0bbe \u0b8f\u0bb2\u0b95\u0bcd\u0b95\u0bbe\u0baf\u0bbf\u0ba9\u0bcd \u0ba8\u0bb1\u0bc1\u0bae\u0ba3\u0bae\u0bcd \u0b87\u0bb2\u0bcd\u0bb2\u0bc8\u0baf\u0bbe? \u0b8e\u0b99\u0bcd\u0b95\u0bb3\u0ba4\u0bc1 \u0b8f\u0bb2\u0b95\u0bcd\u0b95\u0bbe\u0baf\u0bcd \u0b87\u0b9f\u0bc1\u0b95\u0bcd\u0b95\u0bbf\u0baf\u0bbf\u0bb2\u0bcd \u0b85\u0bb1\u0bc1\u0bb5\u0b9f\u0bc8 \u0b9a\u0bc6\u0baf\u0bcd\u0baf\u0baa\u0bcd\u0baa\u0b9f\u0bc1\u0b95\u0bbf\u0bb1\u0ba4\u0bc1.",
+      "id": "e5a96805-0f4c-406f-8bc1-2acc8894d10a",
+      "created_at": "2026-06-16T16:04:09.121263"
+    },
+    {
+      "script_id": "c05f2e41-c7c7-4800-ac21-afb96010a413",
+      "language": "Telugu",
+      "youtube_script": "\u0c2e\u0c40 \u0c1f\u0c40\u0c32\u0c4b \u0c15\u0c47\u0c30\u0c33 \u0c2f\u0c3e\u0c32\u0c15\u0c41\u0c32 \u0c38\u0c41\u0c35\u0c3e\u0c38\u0c28 \u0c32\u0c4b\u0c2a\u0c3f\u0c02\u0c1a\u0c3f\u0c02\u0c26\u0c3e? \u0c2e\u0c3e \u0c06\u0c30\u0c4d\u0c17\u0c3e\u0c28\u0c3f\u0c15\u0c4d \u0c2f\u0c3e\u0c32\u0c15\u0c41\u0c32\u0c41 \u0c15\u0c4a\u0c02\u0c21\u0c32 \u0c28\u0c41\u0c02\u0c21\u0c3f \u0c38\u0c47\u0c15\u0c30\u0c3f\u0c02\u0c1a\u0c2c\u0c21\u0c4d\u0c21\u0c3e\u0c2f\u0c3f.",
+      "reel_script": "\u0c2e\u0c40 \u0c1f\u0c40\u0c32\u0c4b \u0c15\u0c47\u0c30\u0c33 \u0c2f\u0c3e\u0c32\u0c15\u0c41\u0c32 \u0c38\u0c41\u0c35\u0c3e\u0c38\u0c28 \u0c32\u0c4b\u0c2a\u0c3f\u0c02\u0c1a\u0c3f\u0c02\u0c26\u0c3e? \u0c2e\u0c3e \u0c06\u0c30\u0c4d\u0c17\u0c3e\u0c28\u0c3f\u0c15\u0c4d \u0c2f\u0c3e\u0c32\u0c15\u0c41\u0c32\u0c41 \u0c15\u0c4a\u0c02\u0c21\u0c32 \u0c28\u0c41\u0c02\u0c21\u0c3f \u0c38\u0c47\u0c15\u0c30\u0c3f\u0c02\u0c1a\u0c2c\u0c21\u0c4d\u0c21\u0c3e\u0c2f\u0c3f.",
+      "whatsapp_post": "\u0c2e\u0c40 \u0c1f\u0c40\u0c32\u0c4b \u0c15\u0c47\u0c30\u0c33 \u0c2f\u0c3e\u0c32\u0c15\u0c41\u0c32 \u0c38\u0c41\u0c35\u0c3e\u0c38\u0c28 \u0c32\u0c4b\u0c2a\u0c3f\u0c02\u0c1a\u0c3f\u0c02\u0c26\u0c3e? \u0c2e\u0c3e \u0c06\u0c30\u0c4d\u0c17\u0c3e\u0c28\u0c3f\u0c15\u0c4d \u0c2f\u0c3e\u0c32\u0c15\u0c41\u0c32\u0c41 \u0c15\u0c4a\u0c02\u0c21\u0c32 \u0c28\u0c41\u0c02\u0c21\u0c3f \u0c38\u0c47\u0c15\u0c30\u0c3f\u0c02\u0c1a\u0c2c\u0c21\u0c4d\u0c21\u0c3e\u0c2f\u0c3f.",
+      "google_business_post": "\u0c2e\u0c40 \u0c1f\u0c40\u0c32\u0c4b \u0c15\u0c47\u0c30\u0c33 \u0c2f\u0c3e\u0c32\u0c15\u0c41\u0c32 \u0c38\u0c41\u0c35\u0c3e\u0c38\u0c28 \u0c32\u0c4b\u0c2a\u0c3f\u0c02\u0c1a\u0c3f\u0c02\u0c26\u0c3e? \u0c2e\u0c3e \u0c06\u0c30\u0c4d\u0c17\u0c3e\u0c28\u0c3f\u0c15\u0c4d \u0c2f\u0c3e\u0c32\u0c15\u0c41\u0c32\u0c41 \u0c15\u0c4a\u0c02\u0c21\u0c32 \u0c28\u0c41\u0c02\u0c21\u0c3f \u0c38\u0c47\u0c15\u0c30\u0c3f\u0c02\u0c1a\u0c2c\u0c21\u0c4d\u0c21\u0c3e\u0c2f\u0c3f.",
+      "id": "a947319e-c319-44dd-8eb6-c520517f3faa",
+      "created_at": "2026-06-16T16:04:09.170340"
+    },
+    {
+      "script_id": "c05f2e41-c7c7-4800-ac21-afb96010a413",
+      "language": "Malayalam",
+      "youtube_script": "\u0d28\u0d3f\u0d19\u0d4d\u0d19\u0d33\u0d41\u0d1f\u0d46 \u0d1a\u0d3e\u0d2f\u0d2f\u0d3f\u0d7d \u0d2f\u0d25\u0d3e\u0d7c\u0d24\u0d4d\u0d25 \u0d15\u0d47\u0d30\u0d33 \u0d0f\u0d32\u0d15\u0d4d\u0d15\u0d3e\u0d2f\u0d41\u0d1f\u0d46 \u0d2e\u0d23\u0d02 \u0d15\u0d41\u0d31\u0d35\u0d3e\u0d23\u0d4b? \u0d07\u0d1f\u0d41\u0d15\u0d4d\u0d15\u0d3f\u0d2f\u0d3f\u0d32\u0d46 \u0d24\u0d4b\u0d1f\u0d4d\u0d1f\u0d19\u0d4d\u0d19\u0d33\u0d3f\u0d7d \u0d28\u0d3f\u0d28\u0d4d\u0d28\u0d4d \u0d28\u0d47\u0d30\u0d3f\u0d1f\u0d4d\u0d1f\u0d4d \u0d36\u0d47\u0d16\u0d30\u0d3f\u0d1a\u0d4d\u0d1a \u0d0f\u0d32\u0d15\u0d4d\u0d15\u0d3e\u0d2f.",
+      "reel_script": "\u0d28\u0d3f\u0d19\u0d4d\u0d19\u0d33\u0d41\u0d1f\u0d46 \u0d1a\u0d3e\u0d2f\u0d2f\u0d3f\u0d7d \u0d2f\u0d25\u0d3e\u0d7c\u0d24\u0d4d\u0d25 \u0d15\u0d47\u0d30\u0d33 \u0d0f\u0d32\u0d15\u0d4d\u0d15\u0d3e\u0d2f\u0d41\u0d1f\u0d46 \u0d2e\u0d23\u0d02 \u0d15\u0d41\u0d31\u0d35\u0d3e\u0d23\u0d4b? \u0d07\u0d1f\u0d41\u0d15\u0d4d\u0d15\u0d3f\u0d2f\u0d3f\u0d32\u0d46 \u0d24\u0d4b\u0d1f\u0d4d\u0d1f\u0d19\u0d4d\u0d19\u0d33\u0d3f\u0d7d \u0d28\u0d3f\u0d28\u0d4d\u0d28\u0d4d \u0d28\u0d47\u0d30\u0d3f\u0d1f\u0d4d\u0d1f\u0d4d \u0d36\u0d47\u0d16\u0d30\u0d3f\u0d1a\u0d4d\u0d1a \u0d0f\u0d32\u0d15\u0d4d\u0d15\u0d3e\u0d2f.",
+      "whatsapp_post": "\u0d28\u0d3f\u0d19\u0d4d\u0d19\u0d33\u0d41\u0d1f\u0d46 \u0d1a\u0d3e\u0d2f\u0d2f\u0d3f\u0d7d \u0d2f\u0d25\u0d3e\u0d7c\u0d24\u0d4d\u0d25 \u0d15\u0d47\u0d30\u0d33 \u0d0f\u0d32\u0d15\u0d4d\u0d15\u0d3e\u0d2f\u0d41\u0d1f\u0d46 \u0d2e\u0d23\u0d02 \u0d15\u0d41\u0d31\u0d35\u0d3e\u0d23\u0d4b? \u0d07\u0d1f\u0d41\u0d15\u0d4d\u0d15\u0d3f\u0d2f\u0d3f\u0d32\u0d46 \u0d24\u0d4b\u0d1f\u0d4d\u0d1f\u0d19\u0d4d\u0d19\u0d33\u0d3f\u0d7d \u0d28\u0d3f\u0d28\u0d4d\u0d28\u0d4d \u0d28\u0d47\u0d30\u0d3f\u0d1f\u0d4d\u0d1f\u0d4d \u0d36\u0d47\u0d16\u0d30\u0d3f\u0d1a\u0d4d\u0d1a \u0d0f\u0d32\u0d15\u0d4d\u0d15\u0d3e\u0d2f.",
+      "google_business_post": "\u0d28\u0d3f\u0d19\u0d4d\u0d19\u0d33\u0d41\u0d1f\u0d46 \u0d1a\u0d3e\u0d2f\u0d2f\u0d3f\u0d7d \u0d2f\u0d25\u0d3e\u0d7c\u0d24\u0d4d\u0d25 \u0d15\u0d47\u0d30\u0d33 \u0d0f\u0d32\u0d15\u0d4d\u0d15\u0d3e\u0d2f\u0d41\u0d1f\u0d46 \u0d2e\u0d23\u0d02 \u0d15\u0d41\u0d31\u0d35\u0d3e\u0d23\u0d4b? \u0d07\u0d1f\u0d41\u0d15\u0d4d\u0d15\u0d3f\u0d2f\u0d3f\u0d32\u0d46 \u0d24\u0d4b\u0d1f\u0d4d\u0d1f\u0d19\u0d4d\u0d19\u0d33\u0d3f\u0d7d \u0d28\u0d3f\u0d28\u0d4d\u0d28\u0d4d \u0d28\u0d47\u0d30\u0d3f\u0d1f\u0d4d\u0d1f\u0d4d \u0d36\u0d47\u0d16\u0d30\u0d3f\u0d1a\u0d4d\u0d1a \u0d0f\u0d32\u0d15\u0d4d\u0d15\u0d3e\u0d2f.",
+      "id": "ff6e39ba-61d9-403f-9d4e-0f95a3347062",
+      "created_at": "2026-06-16T16:04:09.263316"
+    },
+    {
+      "script_id": "9b6c1016-0a5d-4e44-8bd2-76807bbca282",
+      "language": "English",
+      "youtube_script": "Introducing our premium Kerala Gold Virgin Coconut Oil. Sourced directly from local farms. It is high quality, chemical free, and affordable. Order yours today!",
+      "reel_script": "Introducing our premium Kerala Gold Virgin Coconut Oil. Sourced directly from local farms. It is high quality, chemical free, and affordable. Order yours today!",
+      "whatsapp_post": "Buy high quality Kerala Gold Virgin Coconut Oil online. Cash on delivery available.",
+      "google_business_post": "Viral Kerala Gold Virgin Coconut Oil Campaign",
+      "id": "bc5e9802-4906-4a76-bd5b-909a598014b7",
+      "created_at": "2026-06-16T23:33:14.023598"
+    },
+    {
+      "script_id": "9b6c1016-0a5d-4e44-8bd2-76807bbca282",
+      "language": "Hindi",
+      "youtube_script": "\u0928\u092e\u0938\u094d\u0924\u0947 \u0926\u094b\u0938\u094d\u0924\u094b\u0902! \u0915\u094d\u092f\u093e \u0906\u092a \u0905\u092a\u0928\u0947 \u0935\u094d\u092f\u0935\u0938\u093e\u092f \u0915\u094b \u092c\u0922\u093c\u093e\u0928\u093e \u091a\u093e\u0939\u0924\u0947 \u0939\u0948\u0902? \u0906\u091c \u0939\u092e \u0932\u0947\u0915\u0930 \u0906\u090f \u0939\u0948\u0902 \u090f\u0915 \u092c\u0947\u0939\u0924\u0930\u0940\u0928 \u0909\u0924\u094d\u092a\u093e\u0926 \u091c\u094b \u0906\u092a\u0915\u0947 \u0926\u0948\u0928\u093f\u0915 \u091c\u0940\u0935\u0928 \u0915\u094b \u0906\u0938\u093e\u0928 \u092c\u0928\u093e \u0926\u0947\u0917\u093e\u0964 \u092f\u0939 \u0909\u0924\u094d\u092a\u093e\u0926 \u092c\u0939\u0941\u0924 \u0939\u0940 \u0915\u093f\u092b\u093e\u092f\u0924\u0940 \u0914\u0930 \u0909\u091a\u094d\u091a \u0917\u0941\u0923\u0935\u0924\u094d\u0924\u093e \u0935\u093e\u0932\u093e \u0939\u0948\u0964 \u0905\u092d\u0940 \u0911\u0930\u094d\u0921\u0930 \u0915\u0930\u0928\u0947 \u0915\u0947 \u0932\u093f\u090f \u0932\u093f\u0902\u0915 \u092a\u0930 \u0915\u094d\u0932\u093f\u0915 \u0915\u0930\u0947\u0902!",
+      "reel_script": "\u0928\u092e\u0938\u094d\u0924\u0947 \u0926\u094b\u0938\u094d\u0924\u094b\u0902! \u0915\u094d\u092f\u093e \u0906\u092a \u0905\u092a\u0928\u0947 \u0935\u094d\u092f\u0935\u0938\u093e\u092f \u0915\u094b \u092c\u0922\u093c\u093e\u0928\u093e \u091a\u093e\u0939\u0924\u0947 \u0939\u0948\u0902? \u0906\u091c \u0939\u092e \u0932\u0947\u0915\u0930 \u0906\u090f \u0939\u0948\u0902 \u090f\u0915 \u092c\u0947\u0939\u0924\u0930\u0940\u0928 \u0909\u0924\u094d\u092a\u093e\u0926 \u091c\u094b \u0906\u092a\u0915\u0947 \u0926\u0948\u0928\u093f\u0915 \u091c\u0940\u0935\u0928 \u0915\u094b \u0906\u0938\u093e\u0928 \u092c\u0928\u093e \u0926\u0947\u0917\u093e\u0964 \u092f\u0939 \u0909\u0924\u094d\u092a\u093e\u0926 \u092c\u0939\u0941\u0924 \u0939\u0940 \u0915\u093f\u092b\u093e\u092f\u0924\u0940 \u0914\u0930 \u0909\u091a\u094d\u091a \u0917\u0941\u0923\u0935\u0924\u094d\u0924\u093e \u0935\u093e\u0932\u093e \u0939\u0948\u0964 \u0905\u092d\u0940 \u0911\u0930\u094d\u0921\u0930 \u0915\u0930\u0928\u0947 \u0915\u0947 \u0932\u093f\u090f \u0932\u093f\u0902\u0915 \u092a\u0930 \u0915\u094d\u0932\u093f\u0915 \u0915\u0930\u0947\u0902!",
+      "whatsapp_post": "\u0928\u092e\u0938\u094d\u0924\u0947 \u0926\u094b\u0938\u094d\u0924\u094b\u0902! \u0915\u094d\u092f\u093e \u0906\u092a \u0905\u092a\u0928\u0947 \u0935\u094d\u092f\u0935\u0938\u093e\u092f \u0915\u094b \u092c\u0922\u093c\u093e\u0928\u093e \u091a\u093e\u0939\u0924\u0947 \u0939\u0948\u0902? \u0906\u091c \u0939\u092e \u0932\u0947\u0915\u0930 \u0906\u090f \u0939\u0948\u0902 \u090f\u0915 \u092c\u0947\u0939\u0924\u0930\u0940\u0928 \u0909\u0924\u094d\u092a\u093e\u0926 \u091c\u094b \u0906\u092a\u0915\u0947 \u0926\u0948\u0928\u093f\u0915 \u091c\u0940\u0935\u0928 \u0915\u094b \u0906\u0938\u093e\u0928 \u092c\u0928\u093e \u0926\u0947\u0917\u093e\u0964 \u092f\u0939 \u0909\u0924\u094d\u092a\u093e\u0926 \u092c\u0939\u0941\u0924 \u0939\u0940 \u0915\u093f\u092b\u093e\u092f\u0924\u0940 \u0914\u0930 \u0909\u091a\u094d\u091a \u0917\u0941\u0923\u0935\u0924\u094d\u0924\u093e \u0935\u093e\u0932\u093e \u0939\u0948\u0964 \u0905\u092d\u0940 \u0911\u0930\u094d\u0921\u0930 \u0915\u0930\u0928\u0947 \u0915\u0947 \u0932\u093f\u090f \u0932\u093f\u0902\u0915 \u092a\u0930 \u0915\u094d\u0932\u093f\u0915 \u0915\u0930\u0947\u0902!",
+      "google_business_post": "\u0928\u092e\u0938\u094d\u0924\u0947 \u0926\u094b\u0938\u094d\u0924\u094b\u0902! \u0915\u094d\u092f\u093e \u0906\u092a \u0905\u092a\u0928\u0947 \u0935\u094d\u092f\u0935\u0938\u093e\u092f \u0915\u094b \u092c\u0922\u093c\u093e\u0928\u093e \u091a\u093e\u0939\u0924\u0947 \u0939\u0948\u0902? \u0906\u091c \u0939\u092e \u0932\u0947\u0915\u0930 \u0906\u090f \u0939\u0948\u0902 \u090f\u0915 \u092c\u0947\u0939\u0924\u0930\u0940\u0928 \u0909\u0924\u094d\u092a\u093e\u0926 \u091c\u094b \u0906\u092a\u0915\u0947 \u0926\u0948\u0928\u093f\u0915 \u091c\u0940\u0935\u0928 \u0915\u094b \u0906\u0938\u093e\u0928 \u092c\u0928\u093e \u0926\u0947\u0917\u093e\u0964 \u092f\u0939 \u0909\u0924\u094d\u092a\u093e\u0926 \u092c\u0939\u0941\u0924 \u0939\u0940 \u0915\u093f\u092b\u093e\u092f\u0924\u0940 \u0914\u0930 \u0909\u091a\u094d\u091a \u0917\u0941\u0923\u0935\u0924\u094d\u0924\u093e \u0935\u093e\u0932\u093e \u0939\u0948\u0964 \u0905\u092d\u0940 \u0911\u0930\u094d\u0921\u0930 \u0915\u0930\u0928\u0947 \u0915\u0947 \u0932\u093f\u090f \u0932\u093f\u0902\u0915 \u092a\u0930 \u0915\u094d\u0932\u093f\u0915 \u0915\u0930\u0947\u0902!",
+      "id": "17d1d12f-1b1e-4837-be4a-9e904a9baa6d",
+      "created_at": "2026-06-16T23:33:14.074126"
+    },
+    {
+      "script_id": "9b6c1016-0a5d-4e44-8bd2-76807bbca282",
+      "language": "Tamil",
+      "youtube_script": "\u0bb5\u0ba3\u0b95\u0bcd\u0b95\u0bae\u0bcd \u0ba8\u0ba3\u0bcd\u0baa\u0bb0\u0bcd\u0b95\u0bb3\u0bc7! \u0b89\u0b99\u0bcd\u0b95\u0bb3\u0bcd \u0ba4\u0bca\u0bb4\u0bbf\u0bb2\u0bc8 \u0b85\u0b9f\u0bc1\u0ba4\u0bcd\u0ba4 \u0ba8\u0bbf\u0bb2\u0bc8\u0b95\u0bcd\u0b95\u0bc1 \u0b95\u0bca\u0ba3\u0bcd\u0b9f\u0bc1 \u0b9a\u0bc6\u0bb2\u0bcd\u0bb2 \u0bb5\u0bc7\u0ba3\u0bcd\u0b9f\u0bc1\u0bae\u0bbe? \u0b87\u0ba9\u0bcd\u0bb1\u0bc1 \u0ba8\u0bbe\u0bae\u0bcd \u0baa\u0bbe\u0bb0\u0bcd\u0b95\u0bcd\u0b95 \u0b87\u0bb0\u0bc1\u0baa\u0bcd\u0baa\u0ba4\u0bc1 \u0b92\u0bb0\u0bc1 \u0b85\u0bb1\u0bcd\u0baa\u0bc1\u0ba4\u0bae\u0bbe\u0ba9 \u0ba4\u0baf\u0bbe\u0bb0\u0bbf\u0baa\u0bcd\u0baa\u0bc1. \u0b87\u0ba4\u0bc1 \u0b89\u0b99\u0bcd\u0b95\u0bb3\u0bcd \u0bb5\u0bc7\u0bb2\u0bc8\u0baf\u0bc8 \u0b8e\u0bb3\u0bbf\u0ba4\u0bbe\u0b95\u0bcd\u0b95\u0bc1\u0bae\u0bcd \u0bae\u0bb1\u0bcd\u0bb1\u0bc1\u0bae\u0bcd \u0ba4\u0bb0\u0bae\u0bbe\u0ba9\u0ba4\u0bc1. \u0b89\u0b9f\u0ba9\u0bc7 \u0b86\u0bb0\u0bcd\u0b9f\u0bb0\u0bcd \u0b9a\u0bc6\u0baf\u0bcd\u0baf \u0b95\u0bc0\u0bb4\u0bc7 \u0b89\u0bb3\u0bcd\u0bb3 \u0bb2\u0bbf\u0b99\u0bcd\u0b95\u0bc8 \u0b95\u0bbf\u0bb3\u0bbf\u0b95\u0bcd \u0b9a\u0bc6\u0baf\u0bcd\u0baf\u0bb5\u0bc1\u0bae\u0bcd!",
+      "reel_script": "\u0bb5\u0ba3\u0b95\u0bcd\u0b95\u0bae\u0bcd \u0ba8\u0ba3\u0bcd\u0baa\u0bb0\u0bcd\u0b95\u0bb3\u0bc7! \u0b89\u0b99\u0bcd\u0b95\u0bb3\u0bcd \u0ba4\u0bca\u0bb4\u0bbf\u0bb2\u0bc8 \u0b85\u0b9f\u0bc1\u0ba4\u0bcd\u0ba4 \u0ba8\u0bbf\u0bb2\u0bc8\u0b95\u0bcd\u0b95\u0bc1 \u0b95\u0bca\u0ba3\u0bcd\u0b9f\u0bc1 \u0b9a\u0bc6\u0bb2\u0bcd\u0bb2 \u0bb5\u0bc7\u0ba3\u0bcd\u0b9f\u0bc1\u0bae\u0bbe? \u0b87\u0ba9\u0bcd\u0bb1\u0bc1 \u0ba8\u0bbe\u0bae\u0bcd \u0baa\u0bbe\u0bb0\u0bcd\u0b95\u0bcd\u0b95 \u0b87\u0bb0\u0bc1\u0baa\u0bcd\u0baa\u0ba4\u0bc1 \u0b92\u0bb0\u0bc1 \u0b85\u0bb1\u0bcd\u0baa\u0bc1\u0ba4\u0bae\u0bbe\u0ba9 \u0ba4\u0baf\u0bbe\u0bb0\u0bbf\u0baa\u0bcd\u0baa\u0bc1. \u0b87\u0ba4\u0bc1 \u0b89\u0b99\u0bcd\u0b95\u0bb3\u0bcd \u0bb5\u0bc7\u0bb2\u0bc8\u0baf\u0bc8 \u0b8e\u0bb3\u0bbf\u0ba4\u0bbe\u0b95\u0bcd\u0b95\u0bc1\u0bae\u0bcd \u0bae\u0bb1\u0bcd\u0bb1\u0bc1\u0bae\u0bcd \u0ba4\u0bb0\u0bae\u0bbe\u0ba9\u0ba4\u0bc1. \u0b89\u0b9f\u0ba9\u0bc7 \u0b86\u0bb0\u0bcd\u0b9f\u0bb0\u0bcd \u0b9a\u0bc6\u0baf\u0bcd\u0baf \u0b95\u0bc0\u0bb4\u0bc7 \u0b89\u0bb3\u0bcd\u0bb3 \u0bb2\u0bbf\u0b99\u0bcd\u0b95\u0bc8 \u0b95\u0bbf\u0bb3\u0bbf\u0b95\u0bcd \u0b9a\u0bc6\u0baf\u0bcd\u0baf\u0bb5\u0bc1\u0bae\u0bcd!",
+      "whatsapp_post": "\u0bb5\u0ba3\u0b95\u0bcd\u0b95\u0bae\u0bcd \u0ba8\u0ba3\u0bcd\u0baa\u0bb0\u0bcd\u0b95\u0bb3\u0bc7! \u0b89\u0b99\u0bcd\u0b95\u0bb3\u0bcd \u0ba4\u0bca\u0bb4\u0bbf\u0bb2\u0bc8 \u0b85\u0b9f\u0bc1\u0ba4\u0bcd\u0ba4 \u0ba8\u0bbf\u0bb2\u0bc8\u0b95\u0bcd\u0b95\u0bc1 \u0b95\u0bca\u0ba3\u0bcd\u0b9f\u0bc1 \u0b9a\u0bc6\u0bb2\u0bcd\u0bb2 \u0bb5\u0bc7\u0ba3\u0bcd\u0b9f\u0bc1\u0bae\u0bbe? \u0b87\u0ba9\u0bcd\u0bb1\u0bc1 \u0ba8\u0bbe\u0bae\u0bcd \u0baa\u0bbe\u0bb0\u0bcd\u0b95\u0bcd\u0b95 \u0b87\u0bb0\u0bc1\u0baa\u0bcd\u0baa\u0ba4\u0bc1 \u0b92\u0bb0\u0bc1 \u0b85\u0bb1\u0bcd\u0baa\u0bc1\u0ba4\u0bae\u0bbe\u0ba9 \u0ba4\u0baf\u0bbe\u0bb0\u0bbf\u0baa\u0bcd\u0baa\u0bc1. \u0b87\u0ba4\u0bc1 \u0b89\u0b99\u0bcd\u0b95\u0bb3\u0bcd \u0bb5\u0bc7\u0bb2\u0bc8\u0baf\u0bc8 \u0b8e\u0bb3\u0bbf\u0ba4\u0bbe\u0b95\u0bcd\u0b95\u0bc1\u0bae\u0bcd \u0bae\u0bb1\u0bcd\u0bb1\u0bc1\u0bae\u0bcd \u0ba4\u0bb0\u0bae\u0bbe\u0ba9\u0ba4\u0bc1. \u0b89\u0b9f\u0ba9\u0bc7 \u0b86\u0bb0\u0bcd\u0b9f\u0bb0\u0bcd \u0b9a\u0bc6\u0baf\u0bcd\u0baf \u0b95\u0bc0\u0bb4\u0bc7 \u0b89\u0bb3\u0bcd\u0bb3 \u0bb2\u0bbf\u0b99\u0bcd\u0b95\u0bc8 \u0b95\u0bbf\u0bb3\u0bbf\u0b95\u0bcd \u0b9a\u0bc6\u0baf\u0bcd\u0baf\u0bb5\u0bc1\u0bae\u0bcd!",
+      "google_business_post": "\u0bb5\u0ba3\u0b95\u0bcd\u0b95\u0bae\u0bcd \u0ba8\u0ba3\u0bcd\u0baa\u0bb0\u0bcd\u0b95\u0bb3\u0bc7! \u0b89\u0b99\u0bcd\u0b95\u0bb3\u0bcd \u0ba4\u0bca\u0bb4\u0bbf\u0bb2\u0bc8 \u0b85\u0b9f\u0bc1\u0ba4\u0bcd\u0ba4 \u0ba8\u0bbf\u0bb2\u0bc8\u0b95\u0bcd\u0b95\u0bc1 \u0b95\u0bca\u0ba3\u0bcd\u0b9f\u0bc1 \u0b9a\u0bc6\u0bb2\u0bcd\u0bb2 \u0bb5\u0bc7\u0ba3\u0bcd\u0b9f\u0bc1\u0bae\u0bbe? \u0b87\u0ba9\u0bcd\u0bb1\u0bc1 \u0ba8\u0bbe\u0bae\u0bcd \u0baa\u0bbe\u0bb0\u0bcd\u0b95\u0bcd\u0b95 \u0b87\u0bb0\u0bc1\u0baa\u0bcd\u0baa\u0ba4\u0bc1 \u0b92\u0bb0\u0bc1 \u0b85\u0bb1\u0bcd\u0baa\u0bc1\u0ba4\u0bae\u0bbe\u0ba9 \u0ba4\u0baf\u0bbe\u0bb0\u0bbf\u0baa\u0bcd\u0baa\u0bc1. \u0b87\u0ba4\u0bc1 \u0b89\u0b99\u0bcd\u0b95\u0bb3\u0bcd \u0bb5\u0bc7\u0bb2\u0bc8\u0baf\u0bc8 \u0b8e\u0bb3\u0bbf\u0ba4\u0bbe\u0b95\u0bcd\u0b95\u0bc1\u0bae\u0bcd \u0bae\u0bb1\u0bcd\u0bb1\u0bc1\u0bae\u0bcd \u0ba4\u0bb0\u0bae\u0bbe\u0ba9\u0ba4\u0bc1. \u0b89\u0b9f\u0ba9\u0bc7 \u0b86\u0bb0\u0bcd\u0b9f\u0bb0\u0bcd \u0b9a\u0bc6\u0baf\u0bcd\u0baf \u0b95\u0bc0\u0bb4\u0bc7 \u0b89\u0bb3\u0bcd\u0bb3 \u0bb2\u0bbf\u0b99\u0bcd\u0b95\u0bc8 \u0b95\u0bbf\u0bb3\u0bbf\u0b95\u0bcd \u0b9a\u0bc6\u0baf\u0bcd\u0baf\u0bb5\u0bc1\u0bae\u0bcd!",
+      "id": "e79676e6-fa34-4078-8b81-d10805288ad4",
+      "created_at": "2026-06-16T23:33:14.117500"
+    },
+    {
+      "script_id": "9b6c1016-0a5d-4e44-8bd2-76807bbca282",
+      "language": "Telugu",
+      "youtube_script": "\u0c28\u0c2e\u0c38\u0c4d\u0c24\u0c47 \u0c2b\u0c4d\u0c30\u0c46\u0c02\u0c21\u0c4d\u0c38\u0c4d! \u0c2e\u0c40 \u0c35\u0c4d\u0c2f\u0c3e\u0c2a\u0c3e\u0c30\u0c3e\u0c28\u0c4d\u0c28\u0c3f \u0c05\u0c2d\u0c3f\u0c35\u0c43\u0c26\u0c4d\u0c27\u0c3f \u0c1a\u0c47\u0c2f\u0c3e\u0c32\u0c28\u0c41\u0c15\u0c41\u0c02\u0c1f\u0c41\u0c28\u0c4d\u0c28\u0c3e\u0c30\u0c3e? \u0c08 \u0c30\u0c4b\u0c1c\u0c41 \u0c2e\u0c47\u0c2e\u0c41 \u0c12\u0c15 \u0c05\u0c26\u0c4d\u0c2d\u0c41\u0c24\u0c2e\u0c48\u0c28 \u0c2a\u0c4d\u0c30\u0c4a\u0c21\u0c15\u0c4d\u0c1f\u0c4d \u0c28\u0c3f \u0c2a\u0c30\u0c3f\u0c1a\u0c2f\u0c02 \u0c1a\u0c47\u0c38\u0c4d\u0c24\u0c41\u0c28\u0c4d\u0c28\u0c3e\u0c2e\u0c41. \u0c07\u0c26\u0c3f \u0c1a\u0c3e\u0c32\u0c3e \u0c09\u0c2a\u0c2f\u0c4b\u0c17\u0c15\u0c30\u0c2e\u0c48\u0c28\u0c26\u0c3f \u0c2e\u0c30\u0c3f\u0c2f\u0c41 \u0c24\u0c15\u0c4d\u0c15\u0c41\u0c35 \u0c27\u0c30\u0c15\u0c47 \u0c32\u0c2d\u0c3f\u0c38\u0c4d\u0c24\u0c41\u0c02\u0c26\u0c3f. \u0c07\u0c2a\u0c4d\u0c2a\u0c41\u0c21\u0c47 \u0c06\u0c30\u0c4d\u0c21\u0c30\u0c4d \u0c1a\u0c47\u0c2f\u0c21\u0c3e\u0c28\u0c3f\u0c15\u0c3f \u0c32\u0c3f\u0c02\u0c15\u0c4d \u0c15\u0c4d\u0c32\u0c3f\u0c15\u0c4d \u0c1a\u0c47\u0c2f\u0c02\u0c21\u0c3f!",
+      "reel_script": "\u0c28\u0c2e\u0c38\u0c4d\u0c24\u0c47 \u0c2b\u0c4d\u0c30\u0c46\u0c02\u0c21\u0c4d\u0c38\u0c4d! \u0c2e\u0c40 \u0c35\u0c4d\u0c2f\u0c3e\u0c2a\u0c3e\u0c30\u0c3e\u0c28\u0c4d\u0c28\u0c3f \u0c05\u0c2d\u0c3f\u0c35\u0c43\u0c26\u0c4d\u0c27\u0c3f \u0c1a\u0c47\u0c2f\u0c3e\u0c32\u0c28\u0c41\u0c15\u0c41\u0c02\u0c1f\u0c41\u0c28\u0c4d\u0c28\u0c3e\u0c30\u0c3e? \u0c08 \u0c30\u0c4b\u0c1c\u0c41 \u0c2e\u0c47\u0c2e\u0c41 \u0c12\u0c15 \u0c05\u0c26\u0c4d\u0c2d\u0c41\u0c24\u0c2e\u0c48\u0c28 \u0c2a\u0c4d\u0c30\u0c4a\u0c21\u0c15\u0c4d\u0c1f\u0c4d \u0c28\u0c3f \u0c2a\u0c30\u0c3f\u0c1a\u0c2f\u0c02 \u0c1a\u0c47\u0c38\u0c4d\u0c24\u0c41\u0c28\u0c4d\u0c28\u0c3e\u0c2e\u0c41. \u0c07\u0c26\u0c3f \u0c1a\u0c3e\u0c32\u0c3e \u0c09\u0c2a\u0c2f\u0c4b\u0c17\u0c15\u0c30\u0c2e\u0c48\u0c28\u0c26\u0c3f \u0c2e\u0c30\u0c3f\u0c2f\u0c41 \u0c24\u0c15\u0c4d\u0c15\u0c41\u0c35 \u0c27\u0c30\u0c15\u0c47 \u0c32\u0c2d\u0c3f\u0c38\u0c4d\u0c24\u0c41\u0c02\u0c26\u0c3f. \u0c07\u0c2a\u0c4d\u0c2a\u0c41\u0c21\u0c47 \u0c06\u0c30\u0c4d\u0c21\u0c30\u0c4d \u0c1a\u0c47\u0c2f\u0c21\u0c3e\u0c28\u0c3f\u0c15\u0c3f \u0c32\u0c3f\u0c02\u0c15\u0c4d \u0c15\u0c4d\u0c32\u0c3f\u0c15\u0c4d \u0c1a\u0c47\u0c2f\u0c02\u0c21\u0c3f!",
+      "whatsapp_post": "\u0c28\u0c2e\u0c38\u0c4d\u0c24\u0c47 \u0c2b\u0c4d\u0c30\u0c46\u0c02\u0c21\u0c4d\u0c38\u0c4d! \u0c2e\u0c40 \u0c35\u0c4d\u0c2f\u0c3e\u0c2a\u0c3e\u0c30\u0c3e\u0c28\u0c4d\u0c28\u0c3f \u0c05\u0c2d\u0c3f\u0c35\u0c43\u0c26\u0c4d\u0c27\u0c3f \u0c1a\u0c47\u0c2f\u0c3e\u0c32\u0c28\u0c41\u0c15\u0c41\u0c02\u0c1f\u0c41\u0c28\u0c4d\u0c28\u0c3e\u0c30\u0c3e? \u0c08 \u0c30\u0c4b\u0c1c\u0c41 \u0c2e\u0c47\u0c2e\u0c41 \u0c12\u0c15 \u0c05\u0c26\u0c4d\u0c2d\u0c41\u0c24\u0c2e\u0c48\u0c28 \u0c2a\u0c4d\u0c30\u0c4a\u0c21\u0c15\u0c4d\u0c1f\u0c4d \u0c28\u0c3f \u0c2a\u0c30\u0c3f\u0c1a\u0c2f\u0c02 \u0c1a\u0c47\u0c38\u0c4d\u0c24\u0c41\u0c28\u0c4d\u0c28\u0c3e\u0c2e\u0c41. \u0c07\u0c26\u0c3f \u0c1a\u0c3e\u0c32\u0c3e \u0c09\u0c2a\u0c2f\u0c4b\u0c17\u0c15\u0c30\u0c2e\u0c48\u0c28\u0c26\u0c3f \u0c2e\u0c30\u0c3f\u0c2f\u0c41 \u0c24\u0c15\u0c4d\u0c15\u0c41\u0c35 \u0c27\u0c30\u0c15\u0c47 \u0c32\u0c2d\u0c3f\u0c38\u0c4d\u0c24\u0c41\u0c02\u0c26\u0c3f. \u0c07\u0c2a\u0c4d\u0c2a\u0c41\u0c21\u0c47 \u0c06\u0c30\u0c4d\u0c21\u0c30\u0c4d \u0c1a\u0c47\u0c2f\u0c21\u0c3e\u0c28\u0c3f\u0c15\u0c3f \u0c32\u0c3f\u0c02\u0c15\u0c4d \u0c15\u0c4d\u0c32\u0c3f\u0c15\u0c4d \u0c1a\u0c47\u0c2f\u0c02\u0c21\u0c3f!",
+      "google_business_post": "\u0c28\u0c2e\u0c38\u0c4d\u0c24\u0c47 \u0c2b\u0c4d\u0c30\u0c46\u0c02\u0c21\u0c4d\u0c38\u0c4d! \u0c2e\u0c40 \u0c35\u0c4d\u0c2f\u0c3e\u0c2a\u0c3e\u0c30\u0c3e\u0c28\u0c4d\u0c28\u0c3f \u0c05\u0c2d\u0c3f\u0c35\u0c43\u0c26\u0c4d\u0c27\u0c3f \u0c1a\u0c47\u0c2f\u0c3e\u0c32\u0c28\u0c41\u0c15\u0c41\u0c02\u0c1f\u0c41\u0c28\u0c4d\u0c28\u0c3e\u0c30\u0c3e? \u0c08 \u0c30\u0c4b\u0c1c\u0c41 \u0c2e\u0c47\u0c2e\u0c41 \u0c12\u0c15 \u0c05\u0c26\u0c4d\u0c2d\u0c41\u0c24\u0c2e\u0c48\u0c28 \u0c2a\u0c4d\u0c30\u0c4a\u0c21\u0c15\u0c4d\u0c1f\u0c4d \u0c28\u0c3f \u0c2a\u0c30\u0c3f\u0c1a\u0c2f\u0c02 \u0c1a\u0c47\u0c38\u0c4d\u0c24\u0c41\u0c28\u0c4d\u0c28\u0c3e\u0c2e\u0c41. \u0c07\u0c26\u0c3f \u0c1a\u0c3e\u0c32\u0c3e \u0c09\u0c2a\u0c2f\u0c4b\u0c17\u0c15\u0c30\u0c2e\u0c48\u0c28\u0c26\u0c3f \u0c2e\u0c30\u0c3f\u0c2f\u0c41 \u0c24\u0c15\u0c4d\u0c15\u0c41\u0c35 \u0c27\u0c30\u0c15\u0c47 \u0c32\u0c2d\u0c3f\u0c38\u0c4d\u0c24\u0c41\u0c02\u0c26\u0c3f. \u0c07\u0c2a\u0c4d\u0c2a\u0c41\u0c21\u0c47 \u0c06\u0c30\u0c4d\u0c21\u0c30\u0c4d \u0c1a\u0c47\u0c2f\u0c21\u0c3e\u0c28\u0c3f\u0c15\u0c3f \u0c32\u0c3f\u0c02\u0c15\u0c4d \u0c15\u0c4d\u0c32\u0c3f\u0c15\u0c4d \u0c1a\u0c47\u0c2f\u0c02\u0c21\u0c3f!",
+      "id": "55466895-8306-4f30-a5e9-812e18536c13",
+      "created_at": "2026-06-16T23:33:14.205703"
+    },
+    {
+      "script_id": "9b6c1016-0a5d-4e44-8bd2-76807bbca282",
+      "language": "Malayalam",
+      "youtube_script": "\u0d39\u0d32\u0d4b \u0d15\u0d42\u0d1f\u0d4d\u0d1f\u0d41\u0d15\u0d3e\u0d30\u0d46! \u0d28\u0d3f\u0d19\u0d4d\u0d19\u0d33\u0d41\u0d1f\u0d46 \u0d2c\u0d3f\u0d38\u0d3f\u0d28\u0d38\u0d4d\u0d38\u0d4d \u0d35\u0d33\u0d7c\u0d24\u0d4d\u0d24\u0d3e\u0d7b \u0d06\u0d17\u0d4d\u0d30\u0d39\u0d3f\u0d15\u0d4d\u0d15\u0d41\u0d28\u0d4d\u0d28\u0d41\u0d23\u0d4d\u0d1f\u0d4b? \u0d07\u0d28\u0d4d\u0d28\u0d4d \u0d1e\u0d19\u0d4d\u0d19\u0d7e \u0d2a\u0d30\u0d3f\u0d1a\u0d2f\u0d2a\u0d4d\u0d2a\u0d46\u0d1f\u0d41\u0d24\u0d4d\u0d24\u0d41\u0d28\u0d4d\u0d28\u0d24\u0d4d \u0d12\u0d30\u0d41 \u0d2e\u0d3f\u0d15\u0d1a\u0d4d\u0d1a \u0d09\u0d7d\u0d2a\u0d4d\u0d2a\u0d28\u0d4d\u0d28\u0d2e\u0d3e\u0d23\u0d4d. \u0d07\u0d24\u0d4d \u0d28\u0d3f\u0d19\u0d4d\u0d19\u0d33\u0d41\u0d1f\u0d46 \u0d1c\u0d4b\u0d32\u0d3f \u0d0e\u0d33\u0d41\u0d2a\u0d4d\u0d2a\u0d2e\u0d3e\u0d15\u0d4d\u0d15\u0d41\u0d02. \u0d07\u0d2a\u0d4d\u0d2a\u0d4b\u0d7e \u0d24\u0d28\u0d4d\u0d28\u0d46 \u0d13\u0d7c\u0d21\u0d7c \u0d1a\u0d46\u0d2f\u0d4d\u0d2f\u0d3e\u0d7b \u0d24\u0d3e\u0d34\u0d46\u0d2f\u0d41\u0d33\u0d4d\u0d33 \u0d32\u0d3f\u0d19\u0d4d\u0d15\u0d3f\u0d7d \u0d15\u0d4d\u0d32\u0d3f\u0d15\u0d4d\u0d15\u0d4d \u0d1a\u0d46\u0d2f\u0d4d\u0d2f\u0d41\u0d15!",
+      "reel_script": "\u0d39\u0d32\u0d4b \u0d15\u0d42\u0d1f\u0d4d\u0d1f\u0d41\u0d15\u0d3e\u0d30\u0d46! \u0d28\u0d3f\u0d19\u0d4d\u0d19\u0d33\u0d41\u0d1f\u0d46 \u0d2c\u0d3f\u0d38\u0d3f\u0d28\u0d38\u0d4d\u0d38\u0d4d \u0d35\u0d33\u0d7c\u0d24\u0d4d\u0d24\u0d3e\u0d7b \u0d06\u0d17\u0d4d\u0d30\u0d39\u0d3f\u0d15\u0d4d\u0d15\u0d41\u0d28\u0d4d\u0d28\u0d41\u0d23\u0d4d\u0d1f\u0d4b? \u0d07\u0d28\u0d4d\u0d28\u0d4d \u0d1e\u0d19\u0d4d\u0d19\u0d7e \u0d2a\u0d30\u0d3f\u0d1a\u0d2f\u0d2a\u0d4d\u0d2a\u0d46\u0d1f\u0d41\u0d24\u0d4d\u0d24\u0d41\u0d28\u0d4d\u0d28\u0d24\u0d4d \u0d12\u0d30\u0d41 \u0d2e\u0d3f\u0d15\u0d1a\u0d4d\u0d1a \u0d09\u0d7d\u0d2a\u0d4d\u0d2a\u0d28\u0d4d\u0d28\u0d2e\u0d3e\u0d23\u0d4d. \u0d07\u0d24\u0d4d \u0d28\u0d3f\u0d19\u0d4d\u0d19\u0d33\u0d41\u0d1f\u0d46 \u0d1c\u0d4b\u0d32\u0d3f \u0d0e\u0d33\u0d41\u0d2a\u0d4d\u0d2a\u0d2e\u0d3e\u0d15\u0d4d\u0d15\u0d41\u0d02. \u0d07\u0d2a\u0d4d\u0d2a\u0d4b\u0d7e \u0d24\u0d28\u0d4d\u0d28\u0d46 \u0d13\u0d7c\u0d21\u0d7c \u0d1a\u0d46\u0d2f\u0d4d\u0d2f\u0d3e\u0d7b \u0d24\u0d3e\u0d34\u0d46\u0d2f\u0d41\u0d33\u0d4d\u0d33 \u0d32\u0d3f\u0d19\u0d4d\u0d15\u0d3f\u0d7d \u0d15\u0d4d\u0d32\u0d3f\u0d15\u0d4d\u0d15\u0d4d \u0d1a\u0d46\u0d2f\u0d4d\u0d2f\u0d41\u0d15!",
+      "whatsapp_post": "\u0d39\u0d32\u0d4b \u0d15\u0d42\u0d1f\u0d4d\u0d1f\u0d41\u0d15\u0d3e\u0d30\u0d46! \u0d28\u0d3f\u0d19\u0d4d\u0d19\u0d33\u0d41\u0d1f\u0d46 \u0d2c\u0d3f\u0d38\u0d3f\u0d28\u0d38\u0d4d\u0d38\u0d4d \u0d35\u0d33\u0d7c\u0d24\u0d4d\u0d24\u0d3e\u0d7b \u0d06\u0d17\u0d4d\u0d30\u0d39\u0d3f\u0d15\u0d4d\u0d15\u0d41\u0d28\u0d4d\u0d28\u0d41\u0d23\u0d4d\u0d1f\u0d4b? \u0d07\u0d28\u0d4d\u0d28\u0d4d \u0d1e\u0d19\u0d4d\u0d19\u0d7e \u0d2a\u0d30\u0d3f\u0d1a\u0d2f\u0d2a\u0d4d\u0d2a\u0d46\u0d1f\u0d41\u0d24\u0d4d\u0d24\u0d41\u0d28\u0d4d\u0d28\u0d24\u0d4d \u0d12\u0d30\u0d41 \u0d2e\u0d3f\u0d15\u0d1a\u0d4d\u0d1a \u0d09\u0d7d\u0d2a\u0d4d\u0d2a\u0d28\u0d4d\u0d28\u0d2e\u0d3e\u0d23\u0d4d. \u0d07\u0d24\u0d4d \u0d28\u0d3f\u0d19\u0d4d\u0d19\u0d33\u0d41\u0d1f\u0d46 \u0d1c\u0d4b\u0d32\u0d3f \u0d0e\u0d33\u0d41\u0d2a\u0d4d\u0d2a\u0d2e\u0d3e\u0d15\u0d4d\u0d15\u0d41\u0d02. \u0d07\u0d2a\u0d4d\u0d2a\u0d4b\u0d7e \u0d24\u0d28\u0d4d\u0d28\u0d46 \u0d13\u0d7c\u0d21\u0d7c \u0d1a\u0d46\u0d2f\u0d4d\u0d2f\u0d3e\u0d7b \u0d24\u0d3e\u0d34\u0d46\u0d2f\u0d41\u0d33\u0d4d\u0d33 \u0d32\u0d3f\u0d19\u0d4d\u0d15\u0d3f\u0d7d \u0d15\u0d4d\u0d32\u0d3f\u0d15\u0d4d\u0d15\u0d4d \u0d1a\u0d46\u0d2f\u0d4d\u0d2f\u0d41\u0d15!",
+      "google_business_post": "\u0d39\u0d32\u0d4b \u0d15\u0d42\u0d1f\u0d4d\u0d1f\u0d41\u0d15\u0d3e\u0d30\u0d46! \u0d28\u0d3f\u0d19\u0d4d\u0d19\u0d33\u0d41\u0d1f\u0d46 \u0d2c\u0d3f\u0d38\u0d3f\u0d28\u0d38\u0d4d\u0d38\u0d4d \u0d35\u0d33\u0d7c\u0d24\u0d4d\u0d24\u0d3e\u0d7b \u0d06\u0d17\u0d4d\u0d30\u0d39\u0d3f\u0d15\u0d4d\u0d15\u0d41\u0d28\u0d4d\u0d28\u0d41\u0d23\u0d4d\u0d1f\u0d4b? \u0d07\u0d28\u0d4d\u0d28\u0d4d \u0d1e\u0d19\u0d4d\u0d19\u0d7e \u0d2a\u0d30\u0d3f\u0d1a\u0d2f\u0d2a\u0d4d\u0d2a\u0d46\u0d1f\u0d41\u0d24\u0d4d\u0d24\u0d41\u0d28\u0d4d\u0d28\u0d24\u0d4d \u0d12\u0d30\u0d41 \u0d2e\u0d3f\u0d15\u0d1a\u0d4d\u0d1a \u0d09\u0d7d\u0d2a\u0d4d\u0d2a\u0d28\u0d4d\u0d28\u0d2e\u0d3e\u0d23\u0d4d. \u0d07\u0d24\u0d4d \u0d28\u0d3f\u0d19\u0d4d\u0d19\u0d33\u0d41\u0d1f\u0d46 \u0d1c\u0d4b\u0d32\u0d3f \u0d0e\u0d33\u0d41\u0d2a\u0d4d\u0d2a\u0d2e\u0d3e\u0d15\u0d4d\u0d15\u0d41\u0d02. \u0d07\u0d2a\u0d4d\u0d2a\u0d4b\u0d7e \u0d24\u0d28\u0d4d\u0d28\u0d46 \u0d13\u0d7c\u0d21\u0d7c \u0d1a\u0d46\u0d2f\u0d4d\u0d2f\u0d3e\u0d7b \u0d24\u0d3e\u0d34\u0d46\u0d2f\u0d41\u0d33\u0d4d\u0d33 \u0d32\u0d3f\u0d19\u0d4d\u0d15\u0d3f\u0d7d \u0d15\u0d4d\u0d32\u0d3f\u0d15\u0d4d\u0d15\u0d4d \u0d1a\u0d46\u0d2f\u0d4d\u0d2f\u0d41\u0d15!",
+      "id": "e6632d07-b813-42b4-9376-8717ee5a5bd0",
+      "created_at": "2026-06-16T23:33:14.270963"
+    },
+    {
+      "script_id": "e763dc6b-d22b-44ed-a923-b3bfd6174c30",
+      "language": "English",
+      "youtube_script": "Is your family using stale, low-grade products? \u2615 Upgrade to our premium PureGold Cold-Pressed Coconut Oil sourced straight from Idukki hills! Experience the natural goodness of pure PureGold Cold-Pressed Coconut Oil. Cold-pressed and processed traditionally to maintain rich aroma and beneficial compounds. Reply now to get an exclusive 10% discount and free shipping on your first pack!",
+      "reel_script": "Is your family using stale, low-grade products? \u2615 Upgrade to our premium PureGold Cold-Pressed Coconut Oil sourced straight from Idukki hills! Experience the natural goodness of pure PureGold Cold-Pressed Coconut Oil. Cold-pressed and processed traditionally to maintain rich aroma and beneficial compounds. Reply now to get an exclusive 10% discount and free shipping on your first pack!",
+      "whatsapp_post": "Discover the health benefits of 100% natural PureGold Cold-Pressed Coconut Oil. Sourced sustainably, packed with fresh-lock seal.",
+      "google_business_post": "Why everyone is switching to our PureGold Cold-Pressed Coconut Oil today! \ud83d\udd25",
+      "id": "3e9e2906-1cfb-4769-822e-8ab563bd67c7",
+      "created_at": "2026-06-17T00:14:25.528710"
+    },
+    {
+      "script_id": "e763dc6b-d22b-44ed-a923-b3bfd6174c30",
+      "language": "Hindi",
+      "youtube_script": "\u0928\u092e\u0938\u094d\u0924\u0947 \u0926\u094b\u0938\u094d\u0924\u094b\u0902! \u0915\u094d\u092f\u093e \u0906\u092a \u0905\u092a\u0928\u0947 \u0935\u094d\u092f\u0935\u0938\u093e\u092f \u0915\u094b \u092c\u0922\u093c\u093e\u0928\u093e \u091a\u093e\u0939\u0924\u0947 \u0939\u0948\u0902? \u0906\u091c \u0939\u092e \u0932\u0947\u0915\u0930 \u0906\u090f \u0939\u0948\u0902 \u090f\u0915 \u092c\u0947\u0939\u0924\u0930\u0940\u0928 \u0909\u0924\u094d\u092a\u093e\u0926 \u091c\u094b \u0906\u092a\u0915\u0947 \u0926\u0948\u0928\u093f\u0915 \u091c\u0940\u0935\u0928 \u0915\u094b \u0906\u0938\u093e\u0928 \u092c\u0928\u093e \u0926\u0947\u0917\u093e\u0964 \u092f\u0939 \u0909\u0924\u094d\u092a\u093e\u0926 \u092c\u0939\u0941\u0924 \u0939\u0940 \u0915\u093f\u092b\u093e\u092f\u0924\u0940 \u0914\u0930 \u0909\u091a\u094d\u091a \u0917\u0941\u0923\u0935\u0924\u094d\u0924\u093e \u0935\u093e\u0932\u093e \u0939\u0948\u0964 \u0905\u092d\u0940 \u0911\u0930\u094d\u0921\u0930 \u0915\u0930\u0928\u0947 \u0915\u0947 \u0932\u093f\u090f \u0932\u093f\u0902\u0915 \u092a\u0930 \u0915\u094d\u0932\u093f\u0915 \u0915\u0930\u0947\u0902!",
+      "reel_script": "\u0928\u092e\u0938\u094d\u0924\u0947 \u0926\u094b\u0938\u094d\u0924\u094b\u0902! \u0915\u094d\u092f\u093e \u0906\u092a \u0905\u092a\u0928\u0947 \u0935\u094d\u092f\u0935\u0938\u093e\u092f \u0915\u094b \u092c\u0922\u093c\u093e\u0928\u093e \u091a\u093e\u0939\u0924\u0947 \u0939\u0948\u0902? \u0906\u091c \u0939\u092e \u0932\u0947\u0915\u0930 \u0906\u090f \u0939\u0948\u0902 \u090f\u0915 \u092c\u0947\u0939\u0924\u0930\u0940\u0928 \u0909\u0924\u094d\u092a\u093e\u0926 \u091c\u094b \u0906\u092a\u0915\u0947 \u0926\u0948\u0928\u093f\u0915 \u091c\u0940\u0935\u0928 \u0915\u094b \u0906\u0938\u093e\u0928 \u092c\u0928\u093e \u0926\u0947\u0917\u093e\u0964 \u092f\u0939 \u0909\u0924\u094d\u092a\u093e\u0926 \u092c\u0939\u0941\u0924 \u0939\u0940 \u0915\u093f\u092b\u093e\u092f\u0924\u0940 \u0914\u0930 \u0909\u091a\u094d\u091a \u0917\u0941\u0923\u0935\u0924\u094d\u0924\u093e \u0935\u093e\u0932\u093e \u0939\u0948\u0964 \u0905\u092d\u0940 \u0911\u0930\u094d\u0921\u0930 \u0915\u0930\u0928\u0947 \u0915\u0947 \u0932\u093f\u090f \u0932\u093f\u0902\u0915 \u092a\u0930 \u0915\u094d\u0932\u093f\u0915 \u0915\u0930\u0947\u0902!",
+      "whatsapp_post": "\u0928\u092e\u0938\u094d\u0924\u0947 \u0926\u094b\u0938\u094d\u0924\u094b\u0902! \u0915\u094d\u092f\u093e \u0906\u092a \u0905\u092a\u0928\u0947 \u0935\u094d\u092f\u0935\u0938\u093e\u092f \u0915\u094b \u092c\u0922\u093c\u093e\u0928\u093e \u091a\u093e\u0939\u0924\u0947 \u0939\u0948\u0902? \u0906\u091c \u0939\u092e \u0932\u0947\u0915\u0930 \u0906\u090f \u0939\u0948\u0902 \u090f\u0915 \u092c\u0947\u0939\u0924\u0930\u0940\u0928 \u0909\u0924\u094d\u092a\u093e\u0926 \u091c\u094b \u0906\u092a\u0915\u0947 \u0926\u0948\u0928\u093f\u0915 \u091c\u0940\u0935\u0928 \u0915\u094b \u0906\u0938\u093e\u0928 \u092c\u0928\u093e \u0926\u0947\u0917\u093e\u0964 \u092f\u0939 \u0909\u0924\u094d\u092a\u093e\u0926 \u092c\u0939\u0941\u0924 \u0939\u0940 \u0915\u093f\u092b\u093e\u092f\u0924\u0940 \u0914\u0930 \u0909\u091a\u094d\u091a \u0917\u0941\u0923\u0935\u0924\u094d\u0924\u093e \u0935\u093e\u0932\u093e \u0939\u0948\u0964 \u0905\u092d\u0940 \u0911\u0930\u094d\u0921\u0930 \u0915\u0930\u0928\u0947 \u0915\u0947 \u0932\u093f\u090f \u0932\u093f\u0902\u0915 \u092a\u0930 \u0915\u094d\u0932\u093f\u0915 \u0915\u0930\u0947\u0902!",
+      "google_business_post": "\u0928\u092e\u0938\u094d\u0924\u0947 \u0926\u094b\u0938\u094d\u0924\u094b\u0902! \u0915\u094d\u092f\u093e \u0906\u092a \u0905\u092a\u0928\u0947 \u0935\u094d\u092f\u0935\u0938\u093e\u092f \u0915\u094b \u092c\u0922\u093c\u093e\u0928\u093e \u091a\u093e\u0939\u0924\u0947 \u0939\u0948\u0902? \u0906\u091c \u0939\u092e \u0932\u0947\u0915\u0930 \u0906\u090f \u0939\u0948\u0902 \u090f\u0915 \u092c\u0947\u0939\u0924\u0930\u0940\u0928 \u0909\u0924\u094d\u092a\u093e\u0926 \u091c\u094b \u0906\u092a\u0915\u0947 \u0926\u0948\u0928\u093f\u0915 \u091c\u0940\u0935\u0928 \u0915\u094b \u0906\u0938\u093e\u0928 \u092c\u0928\u093e \u0926\u0947\u0917\u093e\u0964 \u092f\u0939 \u0909\u0924\u094d\u092a\u093e\u0926 \u092c\u0939\u0941\u0924 \u0939\u0940 \u0915\u093f\u092b\u093e\u092f\u0924\u0940 \u0914\u0930 \u0909\u091a\u094d\u091a \u0917\u0941\u0923\u0935\u0924\u094d\u0924\u093e \u0935\u093e\u0932\u093e \u0939\u0948\u0964 \u0905\u092d\u0940 \u0911\u0930\u094d\u0921\u0930 \u0915\u0930\u0928\u0947 \u0915\u0947 \u0932\u093f\u090f \u0932\u093f\u0902\u0915 \u092a\u0930 \u0915\u094d\u0932\u093f\u0915 \u0915\u0930\u0947\u0902!",
+      "id": "fb190d65-b16f-4120-a388-1e0962a04d35",
+      "created_at": "2026-06-17T00:14:25.609760"
+    },
+    {
+      "script_id": "e763dc6b-d22b-44ed-a923-b3bfd6174c30",
+      "language": "Tamil",
+      "youtube_script": "\u0bb5\u0ba3\u0b95\u0bcd\u0b95\u0bae\u0bcd \u0ba8\u0ba3\u0bcd\u0baa\u0bb0\u0bcd\u0b95\u0bb3\u0bc7! \u0b89\u0b99\u0bcd\u0b95\u0bb3\u0bcd \u0ba4\u0bca\u0bb4\u0bbf\u0bb2\u0bc8 \u0b85\u0b9f\u0bc1\u0ba4\u0bcd\u0ba4 \u0ba8\u0bbf\u0bb2\u0bc8\u0b95\u0bcd\u0b95\u0bc1 \u0b95\u0bca\u0ba3\u0bcd\u0b9f\u0bc1 \u0b9a\u0bc6\u0bb2\u0bcd\u0bb2 \u0bb5\u0bc7\u0ba3\u0bcd\u0b9f\u0bc1\u0bae\u0bbe? \u0b87\u0ba9\u0bcd\u0bb1\u0bc1 \u0ba8\u0bbe\u0bae\u0bcd \u0baa\u0bbe\u0bb0\u0bcd\u0b95\u0bcd\u0b95 \u0b87\u0bb0\u0bc1\u0baa\u0bcd\u0baa\u0ba4\u0bc1 \u0b92\u0bb0\u0bc1 \u0b85\u0bb1\u0bcd\u0baa\u0bc1\u0ba4\u0bae\u0bbe\u0ba9 \u0ba4\u0baf\u0bbe\u0bb0\u0bbf\u0baa\u0bcd\u0baa\u0bc1. \u0b87\u0ba4\u0bc1 \u0b89\u0b99\u0bcd\u0b95\u0bb3\u0bcd \u0bb5\u0bc7\u0bb2\u0bc8\u0baf\u0bc8 \u0b8e\u0bb3\u0bbf\u0ba4\u0bbe\u0b95\u0bcd\u0b95\u0bc1\u0bae\u0bcd \u0bae\u0bb1\u0bcd\u0bb1\u0bc1\u0bae\u0bcd \u0ba4\u0bb0\u0bae\u0bbe\u0ba9\u0ba4\u0bc1. \u0b89\u0b9f\u0ba9\u0bc7 \u0b86\u0bb0\u0bcd\u0b9f\u0bb0\u0bcd \u0b9a\u0bc6\u0baf\u0bcd\u0baf \u0b95\u0bc0\u0bb4\u0bc7 \u0b89\u0bb3\u0bcd\u0bb3 \u0bb2\u0bbf\u0b99\u0bcd\u0b95\u0bc8 \u0b95\u0bbf\u0bb3\u0bbf\u0b95\u0bcd \u0b9a\u0bc6\u0baf\u0bcd\u0baf\u0bb5\u0bc1\u0bae\u0bcd!",
+      "reel_script": "\u0bb5\u0ba3\u0b95\u0bcd\u0b95\u0bae\u0bcd \u0ba8\u0ba3\u0bcd\u0baa\u0bb0\u0bcd\u0b95\u0bb3\u0bc7! \u0b89\u0b99\u0bcd\u0b95\u0bb3\u0bcd \u0ba4\u0bca\u0bb4\u0bbf\u0bb2\u0bc8 \u0b85\u0b9f\u0bc1\u0ba4\u0bcd\u0ba4 \u0ba8\u0bbf\u0bb2\u0bc8\u0b95\u0bcd\u0b95\u0bc1 \u0b95\u0bca\u0ba3\u0bcd\u0b9f\u0bc1 \u0b9a\u0bc6\u0bb2\u0bcd\u0bb2 \u0bb5\u0bc7\u0ba3\u0bcd\u0b9f\u0bc1\u0bae\u0bbe? \u0b87\u0ba9\u0bcd\u0bb1\u0bc1 \u0ba8\u0bbe\u0bae\u0bcd \u0baa\u0bbe\u0bb0\u0bcd\u0b95\u0bcd\u0b95 \u0b87\u0bb0\u0bc1\u0baa\u0bcd\u0baa\u0ba4\u0bc1 \u0b92\u0bb0\u0bc1 \u0b85\u0bb1\u0bcd\u0baa\u0bc1\u0ba4\u0bae\u0bbe\u0ba9 \u0ba4\u0baf\u0bbe\u0bb0\u0bbf\u0baa\u0bcd\u0baa\u0bc1. \u0b87\u0ba4\u0bc1 \u0b89\u0b99\u0bcd\u0b95\u0bb3\u0bcd \u0bb5\u0bc7\u0bb2\u0bc8\u0baf\u0bc8 \u0b8e\u0bb3\u0bbf\u0ba4\u0bbe\u0b95\u0bcd\u0b95\u0bc1\u0bae\u0bcd \u0bae\u0bb1\u0bcd\u0bb1\u0bc1\u0bae\u0bcd \u0ba4\u0bb0\u0bae\u0bbe\u0ba9\u0ba4\u0bc1. \u0b89\u0b9f\u0ba9\u0bc7 \u0b86\u0bb0\u0bcd\u0b9f\u0bb0\u0bcd \u0b9a\u0bc6\u0baf\u0bcd\u0baf \u0b95\u0bc0\u0bb4\u0bc7 \u0b89\u0bb3\u0bcd\u0bb3 \u0bb2\u0bbf\u0b99\u0bcd\u0b95\u0bc8 \u0b95\u0bbf\u0bb3\u0bbf\u0b95\u0bcd \u0b9a\u0bc6\u0baf\u0bcd\u0baf\u0bb5\u0bc1\u0bae\u0bcd!",
+      "whatsapp_post": "\u0bb5\u0ba3\u0b95\u0bcd\u0b95\u0bae\u0bcd \u0ba8\u0ba3\u0bcd\u0baa\u0bb0\u0bcd\u0b95\u0bb3\u0bc7! \u0b89\u0b99\u0bcd\u0b95\u0bb3\u0bcd \u0ba4\u0bca\u0bb4\u0bbf\u0bb2\u0bc8 \u0b85\u0b9f\u0bc1\u0ba4\u0bcd\u0ba4 \u0ba8\u0bbf\u0bb2\u0bc8\u0b95\u0bcd\u0b95\u0bc1 \u0b95\u0bca\u0ba3\u0bcd\u0b9f\u0bc1 \u0b9a\u0bc6\u0bb2\u0bcd\u0bb2 \u0bb5\u0bc7\u0ba3\u0bcd\u0b9f\u0bc1\u0bae\u0bbe? \u0b87\u0ba9\u0bcd\u0bb1\u0bc1 \u0ba8\u0bbe\u0bae\u0bcd \u0baa\u0bbe\u0bb0\u0bcd\u0b95\u0bcd\u0b95 \u0b87\u0bb0\u0bc1\u0baa\u0bcd\u0baa\u0ba4\u0bc1 \u0b92\u0bb0\u0bc1 \u0b85\u0bb1\u0bcd\u0baa\u0bc1\u0ba4\u0bae\u0bbe\u0ba9 \u0ba4\u0baf\u0bbe\u0bb0\u0bbf\u0baa\u0bcd\u0baa\u0bc1. \u0b87\u0ba4\u0bc1 \u0b89\u0b99\u0bcd\u0b95\u0bb3\u0bcd \u0bb5\u0bc7\u0bb2\u0bc8\u0baf\u0bc8 \u0b8e\u0bb3\u0bbf\u0ba4\u0bbe\u0b95\u0bcd\u0b95\u0bc1\u0bae\u0bcd \u0bae\u0bb1\u0bcd\u0bb1\u0bc1\u0bae\u0bcd \u0ba4\u0bb0\u0bae\u0bbe\u0ba9\u0ba4\u0bc1. \u0b89\u0b9f\u0ba9\u0bc7 \u0b86\u0bb0\u0bcd\u0b9f\u0bb0\u0bcd \u0b9a\u0bc6\u0baf\u0bcd\u0baf \u0b95\u0bc0\u0bb4\u0bc7 \u0b89\u0bb3\u0bcd\u0bb3 \u0bb2\u0bbf\u0b99\u0bcd\u0b95\u0bc8 \u0b95\u0bbf\u0bb3\u0bbf\u0b95\u0bcd \u0b9a\u0bc6\u0baf\u0bcd\u0baf\u0bb5\u0bc1\u0bae\u0bcd!",
+      "google_business_post": "\u0bb5\u0ba3\u0b95\u0bcd\u0b95\u0bae\u0bcd \u0ba8\u0ba3\u0bcd\u0baa\u0bb0\u0bcd\u0b95\u0bb3\u0bc7! \u0b89\u0b99\u0bcd\u0b95\u0bb3\u0bcd \u0ba4\u0bca\u0bb4\u0bbf\u0bb2\u0bc8 \u0b85\u0b9f\u0bc1\u0ba4\u0bcd\u0ba4 \u0ba8\u0bbf\u0bb2\u0bc8\u0b95\u0bcd\u0b95\u0bc1 \u0b95\u0bca\u0ba3\u0bcd\u0b9f\u0bc1 \u0b9a\u0bc6\u0bb2\u0bcd\u0bb2 \u0bb5\u0bc7\u0ba3\u0bcd\u0b9f\u0bc1\u0bae\u0bbe? \u0b87\u0ba9\u0bcd\u0bb1\u0bc1 \u0ba8\u0bbe\u0bae\u0bcd \u0baa\u0bbe\u0bb0\u0bcd\u0b95\u0bcd\u0b95 \u0b87\u0bb0\u0bc1\u0baa\u0bcd\u0baa\u0ba4\u0bc1 \u0b92\u0bb0\u0bc1 \u0b85\u0bb1\u0bcd\u0baa\u0bc1\u0ba4\u0bae\u0bbe\u0ba9 \u0ba4\u0baf\u0bbe\u0bb0\u0bbf\u0baa\u0bcd\u0baa\u0bc1. \u0b87\u0ba4\u0bc1 \u0b89\u0b99\u0bcd\u0b95\u0bb3\u0bcd \u0bb5\u0bc7\u0bb2\u0bc8\u0baf\u0bc8 \u0b8e\u0bb3\u0bbf\u0ba4\u0bbe\u0b95\u0bcd\u0b95\u0bc1\u0bae\u0bcd \u0bae\u0bb1\u0bcd\u0bb1\u0bc1\u0bae\u0bcd \u0ba4\u0bb0\u0bae\u0bbe\u0ba9\u0ba4\u0bc1. \u0b89\u0b9f\u0ba9\u0bc7 \u0b86\u0bb0\u0bcd\u0b9f\u0bb0\u0bcd \u0b9a\u0bc6\u0baf\u0bcd\u0baf \u0b95\u0bc0\u0bb4\u0bc7 \u0b89\u0bb3\u0bcd\u0bb3 \u0bb2\u0bbf\u0b99\u0bcd\u0b95\u0bc8 \u0b95\u0bbf\u0bb3\u0bbf\u0b95\u0bcd \u0b9a\u0bc6\u0baf\u0bcd\u0baf\u0bb5\u0bc1\u0bae\u0bcd!",
+      "id": "f6066dc9-a765-4887-b964-5cf0f804d944",
+      "created_at": "2026-06-17T00:14:25.725503"
+    },
+    {
+      "script_id": "e763dc6b-d22b-44ed-a923-b3bfd6174c30",
+      "language": "Telugu",
+      "youtube_script": "\u0c28\u0c2e\u0c38\u0c4d\u0c24\u0c47 \u0c2b\u0c4d\u0c30\u0c46\u0c02\u0c21\u0c4d\u0c38\u0c4d! \u0c2e\u0c40 \u0c35\u0c4d\u0c2f\u0c3e\u0c2a\u0c3e\u0c30\u0c3e\u0c28\u0c4d\u0c28\u0c3f \u0c05\u0c2d\u0c3f\u0c35\u0c43\u0c26\u0c4d\u0c27\u0c3f \u0c1a\u0c47\u0c2f\u0c3e\u0c32\u0c28\u0c41\u0c15\u0c41\u0c02\u0c1f\u0c41\u0c28\u0c4d\u0c28\u0c3e\u0c30\u0c3e? \u0c08 \u0c30\u0c4b\u0c1c\u0c41 \u0c2e\u0c47\u0c2e\u0c41 \u0c12\u0c15 \u0c05\u0c26\u0c4d\u0c2d\u0c41\u0c24\u0c2e\u0c48\u0c28 \u0c2a\u0c4d\u0c30\u0c4a\u0c21\u0c15\u0c4d\u0c1f\u0c4d \u0c28\u0c3f \u0c2a\u0c30\u0c3f\u0c1a\u0c2f\u0c02 \u0c1a\u0c47\u0c38\u0c4d\u0c24\u0c41\u0c28\u0c4d\u0c28\u0c3e\u0c2e\u0c41. \u0c07\u0c26\u0c3f \u0c1a\u0c3e\u0c32\u0c3e \u0c09\u0c2a\u0c2f\u0c4b\u0c17\u0c15\u0c30\u0c2e\u0c48\u0c28\u0c26\u0c3f \u0c2e\u0c30\u0c3f\u0c2f\u0c41 \u0c24\u0c15\u0c4d\u0c15\u0c41\u0c35 \u0c27\u0c30\u0c15\u0c47 \u0c32\u0c2d\u0c3f\u0c38\u0c4d\u0c24\u0c41\u0c02\u0c26\u0c3f. \u0c07\u0c2a\u0c4d\u0c2a\u0c41\u0c21\u0c47 \u0c06\u0c30\u0c4d\u0c21\u0c30\u0c4d \u0c1a\u0c47\u0c2f\u0c21\u0c3e\u0c28\u0c3f\u0c15\u0c3f \u0c32\u0c3f\u0c02\u0c15\u0c4d \u0c15\u0c4d\u0c32\u0c3f\u0c15\u0c4d \u0c1a\u0c47\u0c2f\u0c02\u0c21\u0c3f!",
+      "reel_script": "\u0c28\u0c2e\u0c38\u0c4d\u0c24\u0c47 \u0c2b\u0c4d\u0c30\u0c46\u0c02\u0c21\u0c4d\u0c38\u0c4d! \u0c2e\u0c40 \u0c35\u0c4d\u0c2f\u0c3e\u0c2a\u0c3e\u0c30\u0c3e\u0c28\u0c4d\u0c28\u0c3f \u0c05\u0c2d\u0c3f\u0c35\u0c43\u0c26\u0c4d\u0c27\u0c3f \u0c1a\u0c47\u0c2f\u0c3e\u0c32\u0c28\u0c41\u0c15\u0c41\u0c02\u0c1f\u0c41\u0c28\u0c4d\u0c28\u0c3e\u0c30\u0c3e? \u0c08 \u0c30\u0c4b\u0c1c\u0c41 \u0c2e\u0c47\u0c2e\u0c41 \u0c12\u0c15 \u0c05\u0c26\u0c4d\u0c2d\u0c41\u0c24\u0c2e\u0c48\u0c28 \u0c2a\u0c4d\u0c30\u0c4a\u0c21\u0c15\u0c4d\u0c1f\u0c4d \u0c28\u0c3f \u0c2a\u0c30\u0c3f\u0c1a\u0c2f\u0c02 \u0c1a\u0c47\u0c38\u0c4d\u0c24\u0c41\u0c28\u0c4d\u0c28\u0c3e\u0c2e\u0c41. \u0c07\u0c26\u0c3f \u0c1a\u0c3e\u0c32\u0c3e \u0c09\u0c2a\u0c2f\u0c4b\u0c17\u0c15\u0c30\u0c2e\u0c48\u0c28\u0c26\u0c3f \u0c2e\u0c30\u0c3f\u0c2f\u0c41 \u0c24\u0c15\u0c4d\u0c15\u0c41\u0c35 \u0c27\u0c30\u0c15\u0c47 \u0c32\u0c2d\u0c3f\u0c38\u0c4d\u0c24\u0c41\u0c02\u0c26\u0c3f. \u0c07\u0c2a\u0c4d\u0c2a\u0c41\u0c21\u0c47 \u0c06\u0c30\u0c4d\u0c21\u0c30\u0c4d \u0c1a\u0c47\u0c2f\u0c21\u0c3e\u0c28\u0c3f\u0c15\u0c3f \u0c32\u0c3f\u0c02\u0c15\u0c4d \u0c15\u0c4d\u0c32\u0c3f\u0c15\u0c4d \u0c1a\u0c47\u0c2f\u0c02\u0c21\u0c3f!",
+      "whatsapp_post": "\u0c28\u0c2e\u0c38\u0c4d\u0c24\u0c47 \u0c2b\u0c4d\u0c30\u0c46\u0c02\u0c21\u0c4d\u0c38\u0c4d! \u0c2e\u0c40 \u0c35\u0c4d\u0c2f\u0c3e\u0c2a\u0c3e\u0c30\u0c3e\u0c28\u0c4d\u0c28\u0c3f \u0c05\u0c2d\u0c3f\u0c35\u0c43\u0c26\u0c4d\u0c27\u0c3f \u0c1a\u0c47\u0c2f\u0c3e\u0c32\u0c28\u0c41\u0c15\u0c41\u0c02\u0c1f\u0c41\u0c28\u0c4d\u0c28\u0c3e\u0c30\u0c3e? \u0c08 \u0c30\u0c4b\u0c1c\u0c41 \u0c2e\u0c47\u0c2e\u0c41 \u0c12\u0c15 \u0c05\u0c26\u0c4d\u0c2d\u0c41\u0c24\u0c2e\u0c48\u0c28 \u0c2a\u0c4d\u0c30\u0c4a\u0c21\u0c15\u0c4d\u0c1f\u0c4d \u0c28\u0c3f \u0c2a\u0c30\u0c3f\u0c1a\u0c2f\u0c02 \u0c1a\u0c47\u0c38\u0c4d\u0c24\u0c41\u0c28\u0c4d\u0c28\u0c3e\u0c2e\u0c41. \u0c07\u0c26\u0c3f \u0c1a\u0c3e\u0c32\u0c3e \u0c09\u0c2a\u0c2f\u0c4b\u0c17\u0c15\u0c30\u0c2e\u0c48\u0c28\u0c26\u0c3f \u0c2e\u0c30\u0c3f\u0c2f\u0c41 \u0c24\u0c15\u0c4d\u0c15\u0c41\u0c35 \u0c27\u0c30\u0c15\u0c47 \u0c32\u0c2d\u0c3f\u0c38\u0c4d\u0c24\u0c41\u0c02\u0c26\u0c3f. \u0c07\u0c2a\u0c4d\u0c2a\u0c41\u0c21\u0c47 \u0c06\u0c30\u0c4d\u0c21\u0c30\u0c4d \u0c1a\u0c47\u0c2f\u0c21\u0c3e\u0c28\u0c3f\u0c15\u0c3f \u0c32\u0c3f\u0c02\u0c15\u0c4d \u0c15\u0c4d\u0c32\u0c3f\u0c15\u0c4d \u0c1a\u0c47\u0c2f\u0c02\u0c21\u0c3f!",
+      "google_business_post": "\u0c28\u0c2e\u0c38\u0c4d\u0c24\u0c47 \u0c2b\u0c4d\u0c30\u0c46\u0c02\u0c21\u0c4d\u0c38\u0c4d! \u0c2e\u0c40 \u0c35\u0c4d\u0c2f\u0c3e\u0c2a\u0c3e\u0c30\u0c3e\u0c28\u0c4d\u0c28\u0c3f \u0c05\u0c2d\u0c3f\u0c35\u0c43\u0c26\u0c4d\u0c27\u0c3f \u0c1a\u0c47\u0c2f\u0c3e\u0c32\u0c28\u0c41\u0c15\u0c41\u0c02\u0c1f\u0c41\u0c28\u0c4d\u0c28\u0c3e\u0c30\u0c3e? \u0c08 \u0c30\u0c4b\u0c1c\u0c41 \u0c2e\u0c47\u0c2e\u0c41 \u0c12\u0c15 \u0c05\u0c26\u0c4d\u0c2d\u0c41\u0c24\u0c2e\u0c48\u0c28 \u0c2a\u0c4d\u0c30\u0c4a\u0c21\u0c15\u0c4d\u0c1f\u0c4d \u0c28\u0c3f \u0c2a\u0c30\u0c3f\u0c1a\u0c2f\u0c02 \u0c1a\u0c47\u0c38\u0c4d\u0c24\u0c41\u0c28\u0c4d\u0c28\u0c3e\u0c2e\u0c41. \u0c07\u0c26\u0c3f \u0c1a\u0c3e\u0c32\u0c3e \u0c09\u0c2a\u0c2f\u0c4b\u0c17\u0c15\u0c30\u0c2e\u0c48\u0c28\u0c26\u0c3f \u0c2e\u0c30\u0c3f\u0c2f\u0c41 \u0c24\u0c15\u0c4d\u0c15\u0c41\u0c35 \u0c27\u0c30\u0c15\u0c47 \u0c32\u0c2d\u0c3f\u0c38\u0c4d\u0c24\u0c41\u0c02\u0c26\u0c3f. \u0c07\u0c2a\u0c4d\u0c2a\u0c41\u0c21\u0c47 \u0c06\u0c30\u0c4d\u0c21\u0c30\u0c4d \u0c1a\u0c47\u0c2f\u0c21\u0c3e\u0c28\u0c3f\u0c15\u0c3f \u0c32\u0c3f\u0c02\u0c15\u0c4d \u0c15\u0c4d\u0c32\u0c3f\u0c15\u0c4d \u0c1a\u0c47\u0c2f\u0c02\u0c21\u0c3f!",
+      "id": "3f2ecad0-faac-4137-abfb-5c8f19671617",
+      "created_at": "2026-06-17T00:14:25.809075"
+    },
+    {
+      "script_id": "e763dc6b-d22b-44ed-a923-b3bfd6174c30",
+      "language": "Malayalam",
+      "youtube_script": "\u0d39\u0d32\u0d4b \u0d15\u0d42\u0d1f\u0d4d\u0d1f\u0d41\u0d15\u0d3e\u0d30\u0d46! \u0d28\u0d3f\u0d19\u0d4d\u0d19\u0d33\u0d41\u0d1f\u0d46 \u0d2c\u0d3f\u0d38\u0d3f\u0d28\u0d38\u0d4d\u0d38\u0d4d \u0d35\u0d33\u0d7c\u0d24\u0d4d\u0d24\u0d3e\u0d7b \u0d06\u0d17\u0d4d\u0d30\u0d39\u0d3f\u0d15\u0d4d\u0d15\u0d41\u0d28\u0d4d\u0d28\u0d41\u0d23\u0d4d\u0d1f\u0d4b? \u0d07\u0d28\u0d4d\u0d28\u0d4d \u0d1e\u0d19\u0d4d\u0d19\u0d7e \u0d2a\u0d30\u0d3f\u0d1a\u0d2f\u0d2a\u0d4d\u0d2a\u0d46\u0d1f\u0d41\u0d24\u0d4d\u0d24\u0d41\u0d28\u0d4d\u0d28\u0d24\u0d4d \u0d12\u0d30\u0d41 \u0d2e\u0d3f\u0d15\u0d1a\u0d4d\u0d1a \u0d09\u0d7d\u0d2a\u0d4d\u0d2a\u0d28\u0d4d\u0d28\u0d2e\u0d3e\u0d23\u0d4d. \u0d07\u0d24\u0d4d \u0d28\u0d3f\u0d19\u0d4d\u0d19\u0d33\u0d41\u0d1f\u0d46 \u0d1c\u0d4b\u0d32\u0d3f \u0d0e\u0d33\u0d41\u0d2a\u0d4d\u0d2a\u0d2e\u0d3e\u0d15\u0d4d\u0d15\u0d41\u0d02. \u0d07\u0d2a\u0d4d\u0d2a\u0d4b\u0d7e \u0d24\u0d28\u0d4d\u0d28\u0d46 \u0d13\u0d7c\u0d21\u0d7c \u0d1a\u0d46\u0d2f\u0d4d\u0d2f\u0d3e\u0d7b \u0d24\u0d3e\u0d34\u0d46\u0d2f\u0d41\u0d33\u0d4d\u0d33 \u0d32\u0d3f\u0d19\u0d4d\u0d15\u0d3f\u0d7d \u0d15\u0d4d\u0d32\u0d3f\u0d15\u0d4d\u0d15\u0d4d \u0d1a\u0d46\u0d2f\u0d4d\u0d2f\u0d41\u0d15!",
+      "reel_script": "\u0d39\u0d32\u0d4b \u0d15\u0d42\u0d1f\u0d4d\u0d1f\u0d41\u0d15\u0d3e\u0d30\u0d46! \u0d28\u0d3f\u0d19\u0d4d\u0d19\u0d33\u0d41\u0d1f\u0d46 \u0d2c\u0d3f\u0d38\u0d3f\u0d28\u0d38\u0d4d\u0d38\u0d4d \u0d35\u0d33\u0d7c\u0d24\u0d4d\u0d24\u0d3e\u0d7b \u0d06\u0d17\u0d4d\u0d30\u0d39\u0d3f\u0d15\u0d4d\u0d15\u0d41\u0d28\u0d4d\u0d28\u0d41\u0d23\u0d4d\u0d1f\u0d4b? \u0d07\u0d28\u0d4d\u0d28\u0d4d \u0d1e\u0d19\u0d4d\u0d19\u0d7e \u0d2a\u0d30\u0d3f\u0d1a\u0d2f\u0d2a\u0d4d\u0d2a\u0d46\u0d1f\u0d41\u0d24\u0d4d\u0d24\u0d41\u0d28\u0d4d\u0d28\u0d24\u0d4d \u0d12\u0d30\u0d41 \u0d2e\u0d3f\u0d15\u0d1a\u0d4d\u0d1a \u0d09\u0d7d\u0d2a\u0d4d\u0d2a\u0d28\u0d4d\u0d28\u0d2e\u0d3e\u0d23\u0d4d. \u0d07\u0d24\u0d4d \u0d28\u0d3f\u0d19\u0d4d\u0d19\u0d33\u0d41\u0d1f\u0d46 \u0d1c\u0d4b\u0d32\u0d3f \u0d0e\u0d33\u0d41\u0d2a\u0d4d\u0d2a\u0d2e\u0d3e\u0d15\u0d4d\u0d15\u0d41\u0d02. \u0d07\u0d2a\u0d4d\u0d2a\u0d4b\u0d7e \u0d24\u0d28\u0d4d\u0d28\u0d46 \u0d13\u0d7c\u0d21\u0d7c \u0d1a\u0d46\u0d2f\u0d4d\u0d2f\u0d3e\u0d7b \u0d24\u0d3e\u0d34\u0d46\u0d2f\u0d41\u0d33\u0d4d\u0d33 \u0d32\u0d3f\u0d19\u0d4d\u0d15\u0d3f\u0d7d \u0d15\u0d4d\u0d32\u0d3f\u0d15\u0d4d\u0d15\u0d4d \u0d1a\u0d46\u0d2f\u0d4d\u0d2f\u0d41\u0d15!",
+      "whatsapp_post": "\u0d39\u0d32\u0d4b \u0d15\u0d42\u0d1f\u0d4d\u0d1f\u0d41\u0d15\u0d3e\u0d30\u0d46! \u0d28\u0d3f\u0d19\u0d4d\u0d19\u0d33\u0d41\u0d1f\u0d46 \u0d2c\u0d3f\u0d38\u0d3f\u0d28\u0d38\u0d4d\u0d38\u0d4d \u0d35\u0d33\u0d7c\u0d24\u0d4d\u0d24\u0d3e\u0d7b \u0d06\u0d17\u0d4d\u0d30\u0d39\u0d3f\u0d15\u0d4d\u0d15\u0d41\u0d28\u0d4d\u0d28\u0d41\u0d23\u0d4d\u0d1f\u0d4b? \u0d07\u0d28\u0d4d\u0d28\u0d4d \u0d1e\u0d19\u0d4d\u0d19\u0d7e \u0d2a\u0d30\u0d3f\u0d1a\u0d2f\u0d2a\u0d4d\u0d2a\u0d46\u0d1f\u0d41\u0d24\u0d4d\u0d24\u0d41\u0d28\u0d4d\u0d28\u0d24\u0d4d \u0d12\u0d30\u0d41 \u0d2e\u0d3f\u0d15\u0d1a\u0d4d\u0d1a \u0d09\u0d7d\u0d2a\u0d4d\u0d2a\u0d28\u0d4d\u0d28\u0d2e\u0d3e\u0d23\u0d4d. \u0d07\u0d24\u0d4d \u0d28\u0d3f\u0d19\u0d4d\u0d19\u0d33\u0d41\u0d1f\u0d46 \u0d1c\u0d4b\u0d32\u0d3f \u0d0e\u0d33\u0d41\u0d2a\u0d4d\u0d2a\u0d2e\u0d3e\u0d15\u0d4d\u0d15\u0d41\u0d02. \u0d07\u0d2a\u0d4d\u0d2a\u0d4b\u0d7e \u0d24\u0d28\u0d4d\u0d28\u0d46 \u0d13\u0d7c\u0d21\u0d7c \u0d1a\u0d46\u0d2f\u0d4d\u0d2f\u0d3e\u0d7b \u0d24\u0d3e\u0d34\u0d46\u0d2f\u0d41\u0d33\u0d4d\u0d33 \u0d32\u0d3f\u0d19\u0d4d\u0d15\u0d3f\u0d7d \u0d15\u0d4d\u0d32\u0d3f\u0d15\u0d4d\u0d15\u0d4d \u0d1a\u0d46\u0d2f\u0d4d\u0d2f\u0d41\u0d15!",
+      "google_business_post": "\u0d39\u0d32\u0d4b \u0d15\u0d42\u0d1f\u0d4d\u0d1f\u0d41\u0d15\u0d3e\u0d30\u0d46! \u0d28\u0d3f\u0d19\u0d4d\u0d19\u0d33\u0d41\u0d1f\u0d46 \u0d2c\u0d3f\u0d38\u0d3f\u0d28\u0d38\u0d4d\u0d38\u0d4d \u0d35\u0d33\u0d7c\u0d24\u0d4d\u0d24\u0d3e\u0d7b \u0d06\u0d17\u0d4d\u0d30\u0d39\u0d3f\u0d15\u0d4d\u0d15\u0d41\u0d28\u0d4d\u0d28\u0d41\u0d23\u0d4d\u0d1f\u0d4b? \u0d07\u0d28\u0d4d\u0d28\u0d4d \u0d1e\u0d19\u0d4d\u0d19\u0d7e \u0d2a\u0d30\u0d3f\u0d1a\u0d2f\u0d2a\u0d4d\u0d2a\u0d46\u0d1f\u0d41\u0d24\u0d4d\u0d24\u0d41\u0d28\u0d4d\u0d28\u0d24\u0d4d \u0d12\u0d30\u0d41 \u0d2e\u0d3f\u0d15\u0d1a\u0d4d\u0d1a \u0d09\u0d7d\u0d2a\u0d4d\u0d2a\u0d28\u0d4d\u0d28\u0d2e\u0d3e\u0d23\u0d4d. \u0d07\u0d24\u0d4d \u0d28\u0d3f\u0d19\u0d4d\u0d19\u0d33\u0d41\u0d1f\u0d46 \u0d1c\u0d4b\u0d32\u0d3f \u0d0e\u0d33\u0d41\u0d2a\u0d4d\u0d2a\u0d2e\u0d3e\u0d15\u0d4d\u0d15\u0d41\u0d02. \u0d07\u0d2a\u0d4d\u0d2a\u0d4b\u0d7e \u0d24\u0d28\u0d4d\u0d28\u0d46 \u0d13\u0d7c\u0d21\u0d7c \u0d1a\u0d46\u0d2f\u0d4d\u0d2f\u0d3e\u0d7b \u0d24\u0d3e\u0d34\u0d46\u0d2f\u0d41\u0d33\u0d4d\u0d33 \u0d32\u0d3f\u0d19\u0d4d\u0d15\u0d3f\u0d7d \u0d15\u0d4d\u0d32\u0d3f\u0d15\u0d4d\u0d15\u0d4d \u0d1a\u0d46\u0d2f\u0d4d\u0d2f\u0d41\u0d15!",
+      "id": "bfce75ed-2900-4bb5-b3ac-a9d4a9acaf1f",
+      "created_at": "2026-06-17T00:14:25.889163"
+    }
+  ],
+  "voiceovers": [
+    {
+      "translation_id": "4b60101f-ab3c-42d3-878a-ac5b6c7050b2",
+      "audio_url": "/static/media/voiceover_english_v2_cf375002.mp3",
+      "duration": 11.59,
+      "id": "8de017d3-4a59-4480-adf9-851673af92c5",
+      "created_at": "2026-06-16T16:04:08.992742"
+    },
+    {
+      "translation_id": "efa5dce3-196d-4201-a6d3-6b14a52a15d4",
+      "audio_url": "/static/media/voiceover_hindi_v2_0e98b3b2.mp3",
+      "duration": 20.23,
+      "id": "493e4367-faa3-41a9-9122-daf8c71d88d4",
+      "created_at": "2026-06-16T16:04:09.087950"
+    },
+    {
+      "translation_id": "e5a96805-0f4c-406f-8bc1-2acc8894d10a",
+      "audio_url": "/static/media/voiceover_tamil_v2_edede122.mp3",
+      "duration": 19.32,
+      "id": "e02f5437-d257-496a-b24d-5633efaf34f0",
+      "created_at": "2026-06-16T16:04:09.141329"
+    },
+    {
+      "translation_id": "a947319e-c319-44dd-8eb6-c520517f3faa",
+      "audio_url": "/static/media/voiceover_telugu_v2_a8476c99.mp3",
+      "duration": 18.86,
+      "id": "b70d292f-71b9-45df-a57b-0406ce3087d7",
+      "created_at": "2026-06-16T16:04:09.191640"
+    },
+    {
+      "translation_id": "ff6e39ba-61d9-403f-9d4e-0f95a3347062",
+      "audio_url": "/static/media/voiceover_malayalam_v2_56a549d6.mp3",
+      "duration": 14.5,
+      "id": "23099219-d677-42a1-a443-876b47f9c022",
+      "created_at": "2026-06-16T16:04:09.292167"
+    },
+    {
+      "translation_id": "bc5e9802-4906-4a76-bd5b-909a598014b7",
+      "audio_url": "/static/media/voiceover_english_v2_b2dc5062.mp3",
+      "duration": 13.9,
+      "id": "7f364d69-f898-4a16-8325-721b955cb7b1",
+      "created_at": "2026-06-16T23:33:14.037626"
+    },
+    {
+      "translation_id": "17d1d12f-1b1e-4837-be4a-9e904a9baa6d",
+      "audio_url": "/static/media/voiceover_hindi_v2_f8ea4384.mp3",
+      "duration": 21.7,
+      "id": "0d84000c-b430-4352-a74d-3ba946dc6c5f",
+      "created_at": "2026-06-16T23:33:14.087126"
+    },
+    {
+      "translation_id": "e79676e6-fa34-4078-8b81-d10805288ad4",
+      "audio_url": "/static/media/voiceover_tamil_v2_db5d38d9.mp3",
+      "duration": 17.78,
+      "id": "4318054b-7547-43ca-aac1-f977382076ab",
+      "created_at": "2026-06-16T23:33:14.128531"
+    },
+    {
+      "translation_id": "55466895-8306-4f30-a5e9-812e18536c13",
+      "audio_url": "/static/media/voiceover_telugu_v2_c7a0a218.mp3",
+      "duration": 18.22,
+      "id": "bfcaf9c4-fc69-4bf3-9672-312886e80c12",
+      "created_at": "2026-06-16T23:33:14.221573"
+    },
+    {
+      "translation_id": "e6632d07-b813-42b4-9376-8717ee5a5bd0",
+      "audio_url": "/static/media/voiceover_malayalam_v2_67268ad4.mp3",
+      "duration": 16.1,
+      "id": "4d0b01b0-452d-4ad7-83e3-272daa9346d1",
+      "created_at": "2026-06-16T23:33:14.285979"
+    },
+    {
+      "translation_id": "3e9e2906-1cfb-4769-822e-8ab563bd67c7",
+      "audio_url": "/static/media/voiceover_english_v2_4bf16686.mp3",
+      "duration": 29.11,
+      "id": "2ba1872b-e103-44cc-9a0f-8db7f0b8c743",
+      "created_at": "2026-06-17T00:14:25.547123"
+    },
+    {
+      "translation_id": "fb190d65-b16f-4120-a388-1e0962a04d35",
+      "audio_url": "/static/media/voiceover_hindi_v2_23f60b2d.mp3",
+      "duration": 21.7,
+      "id": "94afa312-651c-4992-87f5-61a475eb8fab",
+      "created_at": "2026-06-17T00:14:25.627955"
+    },
+    {
+      "translation_id": "f6066dc9-a765-4887-b964-5cf0f804d944",
+      "audio_url": "/static/media/voiceover_tamil_v2_b53fd6aa.mp3",
+      "duration": 17.78,
+      "id": "2db03357-c7db-4dfb-8e12-f1baf7c37f7a",
+      "created_at": "2026-06-17T00:14:25.752094"
+    },
+    {
+      "translation_id": "3f2ecad0-faac-4137-abfb-5c8f19671617",
+      "audio_url": "/static/media/voiceover_telugu_v2_daea6930.mp3",
+      "duration": 18.22,
+      "id": "f9403ba4-591a-4a22-893d-93f05d1b95e8",
+      "created_at": "2026-06-17T00:14:25.827101"
+    },
+    {
+      "translation_id": "bfce75ed-2900-4bb5-b3ac-a9d4a9acaf1f",
+      "audio_url": "/static/media/voiceover_malayalam_v2_7fdb227b.mp3",
+      "duration": 16.1,
+      "id": "d46a7991-9996-4872-9cd2-5557270a014f",
+      "created_at": "2026-06-17T00:14:25.905789"
+    }
+  ],
+  "videos": [
+    {
+      "voiceover_id": "8de017d3-4a59-4480-adf9-851673af92c5",
+      "video_url": "/static/media/video_english_v2_3ce14206.mp4",
+      "status": "ready",
+      "approval_status": "pending",
+      "version": 1,
+      "youtube_id": null,
+      "youtube_url": null,
+      "engagement_count": 0,
+      "id": "b75db18b-a76f-42bd-8b8f-15ca443e5718",
+      "created_at": "2026-06-16T16:04:09.047598"
+    },
+    {
+      "voiceover_id": "493e4367-faa3-41a9-9122-daf8c71d88d4",
+      "video_url": "/static/media/video_hindi_v2_63b2d922.mp4",
+      "status": "ready",
+      "approval_status": "pending",
+      "version": 1,
+      "youtube_id": null,
+      "youtube_url": null,
+      "engagement_count": 0,
+      "id": "3f155372-cd2d-4b33-8aa1-e74d949da322",
+      "created_at": "2026-06-16T16:04:09.106260"
+    },
+    {
+      "voiceover_id": "e02f5437-d257-496a-b24d-5633efaf34f0",
+      "video_url": "/static/media/video_tamil_v2_12efcce8.mp4",
+      "status": "ready",
+      "approval_status": "pending",
+      "version": 1,
+      "youtube_id": null,
+      "youtube_url": null,
+      "engagement_count": 0,
+      "id": "5d04cc8c-1bd1-4071-adaa-4edcdf4d1112",
+      "created_at": "2026-06-16T16:04:09.155298"
+    },
+    {
+      "voiceover_id": "b70d292f-71b9-45df-a57b-0406ce3087d7",
+      "video_url": "/static/media/video_telugu_v2_6a2efde3.mp4",
+      "status": "ready",
+      "approval_status": "pending",
+      "version": 1,
+      "youtube_id": null,
+      "youtube_url": null,
+      "engagement_count": 0,
+      "id": "e465a7b9-b1fe-49f3-bc8e-4884471c6012",
+      "created_at": "2026-06-16T16:04:09.238379"
+    },
+    {
+      "voiceover_id": "23099219-d677-42a1-a443-876b47f9c022",
+      "video_url": "/static/media/video_malayalam_v2_b9304c03.mp4",
+      "status": "ready",
+      "approval_status": "pending",
+      "version": 1,
+      "youtube_id": null,
+      "youtube_url": null,
+      "engagement_count": 0,
+      "id": "4c6bbe6b-6d6a-4783-a03a-c955c7d183d8",
+      "created_at": "2026-06-16T16:04:09.309434"
+    },
+    {
+      "voiceover_id": "7f364d69-f898-4a16-8325-721b955cb7b1",
+      "video_url": "/static/media/video_english_v2_67182a60.mp4",
+      "status": "ready",
+      "approval_status": "pending",
+      "version": 1,
+      "youtube_id": null,
+      "youtube_url": null,
+      "engagement_count": 0,
+      "id": "2766d4ac-a3b0-48e1-b976-eba5e1f9b759",
+      "created_at": "2026-06-16T23:33:14.050155"
+    },
+    {
+      "voiceover_id": "0d84000c-b430-4352-a74d-3ba946dc6c5f",
+      "video_url": "/static/media/video_hindi_v2_cc1de0ab.mp4",
+      "status": "ready",
+      "approval_status": "pending",
+      "version": 1,
+      "youtube_id": null,
+      "youtube_url": null,
+      "engagement_count": 0,
+      "id": "35488f01-c0e3-4ee3-b620-dfe39c1342a6",
+      "created_at": "2026-06-16T23:33:14.095878"
+    },
+    {
+      "voiceover_id": "4318054b-7547-43ca-aac1-f977382076ab",
+      "video_url": "/static/media/video_tamil_v2_7feaead7.mp4",
+      "status": "ready",
+      "approval_status": "pending",
+      "version": 1,
+      "youtube_id": null,
+      "youtube_url": null,
+      "engagement_count": 0,
+      "id": "b94fbc72-54c9-4f4f-8037-9976fb9457c8",
+      "created_at": "2026-06-16T23:33:14.169465"
+    },
+    {
+      "voiceover_id": "bfcaf9c4-fc69-4bf3-9672-312886e80c12",
+      "video_url": "/static/media/video_telugu_v2_b4e4e0a7.mp4",
+      "status": "ready",
+      "approval_status": "pending",
+      "version": 1,
+      "youtube_id": null,
+      "youtube_url": null,
+      "engagement_count": 0,
+      "id": "5fa217df-5b87-4e05-9782-4498c2ccb482",
+      "created_at": "2026-06-16T23:33:14.237094"
+    },
+    {
+      "voiceover_id": "4d0b01b0-452d-4ad7-83e3-272daa9346d1",
+      "video_url": "/static/media/video_malayalam_v2_8a0c62e6.mp4",
+      "status": "ready",
+      "approval_status": "pending",
+      "version": 1,
+      "youtube_id": null,
+      "youtube_url": null,
+      "engagement_count": 0,
+      "id": "94fa7340-718b-4eb8-8265-636d93c503af",
+      "created_at": "2026-06-16T23:33:14.303318"
+    },
+    {
+      "voiceover_id": "2ba1872b-e103-44cc-9a0f-8db7f0b8c743",
+      "video_url": "/static/media/video_english_v2_045abbfc.mp4",
+      "status": "ready",
+      "approval_status": "pending",
+      "version": 1,
+      "youtube_id": "smXREukFWcY",
+      "youtube_url": "https://www.youtube.com/watch?v=smXREukFWcY",
+      "engagement_count": 0,
+      "id": "5adf2d81-a0f5-4201-a62c-c1eb3576c752",
+      "created_at": "2026-06-17T00:14:25.568747"
+    },
+    {
+      "voiceover_id": "94afa312-651c-4992-87f5-61a475eb8fab",
+      "video_url": "/static/media/video_hindi_v2_06aaa354.mp4",
+      "status": "ready",
+      "approval_status": "pending",
+      "version": 1,
+      "youtube_id": null,
+      "youtube_url": null,
+      "engagement_count": 0,
+      "id": "153318e5-41fd-4a9c-a364-761531fd3b36",
+      "created_at": "2026-06-17T00:14:25.645782"
+    },
+    {
+      "voiceover_id": "2db03357-c7db-4dfb-8e12-f1baf7c37f7a",
+      "video_url": "/static/media/video_tamil_v2_c3e2ea34.mp4",
+      "status": "ready",
+      "approval_status": "pending",
+      "version": 1,
+      "youtube_id": null,
+      "youtube_url": null,
+      "engagement_count": 0,
+      "id": "86b3e322-7417-441c-b335-4c4e98d58d10",
+      "created_at": "2026-06-17T00:14:25.775765"
+    },
+    {
+      "voiceover_id": "f9403ba4-591a-4a22-893d-93f05d1b95e8",
+      "video_url": "/static/media/video_telugu_v2_9aad086a.mp4",
+      "status": "ready",
+      "approval_status": "pending",
+      "version": 1,
+      "youtube_id": null,
+      "youtube_url": null,
+      "engagement_count": 0,
+      "id": "d6c1831c-5bcf-4ad5-8e6b-81054bc94aa0",
+      "created_at": "2026-06-17T00:14:25.848741"
+    },
+    {
+      "voiceover_id": "d46a7991-9996-4872-9cd2-5557270a014f",
+      "video_url": "/static/media/video_malayalam_v2_ac4ab175.mp4",
+      "status": "ready",
+      "approval_status": "pending",
+      "version": 1,
+      "youtube_id": null,
+      "youtube_url": null,
+      "engagement_count": 0,
+      "id": "ccf7937c-9617-42e9-89bd-9aae4af3edae",
+      "created_at": "2026-06-17T00:14:25.928453"
+    }
+  ],
+  "comments": [],
+  "leads": [],
+  "conversations": [],
+  "orders": [],
+  "analytics": [
+    {
+      "id": "cb5a8e2c-388d-48f9-9b6c-83dbd847e919",
+      "business_id": "66ce1957-99f6-43b6-8dae-9952201b1115",
+      "date": "2026-06-16",
+      "total_leads": 5,
+      "total_conversions": 0,
+      "videos_generated": 5,
+      "engagement_rate": 4.5,
+      "created_at": "2026-06-16T16:07:08.327199"
+    },
+    {
+      "id": "e28001b8-38cf-4b10-bd60-b49de65a6ef0",
+      "business_id": "ed1b95dd-698c-492a-8e1b-8a0fd90a1b05",
+      "date": "2026-06-16",
+      "total_leads": 0,
+      "total_conversions": 0,
+      "videos_generated": 5,
+      "engagement_rate": 5.0,
+      "created_at": "2026-06-16T23:33:14.065146"
+    },
+    {
+      "id": "83c242c3-032b-43b5-935f-fbd772fd8236",
+      "business_id": "519e5910-3f07-4be9-b37c-1cf159136b12",
+      "date": "2026-06-17",
+      "total_leads": 0,
+      "total_conversions": 0,
+      "videos_generated": 5,
+      "engagement_rate": 5.0,
+      "created_at": "2026-06-17T00:14:25.590367"
+    },
+    {
+      "id": "7e1649b5-7516-45c8-9cc0-0b487ae8743a",
+      "business_id": "66ce1957-99f6-43b6-8dae-9952201b1115",
+      "date": "2026-06-17",
+      "total_leads": 9,
+      "total_conversions": 0,
+      "videos_generated": 0,
+      "engagement_rate": 5.0,
+      "created_at": "2026-06-17T00:24:34.301908"
+    }
+  ],
+  "youtube_channels": [
+    {
+      "channel_id": "UCu2EnDQQw8g1L95HIq0mSCw",
+      "channel_name": "PSC Exam Ninja",
+      "thumbnail": "https://yt3.ggpht.com/7WNkLjfKs-DoZstG6LITWT9HpodSiDev6g8N2rac2-85Z4CA7erExVia0ObthUNgkl2lxBpMbxQ=s88-c-k-c0x00ffffff-no-rj",
+      "subscriber_count": 36,
+      "access_token": "mock_google_access_token_placeholder",
+      "refresh_token": "mock_google_refresh_token_placeholder",
+      "token_uri": "https://oauth2.googleapis.com/token",
+      "client_id": "mock_google_client_id_placeholder.apps.googleusercontent.com",
+      "client_secret": "mock_google_client_secret_placeholder",
+      "scopes": [
+        "https://www.googleapis.com/auth/youtube.readonly",
+        "https://www.googleapis.com/auth/youtube.force-ssl"
+      ],
+      "id": "fcdc1aee-8a30-4936-bcae-5bc34664037d",
+      "created_at": "2026-06-16T22:39:26.284613"
+    }
+  ],
+  "youtube_videos": [
+    {
+      "channel_id": "UCu2EnDQQw8g1L95HIq0mSCw",
+      "video_id": "hmasAU3nev4",
+      "title": "Why everyone is switching to our PureGold Cold-Pressed Coconut Oil today! \ud83d\udd25",
+      "publish_date": "2026-06-17T00:17:27.599966",
+      "status": "monitored",
+      "id": "44cd644d-adbc-4aa4-ac30-636f0e4f8b1c",
+      "created_at": "2026-06-17T00:17:27.600953"
+    },
+    {
+      "channel_id": "UCu2EnDQQw8g1L95HIq0mSCw",
+      "video_id": "PuCb1JHpBkM",
+      "title": "Viral Organic Cardamom Campaign",
+      "publish_date": "2026-06-15T12:49:48Z",
+      "status": "monitored",
+      "id": "dfa38511-7a3c-41d8-9fa3-c3b0f4d4846c",
+      "created_at": "2026-06-17T14:38:56.112188"
+    },
+    {
+      "channel_id": "UCu2EnDQQw8g1L95HIq0mSCw",
+      "video_id": "S_q6wlezTjc",
+      "title": "Quiz Time \ud83d\udcda\u2728 | GK - Q 08 | THE INDIAN CITIES & THEIR NAMES | #gaming #shorts #short #shortvideo",
+      "publish_date": "2023-11-24T06:41:20Z",
+      "status": "monitored",
+      "id": "b367af2d-be06-4477-8933-f9025f8971e4",
+      "created_at": "2026-06-17T14:38:56.130945"
+    },
+    {
+      "channel_id": "UCu2EnDQQw8g1L95HIq0mSCw",
+      "video_id": "gRiCJYtnUpc",
+      "title": "Quiz Time\ud83d\udcda\u2728 | Indian Cities & Their Names | Q -07 | #shorts #short #shortvideo #gaming #share",
+      "publish_date": "2023-11-17T08:08:02Z",
+      "status": "monitored",
+      "id": "b801f779-4cde-4259-a6b5-b49d33f7c87f",
+      "created_at": "2026-06-17T14:38:56.174025"
+    },
+    {
+      "channel_id": "UCu2EnDQQw8g1L95HIq0mSCw",
+      "video_id": "p70WUeGdtGc",
+      "title": "Quiz Time \ud83d\udcda\u2728 | GK Q 06 |                                       #shorts #short #gaming #shortvideo",
+      "publish_date": "2023-11-10T00:00:36Z",
+      "status": "monitored",
+      "id": "ce3dadc6-3d4f-4bc3-9270-9d6c4307712f",
+      "created_at": "2026-06-17T14:38:56.228183"
+    },
+    {
+      "channel_id": "UCu2EnDQQw8g1L95HIq0mSCw",
+      "video_id": "IOKP55vgsa0",
+      "title": "Quiz Time \ud83d\udcda\u2728 | GK Q 05 |                                       #shorts #short #gaming #shortvideo",
+      "publish_date": "2023-11-08T18:30:29Z",
+      "status": "monitored",
+      "id": "8c108996-96af-4b39-8a38-4420b2b86663",
+      "created_at": "2026-06-17T14:38:56.296548"
+    },
+    {
+      "channel_id": "UCu2EnDQQw8g1L95HIq0mSCw",
+      "video_id": "navFbsnSf0E",
+      "title": "Quiz Time\ud83d\udcda\u2728 | GK Q 04 |                                              #gaming #shorts #short #share",
+      "publish_date": "2023-11-07T14:41:20Z",
+      "status": "monitored",
+      "id": "4a53837f-2fe5-4b95-bf9a-e2fac892f257",
+      "created_at": "2026-06-17T14:38:56.321426"
+    },
+    {
+      "channel_id": "UCu2EnDQQw8g1L95HIq0mSCw",
+      "video_id": "YpOF9ZgMemA",
+      "title": "Quiz Time \ud83d\udcda- GK Q 3 |#gk #gaming #shorts #short #shortvideo #shortsvideo #shortsfeed #share",
+      "publish_date": "2023-11-05T13:30:11Z",
+      "status": "monitored",
+      "id": "34cc65e0-db44-4b84-869e-1e4a94a6ea81",
+      "created_at": "2026-06-17T14:38:56.347670"
+    },
+    {
+      "channel_id": "UCu2EnDQQw8g1L95HIq0mSCw",
+      "video_id": "GxSNVVyQfHY",
+      "title": "Quiz Time\ud83d\udcda |GK Q 2 |#gk #gaming #shorts #short #shortvideo #shortsvideo #history #share #upsc #ssc",
+      "publish_date": "2023-11-03T23:49:00Z",
+      "status": "monitored",
+      "id": "555c3a9c-0660-4cb0-961c-2d0d472573d0",
+      "created_at": "2026-06-17T14:38:56.390257"
+    },
+    {
+      "channel_id": "UCu2EnDQQw8g1L95HIq0mSCw",
+      "video_id": "6FRSWO9PBKA",
+      "title": "Quiz Time |GK Q1 |#gk #shorts #short #shortvideo #shortsviral #shortsfeed #share",
+      "publish_date": "2023-11-03T12:55:53Z",
+      "status": "monitored",
+      "id": "0ab4485b-766b-4e80-8ced-255cfa120b91",
+      "created_at": "2026-06-17T14:38:56.422836"
+    },
+    {
+      "channel_id": "UCu2EnDQQw8g1L95HIq0mSCw",
+      "video_id": "ASJw-zG2jRc",
+      "title": "Q30|Topic :The Arrival Of Europeans|UPSC, SSC, PSC Question|#upsc #shorts #short #shortvideo #share",
+      "publish_date": "2023-11-02T07:01:15Z",
+      "status": "monitored",
+      "id": "da6f2580-64c9-4612-b715-81e844bc7183",
+      "created_at": "2026-06-17T14:38:56.444388"
+    },
+    {
+      "channel_id": "UCu2EnDQQw8g1L95HIq0mSCw",
+      "video_id": "ZUmx6Xuhvdk",
+      "title": "Q29|Topic : The Arrival Of Europeans|UPSC, SSC, PSC Question|#upsc #shorts #short #shortvideo #share",
+      "publish_date": "2023-11-01T11:30:17Z",
+      "status": "monitored",
+      "id": "93db3e52-71b0-409c-a8b2-8c8aa6a8934e",
+      "created_at": "2026-06-17T14:38:56.483945"
+    },
+    {
+      "channel_id": "UCu2EnDQQw8g1L95HIq0mSCw",
+      "video_id": "ctJ4r4TZauk",
+      "title": "Q28|Topic : The Arrival Of Europeans|UPSC, SSC, PSC Question|#upsc #shorts #short #shortvideo #share",
+      "publish_date": "2023-10-31T04:53:38Z",
+      "status": "monitored",
+      "id": "d692c010-6389-4f1b-8314-c69dc4f5315f",
+      "created_at": "2026-06-17T14:38:56.501806"
+    },
+    {
+      "channel_id": "UCu2EnDQQw8g1L95HIq0mSCw",
+      "video_id": "1vz9O4s3Qic",
+      "title": "Q27|Topic : The Arrival Of Europeans|UPSC, SSC, PSC Question|#upsc #shorts #short #shortvideo #share",
+      "publish_date": "2023-10-28T23:42:19Z",
+      "status": "monitored",
+      "id": "48e62ca2-157f-4334-8323-80791ae42a36",
+      "created_at": "2026-06-17T14:38:56.594725"
+    },
+    {
+      "channel_id": "UCu2EnDQQw8g1L95HIq0mSCw",
+      "video_id": "_PRXHkEzrdI",
+      "title": "Q26|Topic :The Arrival Of Europeans|UPSC, SSC, PSC Question|#upsc #shorts #short #shortvideo #share",
+      "publish_date": "2023-10-28T12:43:38Z",
+      "status": "monitored",
+      "id": "84419227-ff25-4bb3-8b72-291ad291c021",
+      "created_at": "2026-06-17T14:38:56.659228"
+    },
+    {
+      "channel_id": "UCu2EnDQQw8g1L95HIq0mSCw",
+      "video_id": "EQMVcto3sVY",
+      "title": "Q25|Topic : The Arrival Of Europeans|UPSC, SSC,PSC Question |#upsc #shorts #short #shortvideo #share",
+      "publish_date": "2023-10-28T06:30:09Z",
+      "status": "monitored",
+      "id": "0fc73603-299f-460d-bde4-71301cd29ff3",
+      "created_at": "2026-06-17T14:38:56.699558"
+    },
+    {
+      "channel_id": "UCu2EnDQQw8g1L95HIq0mSCw",
+      "video_id": "z9ctkqmz3vE",
+      "title": "Q24|Topic : The Arrival Of Europeans|UPSC, SSC, PSC Question|#upsc #shorts #short #shortvideo #share",
+      "publish_date": "2023-10-27T23:30:11Z",
+      "status": "monitored",
+      "id": "4a5a4fb2-b709-42a4-82db-0c907004898e",
+      "created_at": "2026-06-17T14:38:56.755995"
+    },
+    {
+      "channel_id": "UCu2EnDQQw8g1L95HIq0mSCw",
+      "video_id": "_UWeEpKnhvk",
+      "title": "Q23 |Topic :The Arrival Of Europeans| UPSC, SSC, PSC Question|#upsc #ssc #shorts #short #shortvideo",
+      "publish_date": "2023-10-27T12:30:32Z",
+      "status": "monitored",
+      "id": "f1ce1372-595b-46d1-afa3-26f1be5376a6",
+      "created_at": "2026-06-17T14:38:56.775258"
+    },
+    {
+      "channel_id": "UCu2EnDQQw8g1L95HIq0mSCw",
+      "video_id": "iBYZqkiFKUk",
+      "title": "Q22|Topic : The Arrival Of Europeans|UPSC, SSC Question|#upsc #shorts #short #shortvideo #share #ssc",
+      "publish_date": "2023-10-27T07:00:19Z",
+      "status": "monitored",
+      "id": "f928823e-10a8-4f3a-9859-895f061b3b0b",
+      "created_at": "2026-06-17T14:38:56.825326"
+    },
+    {
+      "channel_id": "UCu2EnDQQw8g1L95HIq0mSCw",
+      "video_id": "z8d8ClP2m1U",
+      "title": "Q21 |Topic : The Arrival Of Europeans|UPSC, SSC Question|#upsc #ssc #shorts #short #shots #share",
+      "publish_date": "2023-10-26T23:30:10Z",
+      "status": "monitored",
+      "id": "7636c2fc-c1bd-45bd-820e-dbf2bdb2ae0a",
+      "created_at": "2026-06-17T14:38:56.879569"
+    },
+    {
+      "channel_id": "UCu2EnDQQw8g1L95HIq0mSCw",
+      "video_id": "ONaFy-PvIUI",
+      "title": "Q20 |Topic : The Arrival Of Europeans|UPSC, SSC, PSC Question|#upsc #shorts #short #shortvideo #ssc",
+      "publish_date": "2023-10-26T12:38:05Z",
+      "status": "monitored",
+      "id": "41506870-ddcf-4c5a-a6bb-4ee9e0f162dc",
+      "created_at": "2026-06-17T14:38:56.931340"
+    },
+    {
+      "channel_id": "UCu2EnDQQw8g1L95HIq0mSCw",
+      "video_id": "4-vxxGLjNq4",
+      "title": "Q19 |Topic : The Arrival Of Europeans|UPSC, SSC, PSC Question|#history #upsc #shorts #short #share",
+      "publish_date": "2023-10-25T23:30:01Z",
+      "status": "monitored",
+      "id": "0a263aca-bc97-45af-9c6d-f301fa9ce615",
+      "created_at": "2026-06-17T14:38:56.971785"
+    },
+    {
+      "channel_id": "UCu2EnDQQw8g1L95HIq0mSCw",
+      "video_id": "fRb-MIW4-_U",
+      "title": "Q18 |Topic : The Arrival Of Europeans|UPSC, SSC, PSC Question|#history #shorts #short #share #ssc",
+      "publish_date": "2023-10-25T13:53:04Z",
+      "status": "monitored",
+      "id": "762ca67b-ce59-4389-9fb3-5a52cb2d76c8",
+      "created_at": "2026-06-17T14:38:57.006823"
+    },
+    {
+      "channel_id": "UCu2EnDQQw8g1L95HIq0mSCw",
+      "video_id": "unnYymt7eEo",
+      "title": "Q17 |Topic : The Arrival Of Europeans|UPSC, SSC, PSC Question|#upsc #psc #ssc #shorts #shots #share",
+      "publish_date": "2023-10-25T06:46:25Z",
+      "status": "monitored",
+      "id": "fb4ec3ef-4f12-4597-b901-cfeae6a85ad4",
+      "created_at": "2026-06-17T14:38:57.047877"
+    },
+    {
+      "channel_id": "UCu2EnDQQw8g1L95HIq0mSCw",
+      "video_id": "nGG8ZyIbyEA",
+      "title": "Q16| Topic :The Arrival Of Europeans |UPSC, SSC, PSC Question|#upsc #ssc #psc #shorts #short #share",
+      "publish_date": "2023-10-24T13:41:43Z",
+      "status": "monitored",
+      "id": "b961d34e-9497-47ee-8c46-748009109ffb",
+      "created_at": "2026-06-17T14:38:57.075911"
+    },
+    {
+      "channel_id": "UCu2EnDQQw8g1L95HIq0mSCw",
+      "video_id": "p6_9aDkLJHA",
+      "title": "Q15|Topic: The Arrival Of Europeans|UPSC, SSC, PSC Question|#upsc #psc #ssc #shorts #short #share",
+      "publish_date": "2023-10-24T01:29:17Z",
+      "status": "monitored",
+      "id": "6eaa9de7-ec77-4764-8d58-1f30e8d6fde0",
+      "created_at": "2026-06-17T14:38:57.109166"
+    },
+    {
+      "channel_id": "UCu2EnDQQw8g1L95HIq0mSCw",
+      "video_id": "DyJYO07cb-w",
+      "title": "Q14|Topic :The Arrival Of Europeans|UPSC, SSC, PSC Question|#upsc #ssc #psc #shorts #short #share",
+      "publish_date": "2023-10-23T16:13:42Z",
+      "status": "monitored",
+      "id": "ebb4e707-7f97-4d4e-b35c-9b4cb31628cc",
+      "created_at": "2026-06-17T14:38:57.151075"
+    },
+    {
+      "channel_id": "UCu2EnDQQw8g1L95HIq0mSCw",
+      "video_id": "urUXTV41rFA",
+      "title": "Q13 |Topic : The Arrival Of Europeans|UPSC, SSC, PSC Question|#upsc #ssc #psc #shorts #short #shots",
+      "publish_date": "2023-10-22T23:52:09Z",
+      "status": "monitored",
+      "id": "871c2bdc-837e-46d3-93fa-248c44800ba9",
+      "created_at": "2026-06-17T14:38:57.179164"
+    },
+    {
+      "channel_id": "UCu2EnDQQw8g1L95HIq0mSCw",
+      "video_id": "FjpLBjz2JWI",
+      "title": "Q12 |Topic : The Arrival Of Europeans|UPSC, SSC, PSC Question|#upsc #ssc #psc #shorts #short",
+      "publish_date": "2023-10-22T13:48:57Z",
+      "status": "monitored",
+      "id": "fc0c6a8b-0868-4dd3-bb45-9717b382571a",
+      "created_at": "2026-06-17T14:38:57.209496"
+    },
+    {
+      "channel_id": "UCu2EnDQQw8g1L95HIq0mSCw",
+      "video_id": "MoIKTur7EwI",
+      "title": "Q11 |Topic : The Arrival Of Europeans |UPSC, SSC, PSC Question |#upsc #ssc #psc #keralapsc #shorts",
+      "publish_date": "2023-10-21T13:03:00Z",
+      "status": "monitored",
+      "id": "04129ef3-7ab0-4a8a-917f-74aab6cd7bf1",
+      "created_at": "2026-06-17T14:38:57.248097"
+    },
+    {
+      "channel_id": "UCu2EnDQQw8g1L95HIq0mSCw",
+      "video_id": "TWPmYOdI9wM",
+      "title": "Q10 |Topic : The Arrival Of Europeans |UPSC, SSC, PSC Question |#upsc #ssc #psc #keralapsc #shorts",
+      "publish_date": "2023-10-21T05:13:43Z",
+      "status": "monitored",
+      "id": "8d507f4c-0a4a-466d-a054-d46b350600d8",
+      "created_at": "2026-06-17T14:38:57.279449"
+    },
+    {
+      "channel_id": "UCu2EnDQQw8g1L95HIq0mSCw",
+      "video_id": "MalbOBrox78",
+      "title": "Q9 |Topic : The Arrival Of Europeans |UPSC, SSC, PSC Question |#upsc #ssc #keralapsc #psc #shorts",
+      "publish_date": "2023-10-20T10:14:03Z",
+      "status": "monitored",
+      "id": "0cb39e78-e07d-4922-a3be-247b6a42a730",
+      "created_at": "2026-06-17T14:38:57.312808"
+    },
+    {
+      "channel_id": "UCu2EnDQQw8g1L95HIq0mSCw",
+      "video_id": "bvXcQj0e69g",
+      "title": "Q8 |Topic : The Arrival Of Europeans| UPSC, SSC, PSC Question |#upsc #ssc #psc #keralapsc #shorts",
+      "publish_date": "2023-10-20T01:56:08Z",
+      "status": "monitored",
+      "id": "e48853b4-1dab-4f61-939b-14c55963c2f7",
+      "created_at": "2026-06-17T14:38:57.353690"
+    },
+    {
+      "channel_id": "UCu2EnDQQw8g1L95HIq0mSCw",
+      "video_id": "onMmabrZ_7Y",
+      "title": "Q7| Topic :The Arrival Of Europeans |UPSC, SSC, PSC Question |#keralapsc #psc #upsc #ssc #shorts",
+      "publish_date": "2023-10-19T13:27:26Z",
+      "status": "monitored",
+      "id": "c2a6bf8f-fbfc-4da0-883c-6bbd4cb39573",
+      "created_at": "2026-06-17T14:38:57.391671"
+    },
+    {
+      "channel_id": "UCu2EnDQQw8g1L95HIq0mSCw",
+      "video_id": "Sv2cf5KbESI",
+      "title": "Q6 |Topic : The Arrival Of Europeans | UPSC, SSC, PSC Question |#upsc #ssc #psc #keralapsc #shorts",
+      "publish_date": "2023-10-19T07:43:32Z",
+      "status": "monitored",
+      "id": "10041f24-46d5-49cb-b30a-f0ae29e04186",
+      "created_at": "2026-06-17T14:38:57.449886"
+    },
+    {
+      "channel_id": "UCu2EnDQQw8g1L95HIq0mSCw",
+      "video_id": "X2G0G6SRX6w",
+      "title": "Q5 | Topic : The Arrival Of Europeans | UPSC, SSC, PSC Question| #upsc #psc #ssc #keralapsc #shorts",
+      "publish_date": "2023-10-19T04:26:32Z",
+      "status": "monitored",
+      "id": "06b909e0-66c7-4572-8db7-2d6cc54d24e0",
+      "created_at": "2026-06-17T14:38:57.533758"
+    },
+    {
+      "channel_id": "UCu2EnDQQw8g1L95HIq0mSCw",
+      "video_id": "9cMZuvX2LRY",
+      "title": "Q4 |Topic : The Arrival Of Europeans | UPSC, SSC, PSC Question|#upsc #ssc #psc #keralapsc #shorts",
+      "publish_date": "2023-10-18T16:58:08Z",
+      "status": "monitored",
+      "id": "862d2c55-589a-4c1f-9626-2ee73f9ceb8e",
+      "created_at": "2026-06-17T14:38:57.612270"
+    },
+    {
+      "channel_id": "UCu2EnDQQw8g1L95HIq0mSCw",
+      "video_id": "Y7ZNLPws_Og",
+      "title": "Q3 | Topic : The Arrival Of Europeans |psc question|ssc question|Kerala psc question|#ssc#psc#shorts",
+      "publish_date": "2023-10-18T11:34:01Z",
+      "status": "monitored",
+      "id": "6f778747-d8c6-495d-9236-cf20efa85fe6",
+      "created_at": "2026-06-17T14:38:57.682393"
+    },
+    {
+      "channel_id": "UCu2EnDQQw8g1L95HIq0mSCw",
+      "video_id": "bm2B2tUah8g",
+      "title": "Q2 | psc question | Topic : The Arrival of Europeans | Kerala psc question | #psc #keralapsc #shorts",
+      "publish_date": "2023-10-18T06:20:09Z",
+      "status": "monitored",
+      "id": "8792e489-ab7f-4692-bc04-6fc4d3b9ed1d",
+      "created_at": "2026-06-17T14:38:57.769262"
+    },
+    {
+      "channel_id": "UCu2EnDQQw8g1L95HIq0mSCw",
+      "video_id": "Ua981ktEgnI",
+      "title": "Q1 | psc question | Topic : The Arrival of Europeans| kerala psc question | #psc #keralapsc #shorts",
+      "publish_date": "2023-10-17T17:37:46Z",
+      "status": "monitored",
+      "id": "76a1ae72-f7da-40fa-82af-285ad6f1f603",
+      "created_at": "2026-06-17T14:38:57.810462"
+    }
+  ],
+  "youtube_comments": [
+    {
+      "video_id": "PuCb1JHpBkM",
+      "comment_id": "MOCK_CMT_70C71864",
+      "username": "arun_raj",
+      "text": "What is the price of coconut oil? Do you deliver to Bangalore?",
+      "timestamp": "2026-06-12T11:00:00Z",
+      "intent": "HIGH_INTENT",
+      "confidence": 0.95,
+      "status": "pending_approval",
+      "id": "d51f418a-3a6a-44c7-8128-48575d2af04d",
+      "created_at": "2026-06-16T16:24:13.683475"
+    },
+    {
+      "video_id": "PuCb1JHpBkM",
+      "comment_id": "MOCK_CMT_F8CD137F",
+      "username": "hema_bhat",
+      "text": "How can I order? Please share contact number.",
+      "timestamp": "2026-06-12T11:05:00Z",
+      "intent": "HIGH_INTENT",
+      "confidence": 0.95,
+      "status": "pending_approval",
+      "id": "20726ee7-d5f0-4ac6-9483-4af87eea421f",
+      "created_at": "2026-06-16T16:39:17.703756"
+    },
+    {
+      "video_id": "hmasAU3nev4",
+      "comment_id": "Ugwiwu2Q81VaIrjJjzF4AaABAg",
+      "username": "pscexamninja",
+      "text": "\u26a0\ufe0f This is an automated video generated for project testing/demo purposes. Content is system-generated and intended for testing only.",
+      "timestamp": "2026-06-16T18:49:57Z",
+      "intent": "HIGH_INTENT",
+      "confidence": 0.95,
+      "status": "pending_approval",
+      "id": "218780c4-61b1-433f-ba8c-263c73faa58e",
+      "created_at": "2026-06-17T00:24:34.288835"
+    },
+    {
+      "video_id": "hmasAU3nev4",
+      "comment_id": "MANUAL_CMT_0B64EB52",
+      "username": "nisha_rao",
+      "text": "I want to buy 3 packs of this PureGold Cold-Pressed Coconut Oil. Is there a discount?",
+      "timestamp": "2026-06-17T00:36:55.055467",
+      "intent": "HIGH_INTENT",
+      "confidence": 0.95,
+      "status": "pending_approval",
+      "id": "452a48e6-d6c2-4e0c-84ff-0c2bd1356710",
+      "created_at": "2026-06-17T00:36:55.058127"
+    },
+    {
+      "video_id": "hmasAU3nev4",
+      "comment_id": "UgwICdkbxCDTu4AwxI54AaABAg",
+      "username": "MerlinMaryPonnachan",
+      "text": "Nice",
+      "timestamp": "2026-06-17T06:30:39Z",
+      "intent": "LOW_INTENT",
+      "confidence": 0.7,
+      "status": "replied",
+      "id": "e26dd731-72fc-4aad-a211-6d3e0fa1b087",
+      "created_at": "2026-06-17T14:15:17.406120"
+    },
+    {
+      "video_id": "hmasAU3nev4",
+      "comment_id": "UgyTcceYkaxGZgyWN7l4AaABAg",
+      "username": "alangeorgejohnson",
+      "text": "But Cash?",
+      "timestamp": "2026-06-16T20:34:01Z",
+      "intent": "LOW_INTENT",
+      "confidence": 0.7,
+      "status": "pending_approval",
+      "id": "e7393807-6ef8-4381-a4f1-e36321d8e896",
+      "created_at": "2026-06-17T14:15:17.456389"
+    },
+    {
+      "video_id": "hmasAU3nev4",
+      "comment_id": "UgyS6tZ0bjrN09u2cKR4AaABAg",
+      "username": "pscexamninja",
+      "text": "Good",
+      "timestamp": "2026-06-17T08:55:51Z",
+      "intent": "LOW_INTENT",
+      "confidence": 0.7,
+      "status": "pending_approval",
+      "id": "f3b0a17a-7cdf-4959-899d-7f3ff54cbc56",
+      "created_at": "2026-06-17T14:29:22.613997"
+    },
+    {
+      "video_id": "PuCb1JHpBkM",
+      "comment_id": "UgwTIfTU0vwU_Fs_7Kt4AaABAg",
+      "username": "pscexamninja",
+      "text": "\u26a0\ufe0f This is an automated video generated for project testing/demo purposes. Content is system-generated and intended for testing only",
+      "timestamp": "2026-06-15T13:07:39Z",
+      "intent": "LOW_INTENT",
+      "confidence": 0.7,
+      "status": "pending_approval",
+      "id": "64447f98-f0fe-49ce-8ec6-1bff3c11f9d7",
+      "created_at": "2026-06-17T14:40:44.441469"
+    },
+    {
+      "video_id": "PuCb1JHpBkM",
+      "comment_id": "UgxlnQf8mqd0gDfuW6N4AaABAg",
+      "username": "MerlinMaryPonnachan",
+      "text": "\ud83d\udc4d",
+      "timestamp": "2026-06-17T06:31:21Z",
+      "intent": "LOW_INTENT",
+      "confidence": 0.7,
+      "status": "pending_approval",
+      "id": "202835b3-4fa6-4bd1-ba33-7f142c0c6836",
+      "created_at": "2026-06-17T14:40:44.566496"
+    },
+    {
+      "video_id": "PuCb1JHpBkM",
+      "comment_id": "UgwCg-QV5JMj9PogDE54AaABAg",
+      "username": "alangeorgejohnson",
+      "text": "How Much?",
+      "timestamp": "2026-06-15T13:15:41Z",
+      "intent": "HIGH_INTENT",
+      "confidence": 0.95,
+      "status": "pending_approval",
+      "id": "fdd584fe-e679-43ba-8552-0336d7f5b80a",
+      "created_at": "2026-06-17T14:40:44.638198"
+    },
+    {
+      "video_id": "PuCb1JHpBkM",
+      "comment_id": "UgyDiEaZU_i2QBWGmvJ4AaABAg",
+      "username": "SSREENATHS",
+      "text": "Price pls",
+      "timestamp": "2026-06-15T13:05:39Z",
+      "intent": "HIGH_INTENT",
+      "confidence": 0.95,
+      "status": "pending_approval",
+      "id": "8f196072-3b4b-437f-8be0-da933e4ab935",
+      "created_at": "2026-06-17T14:40:44.760830"
+    },
+    {
+      "video_id": "PuCb1JHpBkM",
+      "comment_id": "UgwMr4eIvTXFftmDfZJ4AaABAg",
+      "username": "QuizApp-v9r",
+      "text": "What is the price ?",
+      "timestamp": "2026-06-15T13:01:06Z",
+      "intent": "HIGH_INTENT",
+      "confidence": 0.95,
+      "status": "pending_approval",
+      "id": "5a61385b-460a-4b3a-a963-c58d118de695",
+      "created_at": "2026-06-17T14:40:44.896974"
+    },
+    {
+      "video_id": "PuCb1JHpBkM",
+      "comment_id": "Ugw-l4UUR6hVd5FTVKl4AaABAg",
+      "username": "NidhinS-d1r",
+      "text": "Price?",
+      "timestamp": "2026-06-15T12:52:08Z",
+      "intent": "HIGH_INTENT",
+      "confidence": 0.95,
+      "status": "pending_approval",
+      "id": "f35bc200-66fd-4fd3-9311-c5b4752de3d9",
+      "created_at": "2026-06-17T14:40:45.000940"
+    },
+    {
+      "video_id": "PuCb1JHpBkM",
+      "comment_id": "Ugy_r-MILmqdXCNnJsh4AaABAg",
+      "username": "NidhinS-d1r",
+      "text": "Price?",
+      "timestamp": "2026-06-15T12:50:57Z",
+      "intent": "HIGH_INTENT",
+      "confidence": 0.95,
+      "status": "pending_approval",
+      "id": "7d14a2c5-b9b9-4b67-8505-069d3f213368",
+      "created_at": "2026-06-17T14:40:45.135523"
+    },
+    {
+      "video_id": "PuCb1JHpBkM",
+      "comment_id": "UgwWGYeoJxTSR6jq2NZ4AaABAg",
+      "username": "NidhinS-d1r",
+      "text": "Price",
+      "timestamp": "2026-06-15T12:50:38Z",
+      "intent": "HIGH_INTENT",
+      "confidence": 0.95,
+      "status": "pending_approval",
+      "id": "aaf3c1eb-3806-4184-95bb-e38913b0d7c9",
+      "created_at": "2026-06-17T14:40:45.247248"
+    },
+    {
+      "video_id": "S_q6wlezTjc",
+      "comment_id": "UgxngbDAILShsa2UP6d4AaABAg",
+      "username": "MerlinMaryPonnachan",
+      "text": "\ud83d\udc4d",
+      "timestamp": "2026-06-17T06:31:34Z",
+      "intent": "LOW_INTENT",
+      "confidence": 0.7,
+      "status": "pending_approval",
+      "id": "67ddfedc-9a6a-402a-8b40-3616df6fcd00",
+      "created_at": "2026-06-17T14:40:45.370824"
+    },
+    {
+      "video_id": "p6_9aDkLJHA",
+      "comment_id": "UgylAKrgUzLdEzKovjd4AaABAg",
+      "username": "mishaellaSt\u00fcrzel",
+      "text": "That is a trick question because spain was highly in debt with the Netherlands\u2026 and thus the ones that really hoarded america where the dutch (like for most part of history) via proxy",
+      "timestamp": "2023-10-24T19:55:45Z",
+      "intent": "MEDIUM_INTENT",
+      "confidence": 0.8,
+      "status": "pending_approval",
+      "id": "20d2e712-0f46-4871-af18-2c098843cc3f",
+      "created_at": "2026-06-17T14:40:45.453870"
+    },
+    {
+      "video_id": "TWPmYOdI9wM",
+      "comment_id": "UgwBhlZb2y07Lea_1LV4AaABAg",
+      "username": "prakashanprakashan4341",
+      "text": "Supper video bro",
+      "timestamp": "2023-10-21T07:27:34Z",
+      "intent": "LOW_INTENT",
+      "confidence": 0.7,
+      "status": "pending_approval",
+      "id": "3a0db630-fff1-4e6b-98a8-dac8d5985f73",
+      "created_at": "2026-06-17T14:40:45.528723"
+    },
+    {
+      "video_id": "MalbOBrox78",
+      "comment_id": "Ugxvet9l9A-htHkZag54AaABAg",
+      "username": "NikhilShibu-b1b",
+      "text": "Bro More videos  upload  this channel",
+      "timestamp": "2023-10-21T08:25:42Z",
+      "intent": "LOW_INTENT",
+      "confidence": 0.7,
+      "status": "pending_approval",
+      "id": "4e3d7bee-dbf3-4fb3-adf7-c7bc96a1161f",
+      "created_at": "2026-06-17T14:40:45.616215"
+    },
+    {
+      "video_id": "Ua981ktEgnI",
+      "comment_id": "UgwrKajS8nCRXlhRSeR4AaABAg",
+      "username": "Quantum8Lines",
+      "text": "Vasco da Gama",
+      "timestamp": "2023-10-17T18:51:55Z",
+      "intent": "LOW_INTENT",
+      "confidence": 0.7,
+      "status": "pending_approval",
+      "id": "6bdf30b2-0c89-41ac-8e81-b31873c1b3d6",
+      "created_at": "2026-06-17T14:40:45.689066"
+    },
+    {
+      "video_id": "Ua981ktEgnI",
+      "comment_id": "UgyULHy_PfhsE1YJCId4AaABAg",
+      "username": "AzeriaFF",
+      "text": "Vasco Da Gama",
+      "timestamp": "2023-10-17T18:49:07Z",
+      "intent": "LOW_INTENT",
+      "confidence": 0.7,
+      "status": "pending_approval",
+      "id": "856673b3-7394-44f7-b26c-56543da100ca",
+      "created_at": "2026-06-17T14:40:45.760010"
+    }
+  ],
+  "youtube_replies": [
+    {
+      "comment_id": "MOCK_CMT_70C71864",
+      "suggested_reply": "Thanks for your interest @arun_raj! \u2764\ufe0f Please message us on WhatsApp at https://wa.me/917306796590?text=Hi+interested+in+ordering to place your order.",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "c4d132d4-fd73-4398-99ea-62ea5bbef3ed",
+      "created_at": "2026-06-16T16:24:13.692023"
+    },
+    {
+      "comment_id": "MOCK_CMT_F8CD137F",
+      "suggested_reply": "Thanks for your interest @hema_bhat! \u2764\ufe0f Please message us on WhatsApp at https://wa.me/917306796590?text=Hi+interested+in+ordering to place your order.",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "0ad0a5f0-a68a-4aff-9dd5-b6aadd321518",
+      "created_at": "2026-06-16T16:39:17.711298"
+    },
+    {
+      "comment_id": "Ugwiwu2Q81VaIrjJjzF4AaABAg",
+      "suggested_reply": "Thanks for your interest @pscexamninja! \u2764\ufe0f Please message us on WhatsApp at https://wa.me/917306796590?text=Hi+interested+in+ordering to place your order.",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "04a16f93-9bda-4d49-9770-d6e4b135759f",
+      "created_at": "2026-06-17T00:24:34.294547"
+    },
+    {
+      "comment_id": "Ugzge340dBgB75hWBm54AaABAg",
+      "suggested_reply": "Thank you so much @YouTube! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "ac17e72f-0137-47e9-900d-28e3e2c15d34",
+      "created_at": "2026-06-17T00:30:53.034651"
+    },
+    {
+      "comment_id": "UgwwLB6Egm_UiYEdxpp4AaABAg",
+      "suggested_reply": "Thank you so much @mMasterGX! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "07e0d81a-9798-44c5-9c68-53f4f374a1d5",
+      "created_at": "2026-06-17T00:30:53.054143"
+    },
+    {
+      "comment_id": "UgzxkVrZbs6xbynUbcd4AaABAg",
+      "suggested_reply": "Thank you so much @agostinhocarrara8205! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "26bf997b-e9b2-4dce-924e-2896a76c4b18",
+      "created_at": "2026-06-17T00:30:53.075734"
+    },
+    {
+      "comment_id": "Ugx1wJ9SuNqhyC8XpnJ4AaABAg",
+      "suggested_reply": "Thank you so much @agostinhocarrara8205! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "a33fffe5-0d36-44e6-8c24-aea6be78e149",
+      "created_at": "2026-06-17T00:30:53.095883"
+    },
+    {
+      "comment_id": "Ugwqc1gLoOZ7ER0Kh-R4AaABAg",
+      "suggested_reply": "Thank you so much @AlonsoRodriguez-u1u! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "4b63fb4e-dffe-46ef-af2a-a4f3ed26fc91",
+      "created_at": "2026-06-17T00:30:53.111045"
+    },
+    {
+      "comment_id": "Ugxa2bSCT6i09y-s9Vx4AaABAg",
+      "suggested_reply": "Thank you so much @MrKelp-o4! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "b4af42fe-df45-409e-9a74-fb79fe18b4bd",
+      "created_at": "2026-06-17T00:30:53.135775"
+    },
+    {
+      "comment_id": "UgzuhSahKqM4jXtbg9h4AaABAg",
+      "suggested_reply": "Thank you so much @ngminhai543! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "06c53067-262e-4eeb-94b1-115c6dfd9907",
+      "created_at": "2026-06-17T00:30:53.175611"
+    },
+    {
+      "comment_id": "UgyWb3-ra-1W81qNOgF4AaABAg",
+      "suggested_reply": "Thank you so much @ThE_ScOuT! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "2a9645cc-ab06-40dd-b816-20229038d05f",
+      "created_at": "2026-06-17T00:30:53.193439"
+    },
+    {
+      "comment_id": "Ugxx_EDlvxJs4RorPoZ4AaABAg",
+      "suggested_reply": "Thank you so much @elementalwolf8049! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "46c68db1-0969-4aaf-9b38-528515eec7eb",
+      "created_at": "2026-06-17T00:30:53.210981"
+    },
+    {
+      "comment_id": "UgwdCw94eS5Bk_maUoh4AaABAg",
+      "suggested_reply": "Thank you so much @heikep.1531! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "90128880-30ef-4895-b865-45f40ec0ac6a",
+      "created_at": "2026-06-17T00:30:53.237276"
+    },
+    {
+      "comment_id": "Ugz1-V-r-ARkikij6394AaABAg",
+      "suggested_reply": "Thank you so much @Edwarpootis-TF-f2i! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "1045d826-c9c6-48f7-beac-cd74447dc33b",
+      "created_at": "2026-06-17T00:30:53.257513"
+    },
+    {
+      "comment_id": "Ugw_HbsaSX3LP7-hsTx4AaABAg",
+      "suggested_reply": "Thank you so much @KeyaDas-y1t! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "218d4a46-380d-4d23-9090-a96fce7d89f8",
+      "created_at": "2026-06-17T00:30:53.268563"
+    },
+    {
+      "comment_id": "Ugwo0nqfhh-H7iEuvLF4AaABAg",
+      "suggested_reply": "Thank you so much @Janne_aa! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "9ff17881-88a3-4028-9a27-7104e3542f05",
+      "created_at": "2026-06-17T00:30:53.286904"
+    },
+    {
+      "comment_id": "Ugzev2VSVdOEwikZi054AaABAg",
+      "suggested_reply": "Thank you so much @RylanorGaming! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "278f6478-19d2-4d53-9bbe-6bf86f4a32c8",
+      "created_at": "2026-06-17T00:30:53.315991"
+    },
+    {
+      "comment_id": "UgyC8Wop6vcIt1Jizq94AaABAg",
+      "suggested_reply": "Thank you so much @kill-buzz! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "c0154510-6490-4d86-ace5-ed4a4e593e00",
+      "created_at": "2026-06-17T00:30:53.345151"
+    },
+    {
+      "comment_id": "UgwtL1NEbu9KLqP-gFN4AaABAg",
+      "suggested_reply": "Thank you so much @Trollface-k7r! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "710355f8-047b-43e9-ae92-ec819ce6aaa9",
+      "created_at": "2026-06-17T00:30:53.366710"
+    },
+    {
+      "comment_id": "UgxZZN16_P0X4nhMHDt4AaABAg",
+      "suggested_reply": "Thank you so much @KinLinZet! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "797f7b2a-ab09-4cf4-8994-638b45d86eab",
+      "created_at": "2026-06-17T00:30:53.397849"
+    },
+    {
+      "comment_id": "UgywBb3kGcGSb5GlNLB4AaABAg",
+      "suggested_reply": "Thank you so much @aleat\u00f3riomikas! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "88371c8c-e11e-4db9-8849-c948a80cfada",
+      "created_at": "2026-06-17T00:30:53.418504"
+    },
+    {
+      "comment_id": "UgxjT2lDD3FyL2lihx14AaABAg",
+      "suggested_reply": "Thank you so much @13polg13! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "63edec06-2df2-405d-a875-7965437fbddb",
+      "created_at": "2026-06-17T00:30:53.441784"
+    },
+    {
+      "comment_id": "UgwpS5KPNndK80rZFs54AaABAg",
+      "suggested_reply": "Thank you so much @laramaia3519! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "89549925-d31d-4f5c-bda9-23315c9a84cc",
+      "created_at": "2026-06-17T00:30:53.472676"
+    },
+    {
+      "comment_id": "UgzNzN6dEWDkpDIjbh14AaABAg",
+      "suggested_reply": "Thank you so much @DailyRelapse! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "ba805ee2-4ce3-49cd-928a-2a108d7bb57d",
+      "created_at": "2026-06-17T00:30:53.498884"
+    },
+    {
+      "comment_id": "UgxJCCR6LdHatPJjnrx4AaABAg",
+      "suggested_reply": "Thank you so much @Alaskanhascome! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "89e85723-d627-4121-97ae-2ef66469037d",
+      "created_at": "2026-06-17T00:30:53.514901"
+    },
+    {
+      "comment_id": "Ugy2NweNW1G9NTUAeBZ4AaABAg",
+      "suggested_reply": "Thank you so much @CoeShoes! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "31967350-3305-4828-9f81-39c004d20dac",
+      "created_at": "2026-06-17T00:30:53.536187"
+    },
+    {
+      "comment_id": "UgxyqA8Ud7F-6wyuA3B4AaABAg",
+      "suggested_reply": "Thank you so much @maxkyu6442! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "aec9550a-11b9-493d-8787-a57c5ad7fd2a",
+      "created_at": "2026-06-17T00:30:53.560976"
+    },
+    {
+      "comment_id": "UgzxBjX4LCS5euiVd_B4AaABAg",
+      "suggested_reply": "Thank you so much @EU_MESMA789! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "8bf6d7b3-75b8-4bf7-a12a-59bb2a78a87d",
+      "created_at": "2026-06-17T00:30:53.595758"
+    },
+    {
+      "comment_id": "UgwRGcQ6UkL8eiLlu1F4AaABAg",
+      "suggested_reply": "Thank you so much @Pizza-s1t9t! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "3758acc6-5958-4038-9a1c-21cee81d1e8d",
+      "created_at": "2026-06-17T00:30:53.614932"
+    },
+    {
+      "comment_id": "Ugz-TitwECCkczjx9AZ4AaABAg",
+      "suggested_reply": "Thank you so much @RUN-b1h! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "ad9e05d7-a83c-4a0a-895e-9ad1133ebc39",
+      "created_at": "2026-06-17T00:30:53.645070"
+    },
+    {
+      "comment_id": "UgzCgYIccCvbtpd8OnF4AaABAg",
+      "suggested_reply": "Thank you so much @rallyana_01! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "1269d201-fe73-4ebc-8363-20ccf119a173",
+      "created_at": "2026-06-17T00:30:53.670628"
+    },
+    {
+      "comment_id": "UgzW6mwDqxsArWEeLMR4AaABAg",
+      "suggested_reply": "Thank you so much @Abuetballer! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "e109aa07-b36b-4fe8-913a-df83e2f92811",
+      "created_at": "2026-06-17T00:30:53.690928"
+    },
+    {
+      "comment_id": "UgxsXIIQxWUQtFVWSlp4AaABAg",
+      "suggested_reply": "Thank you so much @suminyet5692! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "8db54b5c-bc63-44e5-b487-c3eaffa265b9",
+      "created_at": "2026-06-17T00:30:53.708771"
+    },
+    {
+      "comment_id": "Ugw6hOBsHM1OY_zQdid4AaABAg",
+      "suggested_reply": "Thank you so much @mateusmorais1579! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "1a8b1181-5bdc-4d82-9dff-10425b0ff7cb",
+      "created_at": "2026-06-17T00:30:53.731204"
+    },
+    {
+      "comment_id": "UgyVj2AgmTXj8FE34rB4AaABAg",
+      "suggested_reply": "Thank you so much @Jadesharlot! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "5e772d31-1cb3-4815-9f9b-87bb076a0379",
+      "created_at": "2026-06-17T00:30:53.760459"
+    },
+    {
+      "comment_id": "Ugw6JCLEl9OyPrDimnl4AaABAg",
+      "suggested_reply": "Thank you so much @christophermoore5007! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "f3180b6b-7846-487f-a83e-f313d4bd0386",
+      "created_at": "2026-06-17T00:30:53.779182"
+    },
+    {
+      "comment_id": "Ugzhw-05Xg1erQTJ4fp4AaABAg",
+      "suggested_reply": "Thank you so much @\u102a\u102a\u102a\u102a\u102a\u102a\u102a\u102a\u102a\u102a\u102a\u102a\u102a\u102a\u102a\u102a\u102a\u102a\u102a\u102a\u102a\u102a\u102a\u102a\u102a\u102a\u102a\u102a-\u102a! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "8f88c078-0d47-4ddf-ac0c-8f468c184285",
+      "created_at": "2026-06-17T00:30:53.795963"
+    },
+    {
+      "comment_id": "Ugzs0uIOLR44rYwNNhd4AaABAg",
+      "suggested_reply": "Thank you so much @\u102a\u102a\u102a\u102a\u102a\u102a\u102a\u102a\u102a\u102a\u102a\u102a\u102a\u102a\u102a\u102a\u102a\u102a\u102a\u102a\u102a\u102a\u102a\u102a\u102a\u102a\u102a\u102a-\u102a! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "fdfd1587-2ff6-4864-a603-7ec3e56db470",
+      "created_at": "2026-06-17T00:30:53.817794"
+    },
+    {
+      "comment_id": "UgxSiyiVJxGmjxORWdF4AaABAg",
+      "suggested_reply": "Thank you so much @daasmeeharbi! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "048725aa-288a-4349-93fc-657a892a7d90",
+      "created_at": "2026-06-17T00:30:53.844123"
+    },
+    {
+      "comment_id": "Ugy0XojCrddhp181xsh4AaABAg",
+      "suggested_reply": "Thank you so much @girl_from_the_stars! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "287bf771-b24e-47cb-bd70-fa708a79b73f",
+      "created_at": "2026-06-17T00:30:53.869713"
+    },
+    {
+      "comment_id": "UgyyjakQVK9kMCD4fdF4AaABAg",
+      "suggested_reply": "Thank you so much @marcownnbyours! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "a3395f8c-4edf-4e41-b71b-a84183362a16",
+      "created_at": "2026-06-17T00:30:53.887806"
+    },
+    {
+      "comment_id": "UgzyFCQQbKe_HohlqUt4AaABAg",
+      "suggested_reply": "Thank you so much @MarceloSilva-cc1fb! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "d57f29e1-adb6-4fde-aa64-b539bfc06c45",
+      "created_at": "2026-06-17T00:30:53.917980"
+    },
+    {
+      "comment_id": "UgzxehOVgQIyMO_cLgV4AaABAg",
+      "suggested_reply": "Thank you so much @SaeedAlshamsi-d9w! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "ed194495-dc63-49a1-923e-c0cd0b83db63",
+      "created_at": "2026-06-17T00:30:53.937767"
+    },
+    {
+      "comment_id": "UgxCMBjs4fQnL4oFcgp4AaABAg",
+      "suggested_reply": "Thank you so much @BreezeCraft_YT! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "37d047a5-02d3-43f6-bb61-33ceec47ceee",
+      "created_at": "2026-06-17T00:30:53.975608"
+    },
+    {
+      "comment_id": "UgxXElIWe0eyPgpWxtJ4AaABAg",
+      "suggested_reply": "Thank you so much @sugoi5512! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "f61801ad-4798-4bc6-b721-6d8b5a7cf546",
+      "created_at": "2026-06-17T00:30:54.003809"
+    },
+    {
+      "comment_id": "UgwqheL3L9_ehH_w2-d4AaABAg",
+      "suggested_reply": "Thank you so much @BotBee-g8g! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "c7a4f3db-c3dd-4faf-8319-f6cb6503ed4d",
+      "created_at": "2026-06-17T00:30:54.024429"
+    },
+    {
+      "comment_id": "UgygLWL8qel6o73AG_Z4AaABAg",
+      "suggested_reply": "Thank you so much @SayphonSilavong! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "de34d81e-ac70-4652-aaee-27a125e0a0ee",
+      "created_at": "2026-06-17T00:30:54.040127"
+    },
+    {
+      "comment_id": "UgxhgJsYFv-8N3l3mXZ4AaABAg",
+      "suggested_reply": "Thank you so much @SayphonSilavong! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "d45a012b-df2d-4c0b-a404-0ece8d3cac5a",
+      "created_at": "2026-06-17T00:30:54.078044"
+    },
+    {
+      "comment_id": "Ugym5JSe5JbEyfUrcBx4AaABAg",
+      "suggested_reply": "Thank you so much @jimbudgin2325! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "654febb7-89c1-4d8e-87d6-2aca327e1b25",
+      "created_at": "2026-06-17T00:30:54.119072"
+    },
+    {
+      "comment_id": "UgxLmZnMK4T_ek_BfrN4AaABAg",
+      "suggested_reply": "Thank you so much @Azra-tc9od! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "ac51fb25-0f39-4389-8796-3b1ef964ffd4",
+      "created_at": "2026-06-17T00:30:54.137464"
+    },
+    {
+      "comment_id": "UgzIMKirfn0jj6gZK9J4AaABAg",
+      "suggested_reply": "Thank you so much @oviii-laa! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "3dded88a-0ef3-4eee-b597-94985de31a57",
+      "created_at": "2026-06-17T00:30:54.159114"
+    },
+    {
+      "comment_id": "Ugz1nPEI9OUIs-o8je94AaABAg",
+      "suggested_reply": "Thank you so much @EliasCS7N! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "9b36ce25-0b5f-44db-bed8-98d0a922ab81",
+      "created_at": "2026-06-17T00:30:54.220447"
+    },
+    {
+      "comment_id": "MANUAL_CMT_CAD13ACC",
+      "suggested_reply": "Thanks for your interest @nisha_raotest_user! \u2764\ufe0f Please message us on WhatsApp at https://wa.me/917306796590?text=Hi+interested+in+ordering to place your order.",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "f7c75a5c-03a2-48e5-953c-a7cdfa6d5c2d",
+      "created_at": "2026-06-17T00:30:54.257077"
+    },
+    {
+      "comment_id": "Ugx4dghzEjQ8yqj8sMN4AaABAg",
+      "suggested_reply": "Thank you so much @Doodle_Glitch! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "dd78fc41-c549-4587-87c8-8241191388af",
+      "created_at": "2026-06-17T00:35:56.449566"
+    },
+    {
+      "comment_id": "MANUAL_CMT_0B64EB52",
+      "suggested_reply": "Thanks for your interest @nisha_rao! \u2764\ufe0f Please message us on WhatsApp at https://wa.me/917306796590?text=Hi+interested+in+ordering to place your order.",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "afbc545f-c068-4931-9dc8-dd80c986d656",
+      "created_at": "2026-06-17T00:36:55.073398"
+    },
+    {
+      "comment_id": "UgwICdkbxCDTu4AwxI54AaABAg",
+      "suggested_reply": "Thank you so much @MerlinMaryPonnachan! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": "Thank you so much @MerlinMaryPonnachan! We appreciate the support! \ud83d\ude4f\u2728",
+      "reply_id": "RPL_4EEC3CC5C36",
+      "status": "published",
+      "published_at": "2026-06-17T14:18:20.777533",
+      "id": "1f8645e3-817f-4f0d-b29b-2f6378a8fb1e",
+      "created_at": "2026-06-17T14:15:17.426277"
+    },
+    {
+      "comment_id": "UgyTcceYkaxGZgyWN7l4AaABAg",
+      "suggested_reply": "Thank you so much @alangeorgejohnson! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "2c3804ee-65e7-4c88-9625-4ad371b62097",
+      "created_at": "2026-06-17T14:15:17.470902"
+    },
+    {
+      "comment_id": "UgwICdkbxCDTu4AwxI54AaABAg",
+      "suggested_reply": "Thank you so much @MerlinMaryPonnachan! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": "Thank you so much @MerlinMaryPonnachan! We appreciate the support! \ud83d\ude4f\u2728",
+      "reply_id": "RPL_4EEC3CC5C36",
+      "status": "published",
+      "published_at": "2026-06-17T14:18:20.734332",
+      "id": "aedbaf28-2a95-46c1-b510-17fb620fc1f8",
+      "created_at": "2026-06-17T14:18:20.734332"
+    },
+    {
+      "comment_id": "UgyS6tZ0bjrN09u2cKR4AaABAg",
+      "suggested_reply": "Thank you so much @pscexamninja! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "5fb7faf1-d6e4-4f4d-83c7-cc23bc2b5c17",
+      "created_at": "2026-06-17T14:29:22.617510"
+    },
+    {
+      "comment_id": "UgwTIfTU0vwU_Fs_7Kt4AaABAg",
+      "suggested_reply": "Thank you so much @pscexamninja! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "28a2e6a1-bda5-42fb-91e1-69f37d3b99fe",
+      "created_at": "2026-06-17T14:40:44.492011"
+    },
+    {
+      "comment_id": "UgxlnQf8mqd0gDfuW6N4AaABAg",
+      "suggested_reply": "Thank you so much @MerlinMaryPonnachan! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "03f64e95-4ce4-40ca-92be-d9b8241f3b8f",
+      "created_at": "2026-06-17T14:40:44.591427"
+    },
+    {
+      "comment_id": "UgwCg-QV5JMj9PogDE54AaABAg",
+      "suggested_reply": "Thanks for your interest @alangeorgejohnson! \u2764\ufe0f Please message us on WhatsApp at https://wa.me/917306796590?text=Hi+interested+in+ordering to place your order.",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "6381df7e-5946-4aee-97c0-236d514d92df",
+      "created_at": "2026-06-17T14:40:44.676982"
+    },
+    {
+      "comment_id": "UgyDiEaZU_i2QBWGmvJ4AaABAg",
+      "suggested_reply": "Thanks for your interest @SSREENATHS! \u2764\ufe0f Please message us on WhatsApp at https://wa.me/917306796590?text=Hi+interested+in+ordering to place your order.",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "fa1fd83a-3bb3-4f57-8e11-98b5efd393aa",
+      "created_at": "2026-06-17T14:40:44.801747"
+    },
+    {
+      "comment_id": "UgwMr4eIvTXFftmDfZJ4AaABAg",
+      "suggested_reply": "Thanks for your interest @QuizApp-v9r! \u2764\ufe0f Please message us on WhatsApp at https://wa.me/917306796590?text=Hi+interested+in+ordering to place your order.",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "56c8d5c2-3733-4451-be50-b15dfaa46e1b",
+      "created_at": "2026-06-17T14:40:44.926544"
+    },
+    {
+      "comment_id": "Ugw-l4UUR6hVd5FTVKl4AaABAg",
+      "suggested_reply": "Thanks for your interest @NidhinS-d1r! \u2764\ufe0f Please message us on WhatsApp at https://wa.me/917306796590?text=Hi+interested+in+ordering to place your order.",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "bf4505be-30ee-440e-bb12-b33c2f2dd6ca",
+      "created_at": "2026-06-17T14:40:45.044222"
+    },
+    {
+      "comment_id": "Ugy_r-MILmqdXCNnJsh4AaABAg",
+      "suggested_reply": "Thanks for your interest @NidhinS-d1r! \u2764\ufe0f Please message us on WhatsApp at https://wa.me/917306796590?text=Hi+interested+in+ordering to place your order.",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "60c1ec6c-a8df-47ae-9d7d-dd64682c3667",
+      "created_at": "2026-06-17T14:40:45.165427"
+    },
+    {
+      "comment_id": "UgwWGYeoJxTSR6jq2NZ4AaABAg",
+      "suggested_reply": "Thanks for your interest @NidhinS-d1r! \u2764\ufe0f Please message us on WhatsApp at https://wa.me/917306796590?text=Hi+interested+in+ordering to place your order.",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "6eebcca7-2c13-4a90-be57-a350b3ba9c27",
+      "created_at": "2026-06-17T14:40:45.281267"
+    },
+    {
+      "comment_id": "UgxngbDAILShsa2UP6d4AaABAg",
+      "suggested_reply": "Thank you so much @MerlinMaryPonnachan! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "15633942-05e2-4f31-873c-f083b38a314d",
+      "created_at": "2026-06-17T14:40:45.410859"
+    },
+    {
+      "comment_id": "UgylAKrgUzLdEzKovjd4AaABAg",
+      "suggested_reply": "Hi @mishaellaSt\u00fcrzel! Thanks for asking. Delivery is available across India. Please contact us for detailed information.",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "db95b764-2331-4ddd-b5af-015802add058",
+      "created_at": "2026-06-17T14:40:45.489213"
+    },
+    {
+      "comment_id": "UgwBhlZb2y07Lea_1LV4AaABAg",
+      "suggested_reply": "Thank you so much @prakashanprakashan4341! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "dae753ca-1008-4d2f-8561-dcd1bb40673e",
+      "created_at": "2026-06-17T14:40:45.556737"
+    },
+    {
+      "comment_id": "Ugxvet9l9A-htHkZag54AaABAg",
+      "suggested_reply": "Thank you so much @NikhilShibu-b1b! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "048d88ed-3bff-41c4-80d6-dd92057e0fc4",
+      "created_at": "2026-06-17T14:40:45.639770"
+    },
+    {
+      "comment_id": "UgwrKajS8nCRXlhRSeR4AaABAg",
+      "suggested_reply": "Thank you so much @Quantum8Lines! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "60a094d7-94f0-4b12-bace-9f2f9f664f69",
+      "created_at": "2026-06-17T14:40:45.714844"
+    },
+    {
+      "comment_id": "UgyULHy_PfhsE1YJCId4AaABAg",
+      "suggested_reply": "Thank you so much @AzeriaFF! We appreciate the support! \ud83d\ude4f\u2728",
+      "actual_reply": null,
+      "reply_id": null,
+      "status": "draft",
+      "published_at": null,
+      "id": "f2a9d478-1f09-44f5-b70d-7ad96649dba0",
+      "created_at": "2026-06-17T14:40:45.787530"
+    }
+  ],
+  "youtube_leads": [
+    {
+      "comment_id": "MOCK_CMT_70C71864",
+      "video_id": "PuCb1JHpBkM",
+      "username": "arun_raj",
+      "intent": "HIGH_INTENT",
+      "reply": "Thanks for your interest @arun_raj! \u2764\ufe0f Please message us on WhatsApp at https://wa.me/917306796590?text=Hi+interested+in+ordering to place your order.",
+      "autopilot": true,
+      "id": "b51c4413-ad07-48d7-ac88-9ffbd2d101ee",
+      "created_at": "2026-06-16T16:24:13.700784"
+    },
+    {
+      "comment_id": "MOCK_CMT_F8CD137F",
+      "video_id": "PuCb1JHpBkM",
+      "username": "hema_bhat",
+      "intent": "HIGH_INTENT",
+      "reply": "Thanks for your interest @hema_bhat! \u2764\ufe0f Please message us on WhatsApp at https://wa.me/917306796590?text=Hi+interested+in+ordering to place your order.",
+      "autopilot": true,
+      "id": "7effdf9e-8d6f-4f25-83af-f3451db9d404",
+      "created_at": "2026-06-16T16:39:17.716069"
+    },
+    {
+      "comment_id": "Ugwiwu2Q81VaIrjJjzF4AaABAg",
+      "video_id": "hmasAU3nev4",
+      "username": "pscexamninja",
+      "intent": "HIGH_INTENT",
+      "reply": "Thanks for your interest @pscexamninja! \u2764\ufe0f Please message us on WhatsApp at https://wa.me/917306796590?text=Hi+interested+in+ordering to place your order.",
+      "autopilot": true,
+      "id": "cc4c8ddb-f484-48bd-b9d4-7726adaaf5d5",
+      "created_at": "2026-06-17T00:24:34.299160"
+    },
+    {
+      "comment_id": "MANUAL_CMT_CAD13ACC",
+      "video_id": "dQw4w9WgXcQ",
+      "username": "nisha_raotest_user",
+      "intent": "HIGH_INTENT",
+      "reply": "Thanks for your interest @nisha_raotest_user! \u2764\ufe0f Please message us on WhatsApp at https://wa.me/917306796590?text=Hi+interested+in+ordering to place your order.",
+      "autopilot": true,
+      "id": "33bc7e7d-6b48-4956-a740-115581944d55",
+      "created_at": "2026-06-17T00:30:54.268383"
+    },
+    {
+      "comment_id": "MANUAL_CMT_0B64EB52",
+      "video_id": "hmasAU3nev4",
+      "username": "nisha_rao",
+      "intent": "HIGH_INTENT",
+      "reply": "Thanks for your interest @nisha_rao! \u2764\ufe0f Please message us on WhatsApp at https://wa.me/917306796590?text=Hi+interested+in+ordering to place your order.",
+      "autopilot": true,
+      "id": "ff719ce1-1d9e-47ea-b2d2-6c834728ad15",
+      "created_at": "2026-06-17T00:36:55.083927"
+    },
+    {
+      "comment_id": "UgwCg-QV5JMj9PogDE54AaABAg",
+      "video_id": "PuCb1JHpBkM",
+      "username": "alangeorgejohnson",
+      "intent": "HIGH_INTENT",
+      "reply": "Thanks for your interest @alangeorgejohnson! \u2764\ufe0f Please message us on WhatsApp at https://wa.me/917306796590?text=Hi+interested+in+ordering to place your order.",
+      "autopilot": true,
+      "id": "b85d10e2-b11d-488f-8fbd-85fcfbc077d6",
+      "created_at": "2026-06-17T14:40:44.701926"
+    },
+    {
+      "comment_id": "UgyDiEaZU_i2QBWGmvJ4AaABAg",
+      "video_id": "PuCb1JHpBkM",
+      "username": "SSREENATHS",
+      "intent": "HIGH_INTENT",
+      "reply": "Thanks for your interest @SSREENATHS! \u2764\ufe0f Please message us on WhatsApp at https://wa.me/917306796590?text=Hi+interested+in+ordering to place your order.",
+      "autopilot": true,
+      "id": "2dec2fa0-030b-42a5-bf00-eff7456951db",
+      "created_at": "2026-06-17T14:40:44.825273"
+    },
+    {
+      "comment_id": "UgwMr4eIvTXFftmDfZJ4AaABAg",
+      "video_id": "PuCb1JHpBkM",
+      "username": "QuizApp-v9r",
+      "intent": "HIGH_INTENT",
+      "reply": "Thanks for your interest @QuizApp-v9r! \u2764\ufe0f Please message us on WhatsApp at https://wa.me/917306796590?text=Hi+interested+in+ordering to place your order.",
+      "autopilot": true,
+      "id": "4ec1cf87-64e3-4ad1-a406-370e2c6ccac7",
+      "created_at": "2026-06-17T14:40:44.948637"
+    },
+    {
+      "comment_id": "Ugw-l4UUR6hVd5FTVKl4AaABAg",
+      "video_id": "PuCb1JHpBkM",
+      "username": "NidhinS-d1r",
+      "intent": "HIGH_INTENT",
+      "reply": "Thanks for your interest @NidhinS-d1r! \u2764\ufe0f Please message us on WhatsApp at https://wa.me/917306796590?text=Hi+interested+in+ordering to place your order.",
+      "autopilot": true,
+      "id": "237b3f24-2f54-4bee-9f5a-d367283d996e",
+      "created_at": "2026-06-17T14:40:45.070513"
+    },
+    {
+      "comment_id": "Ugy_r-MILmqdXCNnJsh4AaABAg",
+      "video_id": "PuCb1JHpBkM",
+      "username": "NidhinS-d1r",
+      "intent": "HIGH_INTENT",
+      "reply": "Thanks for your interest @NidhinS-d1r! \u2764\ufe0f Please message us on WhatsApp at https://wa.me/917306796590?text=Hi+interested+in+ordering to place your order.",
+      "autopilot": true,
+      "id": "fd0ffe09-d662-4799-9117-2ba0e2f80774",
+      "created_at": "2026-06-17T14:40:45.184669"
+    },
+    {
+      "comment_id": "UgwWGYeoJxTSR6jq2NZ4AaABAg",
+      "video_id": "PuCb1JHpBkM",
+      "username": "NidhinS-d1r",
+      "intent": "HIGH_INTENT",
+      "reply": "Thanks for your interest @NidhinS-d1r! \u2764\ufe0f Please message us on WhatsApp at https://wa.me/917306796590?text=Hi+interested+in+ordering to place your order.",
+      "autopilot": true,
+      "id": "8ebbbad5-a68b-44cc-987f-3d808710abfd",
+      "created_at": "2026-06-17T14:40:45.308800"
+    }
+  ],
+  "youtube_analytics": [
+    {
+      "channel_id": "UCu2EnDQQw8g1L95HIq0mSCw",
+      "comments_processed": 135,
+      "reply_rate": 1.48,
+      "lead_count": 9,
+      "conversion_rate": 33.33,
+      "top_videos": [],
+      "id": "2bea17c0-587b-4724-a436-b098a6ba430d",
+      "created_at": "2026-06-16T22:39:26.332014"
+    }
+  ]
+}

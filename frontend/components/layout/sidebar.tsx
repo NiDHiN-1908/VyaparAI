@@ -10,8 +10,10 @@ import {
   CheckSquare, 
   Users, 
   MessageSquare, 
+  MessageCircle,
   BarChart3, 
-  Sparkles 
+  Sparkles,
+  Youtube
 } from "lucide-react";
 
 export default function Sidebar() {
@@ -22,9 +24,15 @@ export default function Sidebar() {
     { name: "Upload Product", href: "/upload", icon: UploadCloud },
     { name: "Video Drafts", href: "/preview", icon: Play },
     { name: "Approvals", href: "/approval", icon: CheckSquare },
-    { name: "Lead CRM", href: "/crm", icon: Users },
-    { name: "Chat Simulator", href: "/chat", icon: MessageSquare },
-    { name: "Analytics", href: "/analytics", icon: BarChart3 },
+    { name: "Campaign Analytics", href: "/analytics", icon: BarChart3 },
+    
+    // YouTube Comment Automation Section
+    { name: "YouTube Connect", href: "/youtube-connect", icon: Youtube },
+    { name: "Video Monitoring", href: "/video-monitoring", icon: Play },
+    { name: "Comment Inbox", href: "/comment-inbox", icon: MessageSquare },
+    { name: "Lead Dashboard", href: "/lead-dashboard", icon: Users },
+    { name: "WhatsApp Live Chat", href: "/live-chat", icon: MessageCircle },
+    { name: "YouTube Analytics", href: "/youtube-analytics", icon: BarChart3 },
   ];
 
   return (
