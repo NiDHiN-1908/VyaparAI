@@ -5,6 +5,14 @@ from pathlib import Path
 project_root = Path(__file__).resolve().parent.parent
 os.chdir(project_root)
 
+# Set global socket timeout to prevent hanging HTTP requests (e.g. Google API)
+import socket
+socket.setdefaulttimeout(10.0)
+
+# Disable Pydantic V2 protected namespace checks globally to prevent startup errors with CrewAI
+import pydantic
+pydantic.BaseModel.model_config["protected_namespaces"] = ()
+
 import uvicorn
 import logging
 from fastapi import FastAPI, Request
@@ -15,6 +23,13 @@ from fastapi.responses import JSONResponse
 from backend.config import settings
 from backend.routers import business, marketing, lead, sales, analytics, youtube_auth, youtube_monitor, whatsapp
 from backend.services.youtube_monitor_service import youtube_monitor_svc
+
+# Clean Architecture WhatsApp Module imports
+from backend.modules.websocket_module import websocket_router
+from backend.modules.whatsapp_module import whatsapp_router
+from backend.modules.conversation_module import conversation_router
+from backend.modules.messaging_module import messaging_router
+from backend.modules.payment_module import payment_router
 
 # Setup logging configuration
 logging.basicConfig(
@@ -57,6 +72,13 @@ app.include_router(analytics.router)
 app.include_router(youtube_auth.router)
 app.include_router(youtube_monitor.router)
 app.include_router(whatsapp.router)
+
+# Mount Clean Architecture WhatsApp Modules
+app.include_router(websocket_router)
+app.include_router(whatsapp_router)
+app.include_router(conversation_router)
+app.include_router(messaging_router)
+app.include_router(payment_router)
 
 # Background Polling Service Startup
 @app.on_event("startup")
@@ -180,12 +202,26 @@ async def global_exception_handler(request: Request, exc: Exception):
 async def root_health_check():
     """Health check endpoint confirming API status and active database/agent configurations."""
     from backend.database.connection import db_conn
+    from backend.modules.whatsapp_module.instance_service import whatsapp_instance_svc
+    
+    provider = whatsapp_instance_svc.provider
+    is_sandbox = getattr(provider, "is_sandbox", None)
+    api_url = getattr(provider, "api_url", None)
+    api_key = getattr(provider, "api_key", None)
+    
     return {
         "status": "healthy",
         "app": settings.PROJECT_NAME,
         "database_mode": "Mock (In-Memory)" if db_conn.is_mock else "Supabase Real-Time Connected",
         "ollama_host": settings.OLLAMA_BASE_URL,
-        "ollama_model": settings.OLLAMA_MODEL
+        "ollama_model": settings.OLLAMA_MODEL,
+        "whatsapp": {
+            "provider_name": whatsapp_instance_svc.provider_name,
+            "is_sandbox": is_sandbox,
+            "api_url": api_url,
+            "api_key_set": bool(api_key),
+            "api_key_masked": (api_key[:4] + "..." if api_key else None)
+        }
     }
 
 if __name__ == "__main__":

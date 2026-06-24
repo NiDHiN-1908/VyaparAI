@@ -2,7 +2,7 @@
 import logging
 from pydantic import BaseModel, Field
 from typing import Optional, List
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Request
 from datetime import datetime
 
 from backend.services.supabase_service import supabase_svc
@@ -23,14 +23,45 @@ class ReplyApproveRequest(BaseModel):
 class AutoReplyToggleRequest(BaseModel):
     auto_reply: bool
 
+class VideoAutoReplyToggleRequest(BaseModel):
+    auto_reply: bool
+
+class VideoStatusToggleRequest(BaseModel):
+    status: str = Field(..., description="monitored or unmonitored")
+
 @router.get("/videos")
 async def get_monitored_videos():
     """List all monitored YouTube videos"""
     try:
         channels = supabase_svc.get_youtube_channels()
         if channels:
-            await youtube_monitor_svc.sync_channel_videos(channels[0])
+            try:
+                await youtube_monitor_svc.sync_channel_videos(channels[0])
+            except Exception as sync_err:
+                logger.error(f"Error syncing channel videos: {sync_err}. Falling back to cached/mock videos.")
+        
         videos = supabase_svc.get_youtube_videos()
+        
+        # If no videos exist in the database and a channel is connected, seed default mock videos
+        if channels and not videos:
+            channel_id = channels[0]["channel_id"]
+            logger.info(f"No videos found. Seeding default mock videos for channel {channel_id}")
+            supabase_svc.create_youtube_video(
+                channel_id=channel_id,
+                video_id="PuCb1JHpBkM",
+                title="Cardamom Export Launch Campaign",
+                publish_date=datetime.now().isoformat(),
+                status="monitored"
+            )
+            supabase_svc.create_youtube_video(
+                channel_id=channel_id,
+                video_id="dQw4w9WgXcQ",
+                title="Coconut Oil Regional Promo Clip",
+                publish_date=datetime.now().isoformat(),
+                status="monitored"
+            )
+            videos = supabase_svc.get_youtube_videos()
+            
         return {"status": "success", "data": videos}
     except Exception as e:
         logger.error(f"Error fetching monitored videos: {e}")
@@ -176,7 +207,8 @@ async def regenerate_comment_reply(comment_id: str):
         new_text = await youtube_monitor_crew.generate_comment_reply(
             comment_text=comment["text"],
             intent=comment["intent"],
-            username=comment["username"]
+            username=comment["username"],
+            comment_id=comment_id
         )
         
         # Save updated reply in DB
@@ -197,6 +229,92 @@ async def regenerate_comment_reply(comment_id: str):
     except Exception as e:
         logger.error(f"Error regenerating comment reply: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/comments/{comment_id}/whatsapp-link")
+async def get_comment_whatsapp_link(comment_id: str, request: Request):
+    """Generate a direct WhatsApp click-to-chat link for the YouTube comment"""
+    try:
+        # Check if comment exists
+        comment = supabase_svc.get_youtube_comment(comment_id)
+        if not comment:
+            raise HTTPException(status_code=404, detail="Comment not found")
+            
+        import os
+        public_url = os.getenv("PUBLIC_URL") or os.getenv("APP_BASE_URL")
+        if public_url and "host.docker.internal" not in public_url:
+            base_url = public_url
+        else:
+            base_url = str(request.base_url)
+            
+        # Ensure trailing slash
+        if not base_url.endswith("/"):
+            base_url += "/"
+            
+        # Build clean dynamic redirect URL instead of long wa.me string
+        whatsapp_link = f"{base_url}youtube/r/{comment_id}"
+        
+        return {
+            "status": "success",
+            "whatsapp_link": whatsapp_link,
+            "phone_number": "Dynamic Redirect"
+        }
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        logger.error(f"Error generating whatsapp link: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/r/{comment_id}")
+async def redirect_to_whatsapp(comment_id: str):
+    """
+    Redirect the customer to the active WhatsApp Click-to-Chat URL
+    with dynamic phone number resolution and tracking attribution.
+    """
+    from fastapi.responses import RedirectResponse
+    import urllib.parse
+    try:
+        # 1. Fetch the comment details
+        comment = supabase_svc.get_youtube_comment(comment_id)
+        if not comment:
+            raise HTTPException(status_code=404, detail="Comment reference not found")
+            
+        # Fetch associated video to get the video title
+        video = supabase_svc.get_youtube_video(comment["video_id"])
+        video_title = video["title"] if video else "our product video"
+        
+        # 2. Resolve default tenant's WhatsApp instance phone number
+        instances = supabase_svc.get_whatsapp_instances("00000000-0000-0000-0000-000000000000")
+        phone_number = None
+        
+        for inst in instances:
+            if inst.get("status") == "connected" and inst.get("phone_number"):
+                phone_number = inst["phone_number"]
+                break
+                
+        if not phone_number and instances:
+            for inst in instances:
+                if inst.get("phone_number"):
+                    phone_number = inst["phone_number"]
+                    break
+                    
+        # Fallback fake number if no WhatsApp setup exists yet
+        if not phone_number:
+            phone_number = "919999999999"
+            
+        clean_phone = "".join(filter(str.isdigit, phone_number))
+        
+        # 3. Build wa.me Click-to-Chat URL with pre-filled tracking template
+        text = f"Hi! I saw your video \"{video_title}\" and commented: \"{comment['text']}\". I would like to connect! (Ref: YT_{comment_id})"
+        encoded_text = urllib.parse.quote(text)
+        wa_url = f"https://wa.me/{clean_phone}?text={encoded_text}"
+        
+        logger.info(f"Redirecting comment {comment_id} link click to WhatsApp: {wa_url}")
+        return RedirectResponse(url=wa_url, status_code=307)
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        logger.error(f"Error executing link redirect: {e}")
+        raise HTTPException(status_code=500, detail="Internal redirect error")
 
 @router.get("/leads")
 async def get_youtube_leads():
@@ -258,6 +376,32 @@ async def toggle_auto_reply(payload: AutoReplyToggleRequest):
 async def get_auto_reply_status():
     """Get AUTO_REPLY status"""
     return {"auto_reply": youtube_monitor_crew.auto_reply}
+
+@router.post("/videos/{video_id}/auto-reply")
+async def toggle_video_auto_reply(video_id: str, payload: VideoAutoReplyToggleRequest):
+    """Enable or disable auto-reply for a specific video"""
+    try:
+        updated = supabase_svc.update_youtube_video_auto_reply(video_id, payload.auto_reply)
+        if not updated:
+            raise HTTPException(status_code=404, detail="Video not found")
+        return {"status": "success", "data": updated}
+    except Exception as e:
+        logger.error(f"Error toggling video auto-reply: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/videos/{video_id}/status")
+async def update_video_monitoring_status(video_id: str, payload: VideoStatusToggleRequest):
+    """Update monitoring status (monitored or unmonitored) for a specific video"""
+    if payload.status not in ["monitored", "unmonitored"]:
+        raise HTTPException(status_code=400, detail="Invalid status. Must be 'monitored' or 'unmonitored'")
+    try:
+        updated = supabase_svc.update_youtube_video_status(video_id, payload.status)
+        if not updated:
+            raise HTTPException(status_code=404, detail="Video not found")
+        return {"status": "success", "data": updated}
+    except Exception as e:
+        logger.error(f"Error updating video monitoring status: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/temp-clean-db")
 async def temp_clean_db():
