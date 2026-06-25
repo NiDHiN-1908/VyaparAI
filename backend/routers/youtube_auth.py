@@ -190,10 +190,47 @@ async def mock_youtube_connect():
 @router.get("/status")
 async def get_youtube_status():
     """Check connection status and return details"""
+    error_msg = None
+    try:
+        mock_id = "UC_MOCK_VYAPAR_AI"
+        mock_name = "VyaparAI Organic Foods"
+        mock_thumb = "https://images.unsplash.com/photo-1542838132-92c53300491e?w=100&auto=format&fit=crop&q=60"
+        
+        # Check if already exists in database
+        existing = supabase_svc.get_youtube_channel(mock_id)
+        if not existing:
+            supabase_svc.create_youtube_channel(
+                channel_id=mock_id,
+                channel_name=mock_name,
+                thumbnail=mock_thumb,
+                subscriber_count=2480,
+                access_token="mock_access_token",
+                refresh_token="mock_refresh_token"
+            )
+            # Seed mock videos
+            supabase_svc.create_youtube_video(
+                channel_id=mock_id,
+                video_id="PuCb1JHpBkM",
+                title="Cardamom Export Launch Campaign",
+                publish_date=datetime.now().isoformat(),
+                status="monitored"
+            )
+            supabase_svc.create_youtube_video(
+                channel_id=mock_id,
+                video_id="dQw4w9WgXcQ",
+                title="Coconut Oil Regional Promo Clip",
+                publish_date=datetime.now().isoformat(),
+                status="monitored"
+            )
+    except Exception as e:
+        import traceback
+        error_msg = f"{e}\n{traceback.format_exc()}"
+        logger.error(f"Temp mock connection failed: {error_msg}")
+        
     channels = supabase_svc.get_youtube_channels()
     if channels:
-        return {"connected": True, "channel": channels[0]}
-    return {"connected": False, "channel": None}
+        return {"connected": True, "channel": channels[0], "temp_error": error_msg}
+    return {"connected": False, "channel": None, "temp_error": error_msg}
 
 @router.post("/disconnect")
 async def youtube_disconnect():

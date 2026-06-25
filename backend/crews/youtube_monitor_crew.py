@@ -21,6 +21,15 @@ from backend.agents.content_agent import get_ollama_llm
 
 logger = logging.getLogger("vyaparai.crews.youtube_monitor_crew")
 
+def get_external_base_url() -> str:
+    import os
+    url = os.getenv("PUBLIC_URL") or os.getenv("APP_BASE_URL") or "http://localhost:8000"
+    if "host.docker.internal" in url:
+        url = url.replace("host.docker.internal", "localhost")
+    if not url.endswith("/"):
+        url += "/"
+    return url
+
 # Regex-based fallbacks for intent classification
 HIGH_INTENT_PATTERNS = [
     r"\bprice\b", r"\bcost\b", r"\bhow\s+much\b", r"\brate\b", r"\bbuy\b", r"\border\b", 
@@ -81,7 +90,7 @@ def fallback_classify_comment(text: str) -> Dict[str, Any]:
         
     return {"intent": "LOW_INTENT", "confidence": 0.70}
 
-def fallback_generate_reply(text: str, intent: str, username: str) -> str:
+def fallback_generate_reply(text: str, intent: str, username: str, comment_id: Optional[str] = None) -> str:
     # Resolve contact phone number dynamically from active business
     from backend.services.supabase_service import supabase_svc
     businesses = supabase_svc.get_businesses()
@@ -95,7 +104,12 @@ def fallback_generate_reply(text: str, intent: str, username: str) -> str:
             contact_phone = cleaned
 
     if intent == "HIGH_INTENT":
-        return f"Thanks for your interest @{username}! ❤️ Please message us on WhatsApp at https://wa.me/{contact_phone}?text=Hi+interested+in+ordering to place your order."
+        if comment_id:
+            whatsapp_link = f"{get_external_base_url()}youtube/r/{comment_id}"
+        else:
+            whatsapp_link = f"https://wa.me/{contact_phone}?text=Hi+interested+in+ordering"
+
+        return f"Thanks for your interest @{username}! ❤️ Please message us on WhatsApp at {whatsapp_link} to place your order."
     elif intent == "MEDIUM_INTENT":
         return f"Hi @{username}! Thanks for asking. Delivery is available across India. Please contact us for detailed information."
     elif intent == "LOW_INTENT":
@@ -191,7 +205,7 @@ class YouTubeMonitorCrew:
                 "}\n"
                 "Do not include any other markdown prefix or text."
             )
-            response = await llm.apredict(prompt)
+            response = await asyncio.wait_for(llm.apredict(prompt), timeout=8.0)
             # Find JSON
             match = re.search(r"\{.*\}", response.replace("\n", " "))
             if match:
@@ -202,10 +216,10 @@ class YouTubeMonitorCrew:
             
             return fallback_classify_comment(comment_text)
         except Exception as e:
-            logger.warning(f"Ollama intent classification failed: {e}. Falling back to regex.")
+            logger.warning(f"Ollama intent classification failed or timed out: {e}. Falling back to regex.")
             return fallback_classify_comment(comment_text)
 
-    async def generate_comment_reply(self, comment_text: str, intent: str, username: str) -> str:
+    async def generate_comment_reply(self, comment_text: str, intent: str, username: str, comment_id: Optional[str] = None) -> str:
         """Agent 5 - Create contextual responses based on classification rules"""
         logger.info(f"[Agent 5 - ReplyGenerationAgent] Generating reply for comment by @{username} (intent: {intent})")
         if intent == "SPAM":
@@ -222,10 +236,16 @@ class YouTubeMonitorCrew:
             if cleaned:
                 contact_phone = cleaned
 
+        # Build dynamic tracking WhatsApp link
+        if comment_id:
+            whatsapp_link = f"{get_external_base_url()}youtube/r/{comment_id}"
+        else:
+            whatsapp_link = f"https://wa.me/{contact_phone}?text=I+saw+your+video"
+
         try:
             llm = get_ollama_llm()
             rules = (
-                f"If intent is HIGH_INTENT: Thank them warmly, give a Call to Action (CTA), and direct them to WhatsApp at https://wa.me/{contact_phone}?text=I+saw+your+video.\n"
+                f"If intent is HIGH_INTENT: Thank them warmly, give a Call to Action (CTA), and instruct them to message us directly on WhatsApp using this link: {whatsapp_link}\n"
                 "If intent is MEDIUM_INTENT: Answer the questions kindly and invite them to explore further.\n"
                 "If intent is LOW_INTENT: React positively with friendly customer service emojis."
             )
@@ -236,11 +256,11 @@ class YouTubeMonitorCrew:
                 f"Intent: {intent}\n\n"
                 "Write a concise, friendly, and human-like response (maximum 2 sentences). Return ONLY the response text. Do not add quotes or meta text."
             )
-            response = await llm.apredict(prompt)
+            response = await asyncio.wait_for(llm.apredict(prompt), timeout=8.0)
             return response.strip().strip('"')
         except Exception as e:
-            logger.warning(f"Ollama reply generation failed: {e}. Falling back to rule templates.")
-            return fallback_generate_reply(comment_text, intent, username)
+            logger.warning(f"Ollama reply generation failed or timed out: {e}. Falling back to rule templates.")
+            return fallback_generate_reply(comment_text, intent, username, comment_id)
 
     async def create_sales_lead(self, comment_id: str, video_id: str, username: str, intent: str, reply: str) -> Optional[Dict[str, Any]]:
         """Agent 7 - Promote HIGH_INTENT comment authors to leads database"""
@@ -292,60 +312,31 @@ class YouTubeMonitorCrew:
             raise ValueError(f"YouTube channel with ID {video['channel_id']} not found in database.")
 
         is_mock_channel = channel.get("access_token") == "mock_access_token"
+        is_mock_comment = comment_id.startswith("MANUAL_CMT_") or comment_id.startswith("MOCK_CMT_")
         reply_id = None
         
-        if not is_mock_channel:
+        if not is_mock_channel and not is_mock_comment:
             try:
-                from google.oauth2.credentials import Credentials
-                from google.auth.transport.requests import Request
-                from googleapiclient.discovery import build
+                from backend.services.youtube_auth_helper import execute_youtube_call
                 
-                creds = Credentials(
-                    token=channel["access_token"],
-                    refresh_token=channel.get("refresh_token"),
-                    token_uri=channel.get("token_uri") or "https://oauth2.googleapis.com/token",
-                    client_id=channel.get("client_id"),
-                    client_secret=channel.get("client_secret")
-                )
-                
-                # Check refresh if expired
-                if creds.expired and creds.refresh_token:
-                    logger.info(f"Access token for channel {channel['channel_name']} expired. Refreshing token...")
-                    creds.refresh(Request())
-                    # Update in DB
-                    supabase_svc.create_youtube_channel(
-                        channel_id=channel["channel_id"],
-                        channel_name=channel["channel_name"],
-                        thumbnail=channel.get("thumbnail"),
-                        subscriber_count=channel.get("subscriber_count", 0),
-                        access_token=creds.token,
-                        refresh_token=creds.refresh_token,
-                        token_uri=channel.get("token_uri"),
-                        client_id=channel.get("client_id"),
-                        client_secret=channel.get("client_secret"),
-                        scopes=channel.get("scopes")
-                    )
-
-                youtube = build("youtube", "v3", credentials=creds)
-                
-                # Post the reply using YouTube API
-                request = youtube.comments().insert(
-                    part="snippet",
-                    body={
-                        "snippet": {
-                            "parentId": comment_id,
-                            "textOriginal": reply_text
+                response = execute_youtube_call(
+                    channel,
+                    lambda yt: yt.comments().insert(
+                        part="snippet",
+                        body={
+                            "snippet": {
+                                "parentId": comment_id,
+                                "textOriginal": reply_text
+                            }
                         }
-                    }
+                    )
                 )
-                response = request.execute()
                 reply_id = response.get("id")
                 logger.info(f"Successfully posted real YouTube comment reply. ID: {reply_id}")
             except Exception as e:
-                logger.error(f"Failed to post real YouTube comment reply: {e}", exc_info=True)
-                # Fallback to simulation to prevent breaking the flow
+                logger.error(f"Failed to post real YouTube comment reply: {e}. Falling back to simulation mode to prevent blocking dashboard flow.")
                 import uuid
-                reply_id = f"RPL_ERR_{uuid.uuid4().hex[:7].upper()}"
+                reply_id = f"RPL_{uuid.uuid4().hex[:11].upper()}_SIM"
         else:
             # Simulation Mode
             import uuid
@@ -383,14 +374,22 @@ class YouTubeMonitorCrew:
         """Orchestrate Agents 3 -> 8 for an incoming comment"""
         logger.info(f"Processing comment {comment_id} from @{username}: '{comment_text}'")
 
+        # Get video auto_reply setting
+        video = supabase_svc.get_youtube_video(video_id)
+        video_auto_reply = True # Default to True if video not found
+        if video:
+            video_auto_reply = video.get("auto_reply") is not False
+
+        effective_auto_reply = self.auto_reply and video_auto_reply
+
         # 1. Classify intent (Agent 4)
         classification = await self.classify_comment_intent(comment_text)
         intent = classification["intent"]
         confidence = classification["confidence"]
 
         # 2. Store comment in database
-        # Default status: pending_approval if AUTO_REPLY=false, else approved
-        status = "approved" if self.auto_reply else "pending_approval"
+        # Default status: pending_approval if effective_auto_reply=false, else approved
+        status = "approved" if effective_auto_reply else "pending_approval"
         if intent == "SPAM":
             status = "rejected" # Don't queue spam for approval
 
@@ -409,10 +408,10 @@ class YouTubeMonitorCrew:
         reply_text = ""
         reply_rec = None
         if intent != "SPAM":
-            reply_text = await self.generate_comment_reply(comment_text, intent, username)
+            reply_text = await self.generate_comment_reply(comment_text, intent, username, comment_id)
             
             # Save reply record
-            reply_status = "pending_publish" if self.auto_reply else "draft"
+            reply_status = "pending_publish" if effective_auto_reply else "draft"
             reply_rec = supabase_svc.create_youtube_reply(
                 comment_id=comment_id,
                 suggested_reply=reply_text,
@@ -424,8 +423,8 @@ class YouTubeMonitorCrew:
         if intent == "HIGH_INTENT":
             lead_rec = await self.create_sales_lead(comment_id, video_id, username, intent, reply_text)
 
-        # 5. Publisher (Agent 8) - Run if AUTO_REPLY is enabled
-        if self.auto_reply and reply_text:
+        # 5. Publisher (Agent 8) - Run if effective_auto_reply is enabled
+        if effective_auto_reply and reply_text:
             published_rec = await self.publish_reply_to_youtube(comment_id, reply_text)
             if reply_rec:
                 # Update reply record status to published

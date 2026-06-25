@@ -16,7 +16,7 @@ import {
   Image as ImageIcon 
 } from "lucide-react";
 
-const API_BASE = "http://localhost:8000";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 export default function PreviewPage() {
   const [selectedLang, setSelectedLang] = useState("English");
@@ -303,7 +303,7 @@ export default function PreviewPage() {
               {/* Google Business Post */}
               <div className="p-4 rounded-xl bg-slate-900/50 border border-slate-800/80">
                 <span className="text-[10px] font-bold text-sky-400 uppercase tracking-widest block mb-1">Google Business Update Post</span>
-                <p className="text-sm text-slate-200">{activeText.google_business_post || activeText.title || ""}</p>
+                <p className="text-sm text-slate-200">{activeText.google_business_post || ""}</p>
               </div>
             </div>
           </div>

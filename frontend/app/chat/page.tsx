@@ -1,7 +1,7 @@
 // frontend/app/chat/page.tsx
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { 
   MessageCircle, 
@@ -14,9 +14,9 @@ import {
   Building2
 } from "lucide-react";
 
-const API_BASE = "http://localhost:8000";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
-export default function ChatPage() {
+function ChatContent() {
   const searchParams = useSearchParams();
   const leadIdParam = searchParams.get("lead_id");
 
@@ -375,5 +375,13 @@ export default function ChatPage() {
 
       </div>
     </div>
+  );
+}
+
+export default function ChatPage() {
+  return (
+    <Suspense fallback={<div className="text-center py-12 text-slate-400 text-sm">Loading Chat Simulator...</div>}>
+      <ChatContent />
+    </Suspense>
   );
 }

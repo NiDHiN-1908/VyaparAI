@@ -2,9 +2,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Play, Eye, RefreshCw, Search, Calendar, Film, Video, ExternalLink } from "lucide-react";
+import { Play, Eye, RefreshCw, Search, Calendar, Film, Video, ExternalLink, ToggleLeft, ToggleRight, AlertCircle } from "lucide-react";
 
-const API_BASE = "http://localhost:8000";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 export default function VideoMonitoring() {
   const [loading, setLoading] = useState(true);
@@ -27,6 +27,40 @@ export default function VideoMonitoring() {
       setError("Failed to connect to backend server.");
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleToggleVideoAutoReply(videoId: string, currentAutoReply: boolean) {
+    const nextVal = !currentAutoReply;
+    // Optimistic UI update
+    setVideos(prev => prev.map(v => v.video_id === videoId ? { ...v, auto_reply: nextVal } : v));
+    try {
+      await fetch(`${API_BASE}/youtube/videos/${videoId}/auto-reply`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ auto_reply: nextVal })
+      });
+    } catch (err) {
+      console.error(err);
+      // Revert on error
+      setVideos(prev => prev.map(v => v.video_id === videoId ? { ...v, auto_reply: currentAutoReply } : v));
+    }
+  }
+
+  async function handleToggleVideoMonitoring(videoId: string, isCurrentlyMonitored: boolean) {
+    const nextStatus = isCurrentlyMonitored ? "unmonitored" : "monitored";
+    // Optimistic UI update
+    setVideos(prev => prev.map(v => v.video_id === videoId ? { ...v, status: nextStatus } : v));
+    try {
+      await fetch(`${API_BASE}/youtube/videos/${videoId}/status`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: nextStatus })
+      });
+    } catch (err) {
+      console.error(err);
+      // Revert on error
+      setVideos(prev => prev.map(v => v.video_id === videoId ? { ...v, status: isCurrentlyMonitored ? "monitored" : "unmonitored" } : v));
     }
   }
 
@@ -65,8 +99,10 @@ export default function VideoMonitoring() {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         <div className="glass-panel rounded-2xl p-6 relative overflow-hidden">
-          <p className="text-sm font-medium text-slate-400">Total Videos Scanned</p>
-          <h3 className="text-3xl font-bold mt-2 text-white">{videos.length}</h3>
+          <p className="text-sm font-medium text-slate-400">Actively Monitored</p>
+          <h3 className="text-3xl font-bold mt-2 text-white">
+            {videos.filter(v => v.status === "monitored").length} / {videos.length} Videos
+          </h3>
           <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-indigo-500/20 to-transparent" />
         </div>
         <div className="glass-panel rounded-2xl p-6 relative overflow-hidden">
@@ -76,7 +112,7 @@ export default function VideoMonitoring() {
         </div>
         <div className="glass-panel rounded-2xl p-6 relative overflow-hidden">
           <p className="text-sm font-medium text-slate-400">Scanning Frequency</p>
-          <h3 className="text-3xl font-bold mt-2 text-indigo-400">Every 5 mins</h3>
+          <h3 className="text-3xl font-bold mt-2 text-indigo-400">Every 5 min</h3>
           <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-indigo-500/20 to-transparent" />
         </div>
       </div>
@@ -126,14 +162,57 @@ export default function VideoMonitoring() {
                     <Calendar className="w-3.5 h-3.5" />
                     <span>{new Date(video.publish_date || video.created_at).toLocaleDateString()}</span>
                   </div>
-                  <span className="inline-block text-[10px] font-bold px-2 py-0.5 rounded-full uppercase bg-indigo-500/10 text-indigo-400 border border-indigo-500/15">
-                    {video.status}
-                  </span>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className={`inline-block text-[10px] font-bold px-2 py-0.5 rounded-full uppercase border ${
+                      video.status === "monitored" 
+                        ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/15" 
+                        : "bg-slate-800 text-slate-500 border-slate-700/60"
+                    }`}>
+                      {video.status || "monitored"}
+                    </span>
+                    <span className={`inline-block text-[10px] font-bold px-2 py-0.5 rounded-full uppercase border ${
+                      video.auto_reply !== false 
+                        ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/15" 
+                        : "bg-slate-800 text-slate-500 border-slate-700/60"
+                    }`}>
+                      {video.auto_reply !== false ? "Auto-Reply On" : "Auto-Reply Off"}
+                    </span>
+                  </div>
                 </div>
               </div>
 
               <div className="flex justify-between items-center border-t border-slate-800/80 pt-4">
-                <span className="text-[10px] text-slate-500 font-bold uppercase">ID: {video.video_id}</span>
+                <div className="flex items-center gap-4 flex-wrap">
+                  <span className="text-[10px] text-slate-500 font-bold uppercase">ID: {video.video_id}</span>
+                  
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => handleToggleVideoMonitoring(video.video_id, video.status === "monitored")}
+                      className="focus:outline-none flex items-center gap-1.5"
+                      title={video.status === "monitored" ? "Stop Monitoring" : "Start Monitoring"}
+                    >
+                      <span className="text-[10px] font-semibold text-slate-400">Monitor:</span>
+                      {video.status === "monitored" ? (
+                        <ToggleRight className="w-6 h-6 text-indigo-400" />
+                      ) : (
+                        <ToggleLeft className="w-6 h-6 text-slate-500" />
+                      )}
+                    </button>
+
+                    <button
+                      onClick={() => handleToggleVideoAutoReply(video.video_id, video.auto_reply !== false)}
+                      className="focus:outline-none flex items-center gap-1.5"
+                      title={video.auto_reply !== false ? "Disable Auto-Reply" : "Enable Auto-Reply"}
+                    >
+                      <span className="text-[10px] font-semibold text-slate-400">Auto-Reply:</span>
+                      {video.auto_reply !== false ? (
+                        <ToggleRight className="w-6 h-6 text-emerald-400" />
+                      ) : (
+                        <ToggleLeft className="w-6 h-6 text-slate-500" />
+                      )}
+                    </button>
+                  </div>
+                </div>
                 <a
                   href={`https://www.youtube.com/watch?v=${video.video_id}`}
                   target="_blank"

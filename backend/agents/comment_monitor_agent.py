@@ -50,7 +50,7 @@ def classify_comment(comment_text: str) -> str:
             f"Comment: \"{comment_text}\"\n\n"
             "Return ONLY the classified category name (HIGH_INTENT, MEDIUM_INTENT, or SPAM). Do not include any explanation or punctuation."
         )
-        response = llm.predict(prompt)
+        response = llm.invoke(prompt).content
         intent = response.strip().upper()
         
         # Clean response to ensure it maps exactly to the classes

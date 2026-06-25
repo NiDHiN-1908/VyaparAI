@@ -7,7 +7,7 @@ import {
   ToggleLeft, ToggleRight, CheckSquare, Check, X, AlertCircle, Calendar 
 } from "lucide-react";
 
-const API_BASE = "http://localhost:8000";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 export default function CommentInbox() {
   const [loading, setLoading] = useState(true);
@@ -18,8 +18,10 @@ export default function CommentInbox() {
   const [intentFilter, setIntentFilter] = useState("ALL");
   const [statusTab, setStatusTab] = useState("ALL"); // "ALL" | "pending_approval" | "replied" | "rejected"
   const [autoReply, setAutoReply] = useState(false);
+  const [whatsappStatus, setWhatsappStatus] = useState<string>("disconnected");
   const [error, setError] = useState<string | null>(null);
   const [statusMsg, setStatusMsg] = useState("");
+  const [videoSearch, setVideoSearch] = useState("");
 
   // Comment simulator state
   const [simVideo, setSimVideo] = useState("");
@@ -72,6 +74,33 @@ export default function CommentInbox() {
     }
   }
 
+  async function checkWhatsAppStatus() {
+    try {
+      const res = await fetch(`${API_BASE}/whatsapp/instances?tenant_id=00000000-0000-0000-0000-000000000000`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.status === "success" && data.data) {
+          // Look for any connected instance
+          const hasConnected = data.data.some((inst: any) => inst.status === "connected");
+          if (hasConnected) {
+            setWhatsappStatus("connected");
+            return;
+          }
+          // If none are connected, look for any connecting
+          const hasConnecting = data.data.some((inst: any) => inst.status === "connecting");
+          if (hasConnecting) {
+            setWhatsappStatus("connecting");
+            return;
+          }
+        }
+      }
+      setWhatsappStatus("disconnected");
+    } catch (err) {
+      console.warn("Failed to retrieve WhatsApp funnel status:", err);
+      setWhatsappStatus("disconnected");
+    }
+  }
+
   async function checkSettings() {
     try {
       const res = await fetch(`${API_BASE}/youtube/settings/auto-reply`);
@@ -96,6 +125,31 @@ export default function CommentInbox() {
     }
   }
 
+  async function handleToggleVideoAutoReply(videoId: string, currentAutoReply: boolean) {
+    const nextVal = !currentAutoReply;
+    // Optimistic UI update
+    setMonitoredVideos(prev => prev.map(v => v.video_id === videoId ? { ...v, auto_reply: nextVal } : v));
+    try {
+      const res = await fetch(`${API_BASE}/youtube/videos/${videoId}/auto-reply`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ auto_reply: nextVal })
+      });
+      if (!res.ok) {
+        // Revert on error
+        setMonitoredVideos(prev => prev.map(v => v.video_id === videoId ? { ...v, auto_reply: currentAutoReply } : v));
+        setStatusMsg("Failed to update video settings.");
+        setTimeout(() => setStatusMsg(""), 3000);
+      }
+    } catch (err) {
+      console.error(err);
+      // Revert on error
+      setMonitoredVideos(prev => prev.map(v => v.video_id === videoId ? { ...v, auto_reply: currentAutoReply } : v));
+      setStatusMsg("Connection error.");
+      setTimeout(() => setStatusMsg(""), 3000);
+    }
+  }
+
   async function handleRefresh() {
     setLoading(true);
     setStatusMsg("Syncing with YouTube...");
@@ -114,7 +168,36 @@ export default function CommentInbox() {
     fetchVideos();
     fetchComments();
     checkSettings();
+    checkWhatsAppStatus();
+
+    // Poll WhatsApp status every 10 seconds to keep dashboard state aligned
+    const interval = setInterval(() => {
+      checkWhatsAppStatus();
+    }, 10000);
+
+    return () => clearInterval(interval);
   }, []);
+
+  async function handleInsertWhatsAppLink(commentId: string) {
+    try {
+      const res = await fetch(`${API_BASE}/youtube/comments/${commentId}/whatsapp-link`);
+      const data = await res.json();
+      if (res.ok && data.whatsapp_link) {
+        const cmt = comments.find(c => c.comment_id === commentId);
+        const currentReply = editableReplies[commentId] ?? cmt?.reply?.suggested_reply ?? "";
+        const space = currentReply.endsWith(" ") || currentReply === "" ? "" : " ";
+        const newReply = `${currentReply}${space}Let's discuss on WhatsApp: ${data.whatsapp_link}`;
+        setEditableReplies(prev => ({ ...prev, [commentId]: newReply }));
+      } else {
+        setStatusMsg("Failed to generate WhatsApp link.");
+        setTimeout(() => setStatusMsg(""), 3000);
+      }
+    } catch (err) {
+      console.error(err);
+      setStatusMsg("Failed to generate WhatsApp link.");
+      setTimeout(() => setStatusMsg(""), 3000);
+    }
+  }
 
   async function handleSimulate(e: React.FormEvent) {
     e.preventDefault();
@@ -149,7 +232,8 @@ export default function CommentInbox() {
 
   // Inline Approval Queue Actions
   async function handleApprove(commentId: string) {
-    const replyText = editableReplies[commentId];
+    const cmt = comments.find(c => c.comment_id === commentId);
+    const replyText = editableReplies[commentId] ?? cmt?.reply?.suggested_reply;
     if (!replyText || !replyText.trim()) return;
 
     setActionLoading(prev => ({ ...prev, [commentId]: true }));
@@ -179,14 +263,21 @@ export default function CommentInbox() {
           return c;
         }));
       } else {
-        setStatusMsg("Failed to publish reply.");
+        let errorDetail = "Failed to publish reply.";
+        try {
+          const errData = await res.json();
+          if (errData && errData.detail) {
+            errorDetail = `Error: ${errData.detail}`;
+          }
+        } catch (_) {}
+        setStatusMsg(errorDetail);
       }
     } catch (err) {
       console.error(err);
       setStatusMsg("Connection error.");
     } finally {
       setActionLoading(prev => ({ ...prev, [commentId]: false }));
-      setTimeout(() => setStatusMsg(""), 3000);
+      setTimeout(() => setStatusMsg(""), 5000); // give more time to read errors
     }
   }
 
@@ -291,6 +382,27 @@ export default function CommentInbox() {
         </div>
 
         <div className="flex flex-wrap items-center gap-4">
+          {/* WhatsApp status badge */}
+          <div className="bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 flex items-center gap-3">
+            <span className="text-xs font-semibold text-slate-300">WhatsApp Funnel</span>
+            {whatsappStatus === "connected" ? (
+              <span className="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                Active
+              </span>
+            ) : whatsappStatus === "connecting" ? (
+              <span className="text-xs font-bold text-indigo-400 flex items-center gap-1.5 animate-pulse">
+                <span className="w-2 h-2 rounded-full bg-indigo-500" />
+                Connecting
+              </span>
+            ) : (
+              <span className="text-xs font-bold text-slate-500 flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-slate-600" />
+                Offline
+              </span>
+            )}
+          </div>
+
           {/* Auto reply toggle */}
           <div className="bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 flex items-center gap-3">
             <span className="text-xs font-semibold text-slate-300">AUTO_REPLY Mode</span>
@@ -464,12 +576,21 @@ export default function CommentInbox() {
                     <p className="text-slate-300 text-sm leading-relaxed">"{cmt.text}"</p>
                     
                     {/* Inline Approvals queue box */}
-                    {cmt.status === "pending_approval" && cmt.reply && (
+                    {cmt.status === "pending_approval" && (
                       <div className="space-y-4 pt-3 border-t border-slate-800/80">
                         <div className="space-y-2">
-                          <label className="text-[10px] font-bold text-indigo-400 uppercase tracking-wider block">Suggested Reply Draft</label>
+                          <div className="flex justify-between items-center mb-2">
+                            <label className="text-[10px] font-bold text-indigo-400 uppercase tracking-wider block">Suggested Reply Draft</label>
+                            <button
+                              onClick={() => handleInsertWhatsAppLink(cmt.comment_id)}
+                              type="button"
+                              className="text-[10px] text-indigo-300 hover:text-indigo-200 font-semibold bg-indigo-500/10 border border-indigo-500/10 hover:border-indigo-500/20 px-2 py-0.5 rounded transition"
+                            >
+                              + Attach WhatsApp Link
+                            </button>
+                          </div>
                           <textarea
-                            value={editableReplies[cmt.comment_id] ?? cmt.reply.suggested_reply ?? ""}
+                            value={editableReplies[cmt.comment_id] ?? cmt.reply?.suggested_reply ?? ""}
                             onChange={(e) => setEditableReplies(prev => ({ ...prev, [cmt.comment_id]: e.target.value }))}
                             rows={3}
                             disabled={actionLoading[cmt.comment_id]}
@@ -533,6 +654,65 @@ export default function CommentInbox() {
                   </div>
                 ))}
               </div>
+            )}
+          </div>
+        </div>
+
+        {/* Auto-Reply Video Settings Widget */}
+        <div className="glass-panel rounded-2xl p-6 h-max space-y-6">
+          <h3 className="text-lg font-bold text-white border-b border-slate-800 pb-3 flex items-center gap-2">
+            <CheckSquare className="w-5 h-5 text-indigo-400" />
+            Auto-Reply Video Settings
+          </h3>
+
+          <p className="text-xs text-slate-400 leading-relaxed">
+            Select which videos will automatically reply to customer comments using LLM-generated responses.
+          </p>
+
+          <div className="relative">
+            <Search className="absolute left-3 top-2.5 w-3.5 h-3.5 text-slate-500" />
+            <input
+              type="text"
+              placeholder="Search videos..."
+              value={videoSearch}
+              onChange={(e) => setVideoSearch(e.target.value)}
+              className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-9 pr-4 py-2 text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500 text-xs"
+            />
+          </div>
+
+          <div className="space-y-3 max-h-60 overflow-y-auto pr-1 scrollbar-thin">
+            {monitoredVideos.filter(v => v.title.toLowerCase().includes(videoSearch.toLowerCase())).length === 0 ? (
+              <p className="text-xs text-slate-500 text-center py-4">No matching videos found.</p>
+            ) : (
+              monitoredVideos
+                .filter(v => v.title.toLowerCase().includes(videoSearch.toLowerCase()))
+                .map((video) => {
+                  const isAutoReplyOn = video.auto_reply !== false; // Default to true if not explicitly false
+                  return (
+                    <div key={video.video_id} className="flex justify-between items-center bg-slate-900/50 hover:bg-slate-900 border border-slate-800/80 rounded-xl p-3 transition gap-3">
+                      <div className="min-w-0">
+                        <p className="text-xs font-bold text-slate-200 truncate" title={video.title}>
+                          {video.title}
+                        </p>
+                        <p className="text-[9px] text-slate-500 font-mono mt-0.5 truncate">
+                          ID: {video.video_id}
+                        </p>
+                      </div>
+
+                      <button
+                        onClick={() => handleToggleVideoAutoReply(video.video_id, isAutoReplyOn)}
+                        className="focus:outline-none flex-shrink-0"
+                        title={isAutoReplyOn ? "Disable Auto-Reply" : "Enable Auto-Reply"}
+                      >
+                        {isAutoReplyOn ? (
+                          <ToggleRight className="w-7 h-7 text-emerald-400" />
+                        ) : (
+                          <ToggleLeft className="w-7 h-7 text-slate-500" />
+                        )}
+                      </button>
+                    </div>
+                  );
+                })
             )}
           </div>
         </div>

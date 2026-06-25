@@ -99,3 +99,69 @@ def test_youtube_endpoints_mock_workflow():
     analytics_data = analytics_res.json()["data"]
     assert analytics_data["comments_processed"] >= 1
     assert analytics_data["lead_count"] >= 1
+
+
+def test_youtube_video_auto_reply_toggling():
+    # 1. Connect mock channel
+    client.post("/auth/youtube/mock-connect")
+    
+    # 2. Sync / get videos
+    videos_res = client.get("/youtube/videos")
+    assert videos_res.status_code == 200
+    videos = videos_res.json()["data"]
+    assert len(videos) > 0
+    video_id = videos[0]["video_id"]
+    
+    # 3. Enable global auto_reply first
+    client.post("/youtube/settings/auto-reply", json={"auto_reply": True})
+    
+    # 4. Toggle video auto_reply to False
+    toggle_res = client.post(f"/youtube/videos/{video_id}/auto-reply", json={"auto_reply": False})
+    assert toggle_res.status_code == 200
+    assert toggle_res.json()["status"] == "success"
+    
+    # Verify DB update
+    vid_rec = supabase_svc.get_youtube_video(video_id)
+    assert vid_rec["auto_reply"] is False
+    
+    # 5. Inject comment while video auto_reply is False
+    inject_res = client.post("/youtube/comments/inject", json={
+        "video_id": video_id,
+        "username": "user_manual",
+        "comment_text": "Price details?"
+    })
+    assert inject_res.status_code == 200
+    
+    # Verify comment is pending_approval
+    comments_res = client.get("/youtube/comments")
+    comments = comments_res.json()["data"]
+    c_manual = next((c for c in comments if c["username"] == "user_manual"), None)
+    assert c_manual is not None
+    assert c_manual["status"] == "pending_approval"
+    
+    # 6. Toggle video auto_reply back to True
+    toggle_res = client.post(f"/youtube/videos/{video_id}/auto-reply", json={"auto_reply": True})
+    assert toggle_res.status_code == 200
+    
+    # Verify DB update
+    vid_rec = supabase_svc.get_youtube_video(video_id)
+    assert vid_rec["auto_reply"] is True
+    
+    # 7. Inject comment while video auto_reply is True
+    inject_res = client.post("/youtube/comments/inject", json={
+        "video_id": video_id,
+        "username": "user_auto",
+        "comment_text": "How to order?"
+    })
+    assert inject_res.status_code == 200
+    
+    # Verify comment has been auto replied
+    comments_res = client.get("/youtube/comments")
+    comments = comments_res.json()["data"]
+    c_auto = next((c for c in comments if c["username"] == "user_auto"), None)
+    assert c_auto is not None
+    # since effective auto reply is True, status should be replied
+    assert c_auto["status"] == "replied"
+    
+    # Clean up settings
+    client.post("/youtube/settings/auto-reply", json={"auto_reply": False})

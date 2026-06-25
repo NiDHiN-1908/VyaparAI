@@ -40,6 +40,8 @@ class YouTubeMonitorService:
             logger.info("YouTube Comment Monitoring Service stopped.")
 
     async def monitor_loop(self):
+        # Allow server to startup completely before running background tasks
+        await asyncio.sleep(5)
         while self.is_running:
             try:
                 logger.info("Running scheduled YouTube comment monitoring cycle...")
@@ -62,8 +64,8 @@ class YouTubeMonitorService:
             channel_id = channel["channel_id"]
             # Sync channel videos first to ensure we monitor all uploads
             await self.sync_channel_videos(channel)
-            # Fetch videos
-            videos = [v for v in supabase_svc.get_youtube_videos() if v["channel_id"] == channel_id]
+            # Fetch videos with monitored status
+            videos = [v for v in supabase_svc.get_youtube_videos() if v["channel_id"] == channel_id and v.get("status") == "monitored"]
             
             # If we have other videos, delete the default Rick Roll video from being monitored
             other_videos = [v for v in videos if v["video_id"] != "dQw4w9WgXcQ"]
@@ -146,45 +148,18 @@ class YouTubeMonitorService:
     async def _poll_real_youtube_comments(self, channel: Dict[str, Any], video_id: str):
         """Fetch comments using real Google APIs with token refresh capability"""
         try:
-            from google.oauth2.credentials import Credentials
-            from google.auth.transport.requests import Request
+            from backend.services.youtube_auth_helper import execute_youtube_call
             
-            creds = Credentials(
-                token=channel["access_token"],
-                refresh_token=channel.get("refresh_token"),
-                token_uri=channel.get("token_uri") or "https://oauth2.googleapis.com/token",
-                client_id=channel.get("client_id"),
-                client_secret=channel.get("client_secret")
-            )
-            
-            # Check refresh if expired
-            if creds.expired and creds.refresh_token:
-                logger.info(f"Access token for channel {channel['channel_name']} expired. Refreshing token...")
-                creds.refresh(Request())
-                # Update in DB
-                supabase_svc.create_youtube_channel(
-                    channel_id=channel["channel_id"],
-                    channel_name=channel["channel_name"],
-                    thumbnail=channel.get("thumbnail"),
-                    subscriber_count=channel.get("subscriber_count", 0),
-                    access_token=creds.token,
-                    refresh_token=creds.refresh_token,
-                    token_uri=channel.get("token_uri"),
-                    client_id=channel.get("client_id"),
-                    client_secret=channel.get("client_secret"),
-                    scopes=channel.get("scopes")
+            response = await asyncio.to_thread(
+                execute_youtube_call,
+                channel,
+                lambda yt: yt.commentThreads().list(
+                    part="snippet",
+                    videoId=video_id,
+                    maxResults=50,
+                    textFormat="plainText"
                 )
-
-            youtube = build("youtube", "v3", credentials=creds)
-            
-            # Call commentThreads.list API
-            request = youtube.commentThreads().list(
-                part="snippet",
-                videoId=video_id,
-                maxResults=50,
-                textFormat="plainText"
             )
-            response = request.execute()
             
             items = response.get("items", [])
             for item in items:
@@ -214,11 +189,13 @@ class YouTubeMonitorService:
                     )
                     
         except Exception as e:
+            logger.error(f"Error polling real YouTube comments for video {video_id}: {e}", exc_info=True)
             # Detect if the video was deleted or made private (404 Not Found)
             import googleapiclient.errors
             if isinstance(e, googleapiclient.errors.HttpError) and e.resp.status in [404, 403]:
                 logger.warning(f"Video {video_id} is no longer accessible (Deleted or Private). Removing from monitor list.")
                 supabase_svc.delete_youtube_video(video_id)
+
     async def sync_channel_videos(self, channel: Dict[str, Any]) -> List[Dict[str, Any]]:
         """Fetch recent uploaded videos from YouTube API and index them in the database"""
         channel_id = channel["channel_id"]
@@ -229,43 +206,17 @@ class YouTubeMonitorService:
             return supabase_svc.get_youtube_videos()
 
         try:
-            from google.oauth2.credentials import Credentials
-            from google.auth.transport.requests import Request
-            from googleapiclient.discovery import build
-            
-            creds = Credentials(
-                token=channel["access_token"],
-                refresh_token=channel.get("refresh_token"),
-                token_uri=channel.get("token_uri") or "https://oauth2.googleapis.com/token",
-                client_id=channel.get("client_id"),
-                client_secret=channel.get("client_secret")
-            )
-            
-            # Check refresh if expired
-            if creds.expired and creds.refresh_token:
-                logger.info(f"Access token for channel {channel.get('channel_name')} expired. Refreshing token...")
-                creds.refresh(Request())
-                # Update in DB
-                supabase_svc.create_youtube_channel(
-                    channel_id=channel["channel_id"],
-                    channel_name=channel["channel_name"],
-                    thumbnail=channel.get("thumbnail"),
-                    subscriber_count=channel.get("subscriber_count", 0),
-                    access_token=creds.token,
-                    refresh_token=creds.refresh_token,
-                    token_uri=channel.get("token_uri"),
-                    client_id=channel.get("client_id"),
-                    client_secret=channel.get("client_secret"),
-                    scopes=channel.get("scopes")
-                )
-
-            youtube = build("youtube", "v3", credentials=creds)
+            from backend.services.youtube_auth_helper import execute_youtube_call
             
             # 1. Retrieve the uploads playlist ID
-            channel_response = youtube.channels().list(
-                part="contentDetails",
-                mine=True
-            ).execute()
+            channel_response = await asyncio.to_thread(
+                execute_youtube_call,
+                channel,
+                lambda yt: yt.channels().list(
+                    part="contentDetails",
+                    mine=True
+                )
+            )
             
             if not channel_response.get("items"):
                 logger.warning(f"No channel details found for active credentials.")
@@ -274,11 +225,15 @@ class YouTubeMonitorService:
             uploads_playlist_id = channel_response["items"][0]["contentDetails"]["relatedPlaylists"]["uploads"]
             
             # 2. Retrieve playlist items from the uploads playlist
-            playlist_response = youtube.playlistItems().list(
-                part="snippet",
-                playlistId=uploads_playlist_id,
-                maxResults=50
-            ).execute()
+            playlist_response = await asyncio.to_thread(
+                execute_youtube_call,
+                channel,
+                lambda yt: yt.playlistItems().list(
+                    part="snippet",
+                    playlistId=uploads_playlist_id,
+                    maxResults=50
+                )
+            )
             
             items = playlist_response.get("items", [])
             synced_videos = []

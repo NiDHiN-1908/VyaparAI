@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Upload, Sparkles, Building2, Package, MapPin, CheckCircle2, Circle, Image as ImageIcon, Trash2 } from "lucide-react";
 
-const API_BASE = "http://localhost:8000";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 export default function UploadPage() {
   const router = useRouter();
@@ -41,6 +41,9 @@ export default function UploadPage() {
     const file = e.target.files?.[0];
     if (!file) return;
     
+    // Clear input value so same file can be re-selected if removed
+    e.target.value = "";
+    
     const formData = new FormData();
     formData.append("file", file);
     
@@ -64,9 +67,9 @@ export default function UploadPage() {
   const handleAddMockImage = () => {
     if (images.length >= 10) return;
     const mockImgs = [
-      "/static/media/spices_mix.jpg",
-      "/static/media/cardamom_pods.jpg",
-      "/static/media/packaging_box.jpg"
+      "/static/media/prod_eb2705d428d74da489cdff6685567b1a.png",
+      "/static/media/prod_057ae7e9abcb43bbb26531adb6643c4f.png",
+      "/static/media/prod_087e8e8136634d318a1d5fbfd8ce626b.png"
     ];
     const pick = mockImgs[Math.floor(Math.random() * mockImgs.length)];
     setImages(prev => [...prev, pick]);
@@ -296,16 +299,26 @@ export default function UploadPage() {
               ))}
               
               {images.length < 10 && (
-                <label className="aspect-video rounded-xl bg-slate-900/40 border border-dashed border-slate-800 hover:border-indigo-500/40 hover:bg-slate-900/80 transition flex flex-col items-center justify-center gap-1 text-xs text-slate-500 hover:text-indigo-400 cursor-pointer">
-                  <Upload className="w-5 h-5" />
-                  Add Image
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    className="hidden"
-                  />
-                </label>
+                <div className="flex flex-col gap-2 aspect-video">
+                  <label className="flex-1 rounded-xl bg-slate-900/40 border border-dashed border-slate-800 hover:border-indigo-500/40 hover:bg-slate-900/80 transition flex flex-col items-center justify-center gap-1 text-xs text-slate-500 hover:text-indigo-400 cursor-pointer">
+                    <Upload className="w-5 h-5" />
+                    Add Image
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="hidden"
+                    />
+                  </label>
+                  <button
+                    type="button"
+                    onClick={handleAddMockImage}
+                    className="py-2 px-3 rounded-xl bg-indigo-600/10 text-indigo-400 border border-indigo-500/20 hover:bg-indigo-600 hover:text-white text-xs font-bold transition flex items-center justify-center gap-1"
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    Add Demo Image
+                  </button>
+                </div>
               )}
             </div>
           </div>

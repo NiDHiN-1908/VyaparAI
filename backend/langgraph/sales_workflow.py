@@ -82,30 +82,40 @@ def qa_loop_node(state: SalesState) -> SalesState:
         history = format_history(state["chat_history"])
         
         prompt = (
-            f"You are a sales assistant helping a customer with {prod_name}. "
-            f"Price: Rs. {prod_price}. "
+            f"You are a sales assistant helping a customer with {prod_name}.\n"
+            f"Product Price: Rs. {prod_price}.\n"
             f"Previous Chat History:\n{history}\n"
         )
         
         if rag_context:
-            prompt += f"\nCOMPANY KNOWLEDGE BASE (Use this to answer the customer if relevant):\n{rag_context}\n\n"
+            prompt += f"\nCOMPANY KNOWLEDGE BASE (Use this to answer the customer's query accurately):\n{rag_context}\n\n"
             
         prompt += (
             f"Customer Message: \"{state['user_message']}\"\n\n"
-            "Formulate a warm, helpful response answering their objection or query. "
-            "Encourage them to buy and ask if they are ready to purchase and provide their shipping address."
+            "INSTRUCTIONS:\n"
+            "1. Formulate a warm, polite, and helpful response answering their specific query or objection.\n"
+            "2. If a COMPANY KNOWLEDGE BASE is provided above, use it to answer the customer. Do not make up or hallucinate details that are not in the knowledge base.\n"
+            "3. If you do not know the answer, politely state that you're not sure, but offer to have a representative get in touch. Do not make up facts.\n"
+            "4. DO NOT ask for their shipping address unless they explicitly show intent to buy (e.g. asking to order, saying yes to buy, etc.).\n"
+            "5. If they are just asking questions, answer the question clearly, and ask if they have any other questions or if they would like to place an order."
         )
-        response = llm.predict(prompt)
+        response = llm.invoke(prompt).content
     except Exception as e:
         logger.warning(f"Ollama prediction failed in qa_loop: {e}. Using rule-based fallback.")
         # Fallback responses
         msg = state["user_message"].lower()
-        if "discount" in msg or "price" in msg or "cost" in msg:
+        if "discount" in msg or "price" in msg or "cost" in msg or "how much" in msg:
             response = f"The price of {prod_name} is Rs. {prod_price:.2f}. We offer free delivery all across India! Would you like to buy it now?"
-        elif "quality" in msg or "warranty" in msg:
-            response = f"We guarantee 100% genuine quality. If you face any issues, we have a 7-day replacement policy. Are you ready to order?"
+        elif "quality" in msg or "warranty" in msg or "guarantee" in msg:
+            response = f"We guarantee 100% genuine quality for {prod_name}. If you face any issues, we have a 7-day replacement policy. Are you ready to order?"
+        elif "ingredients" in msg or "what is" in msg or "details" in msg or "organic" in msg:
+            response = f"Our {prod_name} is made from 100% premium ingredients under strict quality standards. Would you like me to share more details, or are you ready to order?"
+        elif "where" in msg or "address" in msg or "location" in msg or "shop" in msg:
+            response = f"We ship our products directly to your doorstep all over India. Where are you located so we can calculate shipping?"
+        elif "buy" in msg or "order" in msg or "purchase" in msg or "want" in msg:
+            response = f"Great! Please provide your full shipping address (including house number, street name, city, and pincode) so I can create your order."
         else:
-            response = f"That is a great question! Our {prod_name} is highly recommended by local shop owners. Would you like to proceed with the order and share your delivery address?"
+            response = f"Thank you for asking! Our {prod_name} is of the highest quality. Could you please specify your question, or would you like to proceed with the order?"
 
     state["agent_response"] = response
     # We stay in QA_LOOP until user shows intent to buy/submit address

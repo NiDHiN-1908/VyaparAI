@@ -4,7 +4,7 @@
 import { useEffect, useState } from "react";
 import { BarChart3, Users, MessageSquare, Award, Percent, RefreshCw, AlertCircle, Video } from "lucide-react";
 
-const API_BASE = "http://localhost:8000";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 export default function YouTubeAnalytics() {
   const [loading, setLoading] = useState(true);

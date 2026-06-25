@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS youtube_videos (
     title VARCHAR(255) NOT NULL,
     publish_date TIMESTAMP WITH TIME ZONE,
     status VARCHAR(50) DEFAULT 'monitored', -- monitored, ignored
+    auto_reply BOOLEAN DEFAULT true,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 

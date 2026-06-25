@@ -4,7 +4,7 @@
 import { useEffect, useState } from "react";
 import { Youtube, Link2, ShieldCheck, HelpCircle, LogOut, RefreshCw, AlertCircle } from "lucide-react";
 
-const API_BASE = "http://localhost:8000";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 export default function YouTubeConnect() {
   const [loading, setLoading] = useState(true);

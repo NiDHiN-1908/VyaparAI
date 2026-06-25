@@ -43,6 +43,10 @@ def load_mock_db():
                 MOCK_DB = json.load(f)
         except Exception as e:
             logger.error(f"Failed to load mock DB: {e}")
+    # Ensure keys exist
+    for key in ["tenants", "whatsapp_instances", "conversations", "messages"]:
+        if key not in MOCK_DB:
+            MOCK_DB[key] = []
 
 def save_mock_db():
     try:
@@ -52,7 +56,35 @@ def save_mock_db():
     except Exception as e:
         logger.error(f"Failed to save mock DB: {e}")
 
+def fix_mock_db_links():
+    global MOCK_DB
+    import re
+    public_url = os.getenv("PUBLIC_URL") or os.getenv("APP_BASE_URL") or "http://localhost:8000"
+    if "host.docker.internal" in public_url:
+        public_url = "http://localhost:8000"
+    if not public_url.endswith("/"):
+        public_url += "/"
+        
+    updated = False
+    pattern = re.compile(r"https?://[^/]+/youtube/r/")
+    
+    if "youtube_replies" in MOCK_DB:
+        for reply in MOCK_DB["youtube_replies"]:
+            for key in ["suggested_reply", "actual_reply"]:
+                val = reply.get(key)
+                if val and isinstance(val, str):
+                    if pattern.search(val):
+                        new_val = pattern.sub(f"{public_url}youtube/r/", val)
+                        if new_val != val:
+                            reply[key] = new_val
+                            updated = True
+                            
+    if updated:
+        logger.info(f"Automatically corrected mock database links to use public URL: {public_url}")
+        save_mock_db()
+
 load_mock_db()
+fix_mock_db_links()
 
 class SupabaseService:
     def __init__(self):
@@ -544,32 +576,163 @@ class SupabaseService:
                 return False
 
     # --- YouTube Videos ---
-    def create_youtube_video(self, channel_id: str, video_id: str, title: str, publish_date: str, status: str = "monitored") -> Dict[str, Any]:
+    def create_youtube_video(self, channel_id: str, video_id: str, title: str, publish_date: str, status: str = "monitored", auto_reply: bool = True) -> Dict[str, Any]:
         data = {
             "channel_id": channel_id,
             "video_id": video_id,
             "title": title,
             "publish_date": publish_date,
-            "status": status
+            "status": status,
+            "auto_reply": auto_reply
         }
-        return self._insert("youtube_videos", data)
+        if "id" not in data:
+            data["id"] = str(uuid.uuid4())
+        if "created_at" not in data:
+            data["created_at"] = datetime.now().isoformat()
+            
+        if self.is_mock:
+            # Check if video exists to update it, otherwise insert
+            existing = self.get_youtube_video(video_id)
+            if existing:
+                existing.update(data)
+                save_mock_db()
+                return existing
+            MOCK_DB["youtube_videos"].append(data)
+            logger.info(f"[MOCK DB] Inserted into youtube_videos: {data['id']}")
+            save_mock_db()
+            return data
+        else:
+            try:
+                res = self.client.table("youtube_videos").insert(data).execute()
+                if res.data:
+                    return res.data[0]
+                return data
+            except Exception as e:
+                err_msg = str(e)
+                if "auto_reply" in err_msg or "column" in err_msg:
+                    logger.warning(
+                        "Supabase error: youtube_videos table may be missing 'auto_reply' column. "
+                        "Please execute this SQL migration in your Supabase SQL Editor:\n"
+                        "ALTER TABLE youtube_videos ADD COLUMN IF NOT EXISTS auto_reply BOOLEAN DEFAULT true;\n"
+                        f"Detailed error: {e}"
+                    )
+                    # Retry without auto_reply
+                    data_fallback = dict(data)
+                    data_fallback.pop("auto_reply", None)
+                    try:
+                        res = self.client.table("youtube_videos").insert(data_fallback).execute()
+                        if res.data:
+                            record = res.data[0]
+                            record["auto_reply"] = auto_reply
+                            return record
+                    except Exception as fallback_e:
+                        logger.error(f"Fallback insert also failed: {fallback_e}")
+                
+                # If everything else fails, fall back to mock
+                logger.warning("Falling back to local in-memory DB for this video record.")
+                MOCK_DB["youtube_videos"].append(data)
+                save_mock_db()
+                return data
 
     def get_youtube_videos(self) -> List[Dict[str, Any]]:
-        return self._select_all("youtube_videos")
+        videos = self._select_all("youtube_videos")
+        for v in videos:
+            if v.get("auto_reply") is None:
+                v["auto_reply"] = True
+            # Merge/fallback to local mock_db if status is missing (helps resolve missing column in Supabase)
+            if v.get("status") is None:
+                mock_v = next((mv for mv in MOCK_DB["youtube_videos"] if mv.get("video_id") == v.get("video_id")), None)
+                v["status"] = mock_v.get("status") if (mock_v and mock_v.get("status") is not None) else "monitored"
+        # Sort videos so that newly uploaded/added videos (newest publish_date or created_at) come to the top
+        videos.sort(key=lambda x: x.get("publish_date") or x.get("created_at") or "", reverse=True)
+        return videos
 
     def get_youtube_video(self, video_id: str) -> Optional[Dict[str, Any]]:
+        video = None
         if self.is_mock:
             for item in MOCK_DB["youtube_videos"]:
                 if item.get("video_id") == video_id:
-                    return item
-            return None
+                    video = item
+                    break
         else:
             try:
                 res = self.client.table("youtube_videos").select("*").eq("video_id", video_id).execute()
-                return res.data[0] if res.data else None
+                video = res.data[0] if res.data else None
             except Exception as e:
                 logger.error(f"Failed to get youtube video: {e}")
-                return None
+                # Fallback to mock search
+                for item in MOCK_DB["youtube_videos"]:
+                    if item.get("video_id") == video_id:
+                        video = item
+                        break
+        
+        if video:
+            if video.get("auto_reply") is None:
+                video["auto_reply"] = True
+            # Merge/fallback to local mock_db if status is missing
+            if video.get("status") is None:
+                mock_v = next((mv for mv in MOCK_DB["youtube_videos"] if mv.get("video_id") == video_id), None)
+                video["status"] = mock_v.get("status") if (mock_v and mock_v.get("status") is not None) else "monitored"
+        return video
+
+    def update_youtube_video_auto_reply(self, video_id: str, auto_reply: bool) -> Optional[Dict[str, Any]]:
+        video = self.get_youtube_video(video_id)
+        if not video:
+            return None
+        
+        data = {"auto_reply": auto_reply}
+        if self.is_mock:
+            return self._update("youtube_videos", video["id"], data)
+        else:
+            try:
+                res = self.client.table("youtube_videos").update(data).eq("id", video["id"]).execute()
+                if res.data:
+                    return res.data[0]
+                # If update succeeded but did not return data
+                video = dict(video)
+                video["auto_reply"] = auto_reply
+                return video
+            except Exception as e:
+                err_msg = str(e)
+                if "auto_reply" in err_msg or "column" in err_msg:
+                    logger.warning(
+                        "Supabase error: youtube_videos table may be missing 'auto_reply' column during update. "
+                        "Please execute this SQL migration in your Supabase SQL Editor:\n"
+                        "ALTER TABLE youtube_videos ADD COLUMN IF NOT EXISTS auto_reply BOOLEAN DEFAULT true;\n"
+                        f"Detailed error: {e}"
+                    )
+                # Fallback to mock
+                return self._update("youtube_videos", video["id"], data)
+
+    def update_youtube_video_status(self, video_id: str, status: str) -> Optional[Dict[str, Any]]:
+        video = self.get_youtube_video(video_id)
+        if not video:
+            return None
+        
+        data = {"status": status}
+        if self.is_mock:
+            return self._update("youtube_videos", video["id"], data)
+        else:
+            try:
+                res = self.client.table("youtube_videos").update(data).eq("id", video["id"]).execute()
+                if res.data:
+                    return res.data[0]
+                video = dict(video)
+                video["status"] = status
+                return video
+            except Exception as e:
+                err_msg = str(e)
+                if "status" in err_msg or "column" in err_msg:
+                    logger.warning(
+                        "Supabase error updating status column. The youtube_videos table may be missing 'status' column. "
+                        "Please execute this SQL migration in your Supabase SQL Editor:\n"
+                        "ALTER TABLE youtube_videos ADD COLUMN IF NOT EXISTS status VARCHAR(50) DEFAULT 'monitored';\n"
+                        f"Detailed error: {e}"
+                    )
+                else:
+                    logger.error(f"Failed to update youtube video status: {e}")
+                # Fallback to mock
+                return self._update("youtube_videos", video["id"], data)
 
     def delete_youtube_video(self, video_id: str) -> bool:
         if self.is_mock:
@@ -722,52 +885,263 @@ class SupabaseService:
     def update_youtube_analytics(self, analytics_db_id: str, data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         return self._update("youtube_analytics", analytics_db_id, data)
 
-    # --- WhatsApp Chat History ---
+    # --- WhatsApp Chat History (Backward Compatible Wrapper) ---
     def get_whatsapp_messages(self, lead_id: str = None) -> List[Dict[str, Any]]:
+        # Resolve conversation using lead_id
+        if not lead_id:
+            # If no lead_id is provided, try returning all messages
+            all_messages = self._select_all("messages")
+            legacy_messages = []
+            for m in all_messages:
+                legacy_messages.append({
+                    "id": m.get("id"),
+                    "lead_id": lead_id or "legacy_lead",
+                    "sender": "business" if m.get("sender_type") in ["agent", "ai", "system"] else "customer",
+                    "text": m.get("content"),
+                    "created_at": m.get("created_at")
+                })
+            return legacy_messages
+            
+        conv = self.get_conversation_by_lead(lead_id)
+        if not conv:
+            return []
+            
+        msgs = self.get_messages_by_conversation(conv["id"])
+        legacy_messages = []
+        for m in msgs:
+            legacy_messages.append({
+                "id": m.get("id"),
+                "lead_id": lead_id,
+                "sender": "business" if m.get("sender_type") in ["agent", "ai", "system"] else "customer",
+                "text": m.get("content"),
+                "created_at": m.get("created_at")
+            })
+        return legacy_messages
+
+    def create_whatsapp_message(self, lead_id: str, sender: str, text: str) -> Dict[str, Any]:
+        conv = self.get_conversation_by_lead(lead_id)
+        if not conv:
+            # Determine username if possible
+            username = "customer"
+            leads = self.get_youtube_leads()
+            lead = next((l for l in leads if l["id"] == lead_id), None)
+            if lead:
+                username = lead.get("username", "customer")
+            
+            # Create a default conversation
+            conv = self.create_conversation_v2(
+                tenant_id="00000000-0000-0000-0000-000000000000",
+                customer_phone=f"+91{username}", # dummy phone for legacy leads
+                channel="whatsapp",
+                lead_id=lead_id
+            )
+            
+        # Determine sender_type
+        if sender == "business":
+            sender_type = "agent"
+        elif sender == "ai":
+            sender_type = "ai"
+        else:
+            sender_type = "customer"
+            
+        msg = self.create_message(
+            conversation_id=conv["id"],
+            sender_type=sender_type,
+            content=text
+        )
+        
+        return {
+            "id": msg.get("id"),
+            "lead_id": lead_id,
+            "sender": sender,
+            "text": text,
+            "created_at": msg.get("created_at")
+        }
+
+    # --- Tenants ---
+    def create_tenant(self, name: str, tenant_id: str = None) -> Dict[str, Any]:
+        data = {"name": name}
+        if tenant_id:
+            data["id"] = tenant_id
+        return self._insert("tenants", data)
+
+    def get_tenants(self) -> List[Dict[str, Any]]:
+        return self._select_all("tenants")
+
+    def get_tenant(self, tenant_id: str) -> Optional[Dict[str, Any]]:
+        return self._select_one("tenants", tenant_id)
+
+    # --- WhatsApp Instances ---
+    def create_whatsapp_instance(self, tenant_id: str, provider: str, instance_name: str, phone_number: str = None, status: str = "disconnected", session_data: Dict[str, Any] = None) -> Dict[str, Any]:
+        data = {
+            "tenant_id": tenant_id,
+            "provider": provider,
+            "instance_name": instance_name,
+            "phone_number": phone_number,
+            "status": status,
+            "session_data": session_data or {}
+        }
+        return self._insert("whatsapp_instances", data)
+
+    def get_whatsapp_instances(self, tenant_id: str) -> List[Dict[str, Any]]:
         if self.is_mock:
-            messages = MOCK_DB.get("whatsapp_messages", [])
-            if lead_id:
-                messages = [m for m in messages if m.get("lead_id") == lead_id]
-            return messages
+            return [i for i in MOCK_DB.get("whatsapp_instances", []) if i.get("tenant_id") == tenant_id]
         else:
             try:
-                query = self.client.table("whatsapp_messages").select("*")
-                if lead_id:
-                    query = query.eq("lead_id", lead_id)
+                res = self.client.table("whatsapp_instances").select("*").eq("tenant_id", tenant_id).execute()
+                return res.data or []
+            except Exception as e:
+                logger.error(f"Failed to get whatsapp_instances for tenant {tenant_id}: {e}")
+                return [i for i in MOCK_DB.get("whatsapp_instances", []) if i.get("tenant_id") == tenant_id]
+
+    def get_whatsapp_instance(self, instance_id: str) -> Optional[Dict[str, Any]]:
+        return self._select_one("whatsapp_instances", instance_id)
+
+    def get_whatsapp_instance_by_name(self, instance_name: str) -> Optional[Dict[str, Any]]:
+        if self.is_mock:
+            for item in MOCK_DB.get("whatsapp_instances", []):
+                if item.get("instance_name") == instance_name:
+                    return item
+            return None
+        else:
+            try:
+                res = self.client.table("whatsapp_instances").select("*").eq("instance_name", instance_name).execute()
+                return res.data[0] if res.data else None
+            except Exception as e:
+                logger.error(f"Failed to get whatsapp_instance by name {instance_name}: {e}")
+                # Fallback to mock search
+                for item in MOCK_DB.get("whatsapp_instances", []):
+                    if item.get("instance_name") == instance_name:
+                        return item
+                return None
+
+    def update_whatsapp_instance_status(self, instance_id_or_name: str, status: str, phone_number: str = None, session_data: Dict[str, Any] = None) -> Optional[Dict[str, Any]]:
+        instance = self.get_whatsapp_instance_by_name(instance_id_or_name)
+        if not instance:
+            instance = self.get_whatsapp_instance(instance_id_or_name)
+        if not instance:
+            return None
+        
+        updates = {"status": status}
+        if phone_number is not None:
+            updates["phone_number"] = phone_number
+        if session_data is not None:
+            updates["session_data"] = session_data
+            
+        return self._update("whatsapp_instances", instance["id"], updates)
+
+    def delete_whatsapp_instance(self, instance_id_or_name: str) -> bool:
+        instance = self.get_whatsapp_instance_by_name(instance_id_or_name)
+        if not instance:
+            instance = self.get_whatsapp_instance(instance_id_or_name)
+        if not instance:
+            return False
+            
+        if self.is_mock:
+            MOCK_DB["whatsapp_instances"] = [i for i in MOCK_DB.get("whatsapp_instances", []) if i.get("id") != instance["id"]]
+            save_mock_db()
+            return True
+        else:
+            try:
+                self.client.table("whatsapp_instances").delete().eq("id", instance["id"]).execute()
+                return True
+            except Exception as e:
+                logger.error(f"Failed to delete whatsapp_instance {instance['id']}: {e}")
+                return False
+
+    # --- Conversations v2 ---
+    def create_conversation_v2(self, tenant_id: str, customer_phone: str, channel: str = "whatsapp", assigned_agent_id: str = None, status: str = "open", lead_id: str = None, state: str = "WELCOME") -> Dict[str, Any]:
+        data = {
+            "tenant_id": tenant_id,
+            "customer_phone": customer_phone,
+            "channel": channel,
+            "assigned_agent_id": assigned_agent_id,
+            "status": status,
+            "lead_id": lead_id,
+            "state": state,
+            "history": [],
+            "ai_enabled": True,
+            "human_override": False
+        }
+        return self._insert("conversations", data)
+
+    def get_conversations(self, tenant_id: str, status: str = None) -> List[Dict[str, Any]]:
+        if self.is_mock:
+            items = [c for c in MOCK_DB.get("conversations", []) if c.get("tenant_id") == tenant_id]
+            if status:
+                items = [c for c in items if c.get("status") == status]
+            return items
+        else:
+            try:
+                query = self.client.table("conversations").select("*").eq("tenant_id", tenant_id)
+                if status:
+                    query = query.eq("status", status)
                 res = query.execute()
                 return res.data or []
             except Exception as e:
-                logger.error(f"Failed to fetch whatsapp messages: {e}")
-                # Fallback to mock
-                messages = MOCK_DB.get("whatsapp_messages", [])
-                if lead_id:
-                    messages = [m for m in messages if m.get("lead_id") == lead_id]
-                return messages
+                logger.error(f"Failed to fetch conversations for tenant {tenant_id}: {e}")
+                items = [c for c in MOCK_DB.get("conversations", []) if c.get("tenant_id") == tenant_id]
+                if status:
+                    items = [c for c in items if c.get("status") == status]
+                return items
 
-    def create_whatsapp_message(self, lead_id: str, sender: str, text: str) -> Dict[str, Any]:
-        data = {
-            "id": str(uuid.uuid4()),
-            "lead_id": lead_id,
-            "sender": sender,  # "business" or "customer"
-            "text": text,
-            "created_at": datetime.now().isoformat()
-        }
+    def get_conversation(self, conversation_id: str) -> Optional[Dict[str, Any]]:
+        return self._select_one("conversations", conversation_id)
+
+    def get_conversation_by_phone(self, tenant_id: str, customer_phone: str) -> Optional[Dict[str, Any]]:
         if self.is_mock:
-            if "whatsapp_messages" not in MOCK_DB:
-                MOCK_DB["whatsapp_messages"] = []
-            MOCK_DB["whatsapp_messages"].append(data)
-            save_mock_db()
-            return data
+            for item in MOCK_DB.get("conversations", []):
+                if item.get("tenant_id") == tenant_id and item.get("customer_phone") == customer_phone:
+                    return item
+            return None
         else:
             try:
-                res = self.client.table("whatsapp_messages").insert(data).execute()
-                return res.data[0] if res.data else data
+                res = self.client.table("conversations").select("*").eq("tenant_id", tenant_id).eq("customer_phone", customer_phone).execute()
+                return res.data[0] if res.data else None
             except Exception as e:
-                logger.error(f"Failed to insert whatsapp message: {e}")
-                if "whatsapp_messages" not in MOCK_DB:
-                    MOCK_DB["whatsapp_messages"] = []
-                MOCK_DB["whatsapp_messages"].append(data)
-                save_mock_db()
-                return data
+                logger.error(f"Failed to get conversation by phone {customer_phone}: {e}")
+                # Fallback to mock search
+                for item in MOCK_DB.get("conversations", []):
+                    if item.get("tenant_id") == tenant_id and item.get("customer_phone") == customer_phone:
+                        return item
+                return None
+
+    def update_conversation_v2(self, conversation_id: str, updates: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+        return self._update("conversations", conversation_id, updates)
+
+    # --- Messages ---
+    def create_message(self, conversation_id: str, sender_type: str, content: str, message_type: str = "text", sender_id: str = None, metadata: Dict[str, Any] = None) -> Dict[str, Any]:
+        data = {
+            "conversation_id": conversation_id,
+            "sender_type": sender_type,
+            "sender_id": sender_id,
+            "message_type": message_type,
+            "content": content,
+            "metadata": metadata or {}
+        }
+        return self._insert("messages", data)
+
+    def get_messages_by_conversation(self, conversation_id: str) -> List[Dict[str, Any]]:
+        if self.is_mock:
+            items = [m for m in MOCK_DB.get("messages", []) if m.get("conversation_id") == conversation_id]
+            items.sort(key=lambda x: x.get("created_at") or "")
+            return items
+        else:
+            try:
+                res = self.client.table("messages").select("*").eq("conversation_id", conversation_id).order("created_at", desc=False).execute()
+                return res.data or []
+            except Exception as e:
+                logger.error(f"Failed to fetch messages for conversation {conversation_id}: {e}")
+                items = [m for m in MOCK_DB.get("messages", []) if m.get("conversation_id") == conversation_id]
+                items.sort(key=lambda x: x.get("created_at") or "")
+                return items
+
+    def update_message_metadata(self, message_id: str, metadata_updates: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+        msg = self._select_one("messages", message_id)
+        if not msg:
+            return None
+        current_metadata = msg.get("metadata") or {}
+        current_metadata.update(metadata_updates)
+        return self._update("messages", message_id, {"metadata": current_metadata})
 
 supabase_svc = SupabaseService()

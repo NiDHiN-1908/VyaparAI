@@ -32,6 +32,7 @@ export default function Sidebar() {
     { name: "Comment Inbox", href: "/comment-inbox", icon: MessageSquare },
     { name: "Lead Dashboard", href: "/lead-dashboard", icon: Users },
     { name: "WhatsApp Live Chat", href: "/live-chat", icon: MessageCircle },
+    { name: "WhatsApp Settings", href: "/whatsapp-settings", icon: MessageCircle },
     { name: "YouTube Analytics", href: "/youtube-analytics", icon: BarChart3 },
   ];
 

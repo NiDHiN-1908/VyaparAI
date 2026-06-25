@@ -35,6 +35,32 @@ export default function ApprovalPage() {
     video_url: "/static/media/video_english_v2_3ce14206.mp4"
   });
 
+  const updateStateWithCampaign = (data: any, checkId: string) => {
+    setCampaignData(data);
+    setProductId(checkId);
+    
+    const lang = "English";
+    const dynamicText = data.translations?.[lang];
+    const scriptText = dynamicText 
+      ? `Title: ${data.script.title}\nHook: ${dynamicText.youtube_script}\nReel: ${dynamicText.reel_script}\nWhatsApp: ${dynamicText.whatsapp_post}\nGoogle: ${dynamicText.google_business_post}`
+      : `Title: ${data.script.title}\nHook: ${data.script.hook}\nScript: ${data.script.script_text}`;
+      
+    setSelectedCampaign({
+      id: data.script.id,
+      product_name: data.product.name,
+      language: lang,
+      version: data.script.version || 1,
+      qa_score: data.qa_score || 85,
+      status: data.videos?.[lang]?.approval_status || "draft",
+      script: scriptText,
+      youtube_url: data.videos?.[lang]?.youtube_url || null,
+      youtube_id: data.videos?.[lang]?.youtube_id || null,
+      video_id: data.videos?.[lang]?.id || null,
+      video_url: data.videos?.[lang]?.video_url || null,
+      thumbnail_url: data.thumbnail?.image_url || null
+    });
+  };
+
   useEffect(() => {
     const fetchCampaign = async () => {
       try {
@@ -54,32 +80,6 @@ export default function ApprovalPage() {
             pId = prodList[prodList.length - 1].id;
           }
         }
-
-        const updateStateWithCampaign = (data: any, checkId: string) => {
-          setCampaignData(data);
-          setProductId(checkId);
-          
-          const lang = "English";
-          const dynamicText = data.translations?.[lang];
-          const scriptText = dynamicText 
-            ? `Title: ${data.script.title}\nHook: ${dynamicText.youtube_script}\nReel: ${dynamicText.reel_script}\nWhatsApp: ${dynamicText.whatsapp_post}\nGoogle: ${dynamicText.google_business_post}`
-            : `Title: ${data.script.title}\nHook: ${data.script.hook}\nScript: ${data.script.script_text}`;
-            
-          setSelectedCampaign({
-            id: data.script.id,
-            product_name: data.product.name,
-            language: lang,
-            version: data.script.version || 1,
-            qa_score: data.qa_score || 85,
-            status: data.videos?.[lang]?.approval_status || "draft",
-            script: scriptText,
-            youtube_url: data.videos?.[lang]?.youtube_url || null,
-            youtube_id: data.videos?.[lang]?.youtube_id || null,
-            video_id: data.videos?.[lang]?.id || null,
-            video_url: data.videos?.[lang]?.video_url || null,
-            thumbnail_url: data.thumbnail?.image_url || null
-          });
-        };
 
         if (pId) {
           setProductId(pId);
@@ -120,12 +120,28 @@ export default function ApprovalPage() {
     setLoading(true);
     setPublishStatus("Regenerating campaign Version 2 (ScriptAgent)...");
     try {
-      // Find latest product and call regenerate
-      const prodRes = await fetch(`${API_BASE}/product`);
-      const prodList = await prodRes.json();
-      let prodId = "prod_cardamom";
-      if (prodList && prodList.length > 0) {
-        prodId = prodList[prodList.length - 1].id;
+      let prodId = productId;
+      if (!prodId) {
+        // Find latest product and call regenerate
+        const prodRes = await fetch(`${API_BASE}/product`);
+        const prodList = await prodRes.json();
+        if (prodList && prodList.length > 0) {
+          prodId = prodList[prodList.length - 1].id;
+        }
+      }
+
+      if (!prodId) {
+        prodId = "prod_cardamom"; // fallback
+      }
+
+      let feedback = "Please generate a new creative hook and layout with dynamic messaging.";
+      const prodNameLower = selectedCampaign.product_name?.toLowerCase() || "";
+      if (prodNameLower.includes("paint") || prodNameLower.includes("emulsion")) {
+        feedback = "Focus on the washability, premium smooth finish, weather resistance and extreme durability of the paint coating.";
+      } else if (prodNameLower.includes("coconut") || prodNameLower.includes("oil")) {
+        feedback = "Emphasize the pure cold-pressed nature and rich aroma of the coconut oil.";
+      } else if (prodNameLower.includes("cardamom") || prodNameLower.includes("elaichi") || prodNameLower.includes("spice")) {
+        feedback = "Write a much punchier viral tea hook and emphasize the packaging fresh lock.";
       }
 
       const res = await fetch(`${API_BASE}/regenerate`, {
@@ -133,28 +149,23 @@ export default function ApprovalPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           product_id: prodId,
-          feedback: "Write a much punchier viral tea hook and emphasize the packaging fresh lock."
+          feedback: feedback
         })
       });
-      const data = await res.json();
       
-      if (res.ok && data.script) {
-        setSelectedCampaign({
-          id: data.script.id,
-          product_name: selectedCampaign.product_name,
-          language: selectedCampaign.language,
-          version: data.version,
-          qa_score: data.qa_score || 88,
-          status: "draft",
-          script: `[Version ${data.version} Script]\nTitle: ${data.script.title}\nHook: ${data.script.hook}\nScript: ${data.script.script_text}`,
-          youtube_url: null,
-          youtube_id: null,
-          thumbnail_url: data.thumbnail?.image_url || null
-        });
-        setPublishStatus("Campaign Version 2 generated successfully!");
-      } else {
-        mockRegenerateV2();
+      if (res.ok) {
+        // Fetch the updated campaign to get the full translations, videos, and correct state
+        const campRes = await fetch(`${API_BASE}/campaign/${prodId}`);
+        if (campRes.ok) {
+          const updatedCampaignData = await campRes.json();
+          updateStateWithCampaign(updatedCampaignData, prodId);
+          setPublishStatus("Campaign Version 2 generated successfully!");
+          return;
+        }
       }
+      
+      // Fallback
+      mockRegenerateV2();
     } catch (err) {
       console.warn("Backend regenerate endpoint offline. Running simulated V2 update.");
       mockRegenerateV2();
@@ -165,17 +176,31 @@ export default function ApprovalPage() {
   };
 
   const mockRegenerateV2 = () => {
+    const prodNameLower = selectedCampaign.product_name?.toLowerCase() || "";
+    const isPaint = prodNameLower.includes("paint") || prodNameLower.includes("emulsion");
+    const isOil = prodNameLower.includes("coconut") || prodNameLower.includes("oil");
+    
+    let scriptText = "[Version 2 Script]\nHook: Tired of dusty, stale spices? 📦\nProblem: Mainstream brand cardamoms lose flavor in warehouses.\nSolution: Idukki direct farm cardamom has a double locked fresh-seal. Order today!";
+    
+    if (isPaint) {
+      scriptText = "[Version 2 Script]\nHook: Tired of fading walls and uneven finish? 🖌️\nProblem: Cheap interior paints lose their color and look patchy.\nSolution: Premium Interior Emulsion Paint provides a rich, smooth finish with extreme washability and lifetime durability. Order yours today!";
+    } else if (isOil) {
+      scriptText = "[Version 2 Script]\nHook: Is your family using stale, low-grade oils? 🥥\nProblem: Highly processed chemical cooking oils hurt family health.\nSolution: PureGold Cold-Pressed Coconut Oil is traditionally extracted, preservative-free, and retains full natural nutrition. Order today!";
+    }
+
     setSelectedCampaign({
-      id: "campaign_1_v2",
+      id: selectedCampaign.id + "_v2",
       product_name: selectedCampaign.product_name,
       language: selectedCampaign.language,
       version: 2,
       qa_score: 92,
       status: "draft",
-      script: "[Version 2 Script]\nHook: Tired of dusty, stale spices? 📦\nProblem: Mainstream brand cardamoms lose flavor in warehouses.\nSolution: Idukki direct farm cardamom has a double locked fresh-seal. Order today!",
+      script: scriptText,
       youtube_url: null,
       youtube_id: null,
-      thumbnail_url: null
+      video_id: selectedCampaign.video_id,
+      video_url: selectedCampaign.video_url || "/static/media/video_english_v2_3ce14206.mp4",
+      thumbnail_url: selectedCampaign.thumbnail_url
     });
     setPublishStatus("Campaign Version 2 generated successfully!");
   };
@@ -206,7 +231,7 @@ export default function ApprovalPage() {
       const data = await res.json();
       if (res.ok && data.youtube_url) {
         setSuccessLink(data.youtube_url);
-        setSelectedCampaign(prev => ({
+        setSelectedCampaign((prev: any) => ({
           ...prev,
           status: "published",
           youtube_url: data.youtube_url,
@@ -227,7 +252,7 @@ export default function ApprovalPage() {
   const mockPublishSuccess = () => {
     const mockUrl = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
     setSuccessLink(mockUrl);
-    setSelectedCampaign(prev => ({
+    setSelectedCampaign((prev: any) => ({
       ...prev,
       status: "published",
       youtube_url: mockUrl,

@@ -291,6 +291,36 @@ async def redirect_to_whatsapp(comment_id: str):
                 phone_number = inst["phone_number"]
                 break
                 
+        # Fallback: if we have a connected instance but no phone number in DB, query Evolution API fetchInstances
+        if not phone_number and instances:
+            connected_inst = None
+            for inst in instances:
+                if inst.get("status") == "connected":
+                    connected_inst = inst
+                    break
+            
+            if connected_inst:
+                try:
+                    import httpx
+                    api_url = os.getenv("EVOLUTION_API_URL", "http://localhost:8080").rstrip("/")
+                    api_key = os.getenv("EVOLUTION_API_KEY", "vyaparai_key_secret")
+                    headers = {"apikey": api_key}
+                    
+                    res = httpx.get(f"{api_url}/instance/fetchInstances", headers=headers, timeout=5.0)
+                    if res.status_code == 200:
+                        evo_instances = res.json()
+                        for evo_inst in evo_instances:
+                            if evo_inst.get("instanceName") == connected_inst["instance_name"]:
+                                profile = evo_inst.get("profile", {})
+                                owner = profile.get("number") or evo_inst.get("ownerJid")
+                                if owner:
+                                    phone_number = owner.split("@")[0]
+                                    # Update DB so we don't have to query again
+                                    supabase_svc.update_whatsapp_instance_status(connected_inst["id"], "connected", phone_number)
+                                    break
+                except Exception as ex:
+                    logger.error(f"Failed to fetch phone number dynamically from Evolution API: {ex}")
+                
         if not phone_number and instances:
             for inst in instances:
                 if inst.get("phone_number"):

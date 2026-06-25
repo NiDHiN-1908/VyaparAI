@@ -60,9 +60,48 @@ services:
     networks:
       - vyaparai_net
 
+  evolution-api:
+    image: evoapicloud/evolution-api:latest
+    container_name: vyaparai_evolution_api
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - SERVER_URL=http://localhost:8080
+      - AUTHENTICATION_API_KEY=vyaparai_key_secret
+      - AUTHENTICATION_TYPE=apikey
+      - AUTHENTICATION_EXPOSE_IN_REQ=true
+      - DATABASE_ENABLED=true
+      - DATABASE_PROVIDER=postgresql
+      - DATABASE_CONNECTION_URI=postgresql://postgres:postgres@evolution_db:5432/evolution?schema=public
+      - CACHE_REDIS_ENABLED=false
+      - CACHE_LOCAL_ENABLED=true
+    volumes:
+      - evolution_instances:/evolution/instances
+    depends_on:
+      - evolution_db
+    networks:
+      - vyaparai_net
+
+  evolution_db:
+    image: postgres:15-alpine
+    container_name: vyaparai_evolution_db
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=evolution
+    volumes:
+      - evolution_db_data:/var/lib/postgresql/data
+    networks:
+      - vyaparai_net
+
+
 volumes:
   ollama_data:
   n8n_data:
+  evolution_instances:
+  evolution_db_data:
 
 networks:
   vyaparai_net:
