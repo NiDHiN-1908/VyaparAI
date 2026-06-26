@@ -12,12 +12,12 @@ set "OLLAMA_LOCAL_RUNNING=0"
 tasklist /FI "IMAGENAME eq ollama_app.exe" 2>NUL | find /I /N "ollama_app.exe">NUL
 if not errorlevel 1 (
     set "OLLAMA_LOCAL_RUNNING=1"
-    echo   ^/[x^] Ollama Local LLM runner (app) is already running.
+    echo   ^/[x^] Ollama Local LLM runner [app] is already running.
 ) else (
     tasklist /FI "IMAGENAME eq ollama.exe" 2>NUL ^| find /I /N "ollama.exe">NUL
     if not errorlevel 1 (
         set "OLLAMA_LOCAL_RUNNING=1"
-        echo   ^/[x^] Ollama Local LLM runner (process) is already running.
+        echo   ^/[x^] Ollama Local LLM runner [process] is already running.
     )
 )
 
