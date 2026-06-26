@@ -3064,7 +3064,7 @@
       "timestamp": "2026-06-24T03:52:45Z",
       "intent": "LOW_INTENT",
       "confidence": 0.7,
-      "status": "pending_approval",
+      "status": "replied",
       "id": "b2946fac-b132-441c-8b07-9c40ad3f16f9",
       "created_at": "2026-06-24T09:46:59.706260"
     },
@@ -4417,10 +4417,10 @@
     {
       "comment_id": "UgyXNuGFWs0VOK8gRCl4AaABAg",
       "suggested_reply": "Thank you so much @amaldev5837! We appreciate the support! \ud83d\ude4f\u2728",
-      "actual_reply": null,
-      "reply_id": null,
-      "status": "draft",
-      "published_at": null,
+      "actual_reply": "Thank you so much @amaldev5837! We appreciate the support! \ud83d\ude4f\u2728 Let's discuss on WhatsApp: https://baf727b8fbe7cf.lhr.life/youtube/r/UgyXNuGFWs0VOK8gRCl4AaABAg",
+      "reply_id": "RPL_C02AC823CD8",
+      "status": "published",
+      "published_at": "2026-06-26T13:37:24.258510",
       "id": "9cd901fd-520a-4b0f-8830-d95d0caeaaf9",
       "created_at": "2026-06-24T09:46:59.734296"
     },
@@ -5158,22 +5158,22 @@
     {
       "tenant_id": "00000000-0000-0000-0000-000000000000",
       "provider": "evolution",
-      "instance_name": "kochi_farm_whatsapp",
-      "phone_number": null,
-      "status": "connecting",
-      "session_data": {},
-      "id": "87212d6f-bae4-493c-8db0-2e9674a292bf",
-      "created_at": "2026-06-25T12:30:14.448433"
-    },
-    {
-      "tenant_id": "00000000-0000-0000-0000-000000000000",
-      "provider": "evolution",
       "instance_name": "nidhin",
       "phone_number": "917306796590",
       "status": "connected",
       "session_data": {},
       "id": "42a7185c-3f43-468a-b1f5-67b822e20683",
       "created_at": "2026-06-25T15:51:12.955747"
+    },
+    {
+      "tenant_id": "00000000-0000-0000-0000-000000000000",
+      "provider": "evolution",
+      "instance_name": "kochi_farm_whatsapp",
+      "phone_number": null,
+      "status": "disconnected",
+      "session_data": {},
+      "id": "0818cac9-b9a5-4e26-abe2-e55b5807486d",
+      "created_at": "2026-06-26T13:35:12.622991"
     }
   ],
   "messages": [

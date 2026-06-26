@@ -83,9 +83,15 @@ docker compose -f docker\docker-compose.yml up -d evolution-api
 
 :evolution_ok
 echo.
-echo [2/3] Launching servers in parallel windows...
+echo [2/3] Launching servers and tunnels in parallel windows...
+echo   * Launching Public SSH Tunnel...
+start "VyaparAI SSH Tunnel" cmd /k "backend\venv\Scripts\python.exe backend\start_tunnel.py"
+echo     Waiting 3 seconds for tunnel configuration to sync...
+timeout /t 3 /nobreak > nul
+
 echo   * Launching FastAPI Backend on http://localhost:8000/
 start "VyaparAI Backend Server" cmd /k "backend\venv\Scripts\python.exe -m uvicorn backend.main:app --host 127.0.0.1 --port 8000 --reload"
+
 
 echo   * Launching Next.js Frontend on http://localhost:3000/
 start "VyaparAI Frontend App" cmd /k "cd frontend && npm run dev"
