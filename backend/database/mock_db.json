@@ -3471,7 +3471,7 @@
   "youtube_replies": [
     {
       "comment_id": "MOCK_CMT_70C71864",
-      "suggested_reply": "Thanks for your interest @arun_raj! \u2764\ufe0f Please message us on WhatsApp at https://baf727b8fbe7cf.lhr.life/youtube/r/MOCK_CMT_70C71864 to place your order.",
+      "suggested_reply": "Thanks for your interest @arun_raj! \u2764\ufe0f Please message us on WhatsApp at http://localhost:8000/youtube/r/MOCK_CMT_70C71864 to place your order.",
       "actual_reply": null,
       "reply_id": null,
       "status": "draft",
@@ -4081,8 +4081,8 @@
     },
     {
       "comment_id": "UgwCg-QV5JMj9PogDE54AaABAg",
-      "suggested_reply": "Thanks for your interest @alangeorgejohnson! \u2764\ufe0f Please message us on WhatsApp at https://baf727b8fbe7cf.lhr.life/youtube/r/UgwCg-QV5JMj9PogDE54AaABAg to place your order.",
-      "actual_reply": "Thanks for your interest @alangeorgejohnson! \u2764\ufe0f Please message us on WhatsApp at https://baf727b8fbe7cf.lhr.life/youtube/r/UgwCg-QV5JMj9PogDE54AaABAg to place your order.",
+      "suggested_reply": "Thanks for your interest @alangeorgejohnson! \u2764\ufe0f Please message us on WhatsApp at http://localhost:8000/youtube/r/UgwCg-QV5JMj9PogDE54AaABAg to place your order.",
+      "actual_reply": "Thanks for your interest @alangeorgejohnson! \u2764\ufe0f Please message us on WhatsApp at http://localhost:8000/youtube/r/UgwCg-QV5JMj9PogDE54AaABAg to place your order.",
       "reply_id": "RPL_8E513A3818A_SIM",
       "status": "published",
       "published_at": "2026-06-24T12:14:53.390160",
@@ -4092,7 +4092,7 @@
     {
       "comment_id": "UgyDiEaZU_i2QBWGmvJ4AaABAg",
       "suggested_reply": "Thanks for your interest @SSREENATHS! \u2764\ufe0f Please message us on WhatsApp at https://wa.me/917306796590?text=Hi+interested+in+ordering to place your order.",
-      "actual_reply": "\"Thank you so much @alangeorgejohnson! We appreciate the support! \ud83d\ude4f\u2728Let's discuss on WhatsApp: https://baf727b8fbe7cf.lhr.life/youtube/r/UgyDiEaZU_i2QBWGmvJ4AaABAg",
+      "actual_reply": "\"Thank you so much @alangeorgejohnson! We appreciate the support! \ud83d\ude4f\u2728Let's discuss on WhatsApp: http://localhost:8000/youtube/r/UgyDiEaZU_i2QBWGmvJ4AaABAg",
       "reply_id": "UgyDiEaZU_i2QBWGmvJ4AaABAg.AY4OW7Ffp9mAYQWl13Xlj4",
       "status": "published",
       "published_at": "2026-06-24T08:51:01.240034",
@@ -4271,8 +4271,8 @@
     },
     {
       "comment_id": "MANUAL_CMT_62CB8A52",
-      "suggested_reply": "Thanks for your interest @spice_lover_mumbai! \u2764\ufe0f Please message us on WhatsApp at https://baf727b8fbe7cf.lhr.life/youtube/r/MANUAL_CMT_62CB8A52 to place your order.",
-      "actual_reply": "Thanks for your interest @spice_lover_mumbai! \u2764\ufe0f Please message us on WhatsApp at https://baf727b8fbe7cf.lhr.life/youtube/r/MANUAL_CMT_62CB8A52 to place your order.",
+      "suggested_reply": "Thanks for your interest @spice_lover_mumbai! \u2764\ufe0f Please message us on WhatsApp at http://localhost:8000/youtube/r/MANUAL_CMT_62CB8A52 to place your order.",
+      "actual_reply": "Thanks for your interest @spice_lover_mumbai! \u2764\ufe0f Please message us on WhatsApp at http://localhost:8000/youtube/r/MANUAL_CMT_62CB8A52 to place your order.",
       "reply_id": "RPL_60F88EEA4AF",
       "status": "published",
       "published_at": "2026-06-23T16:30:46.462872",
@@ -4291,8 +4291,8 @@
     },
     {
       "comment_id": "Ugxyu-cQr-kBEZ2de3J4AaABAg",
-      "suggested_reply": "Thanks for your interest @Snidhn2001! \u2764\ufe0f Please message us on WhatsApp at https://baf727b8fbe7cf.lhr.life/youtube/r/Ugxyu-cQr-kBEZ2de3J4AaABAg to place your order.",
-      "actual_reply": "Thanks for your interest @Snidhn2001! \u2764\ufe0f Please message us on WhatsApp at https://baf727b8fbe7cf.lhr.life/youtube/r/Ugxyu-cQr-kBEZ2de3J4AaABAg to place your order.",
+      "suggested_reply": "Thanks for your interest @Snidhn2001! \u2764\ufe0f Please message us on WhatsApp at http://localhost:8000/youtube/r/Ugxyu-cQr-kBEZ2de3J4AaABAg to place your order.",
+      "actual_reply": "Thanks for your interest @Snidhn2001! \u2764\ufe0f Please message us on WhatsApp at http://localhost:8000/youtube/r/Ugxyu-cQr-kBEZ2de3J4AaABAg to place your order.",
       "reply_id": "Ugxyu-cQr-kBEZ2de3J4AaABAg.AYOlSS49OjRAYOllIA7Zgv",
       "status": "published",
       "published_at": "2026-06-23T16:32:22.366718",
@@ -4301,8 +4301,8 @@
     },
     {
       "comment_id": "Ugy0omoP-8vTw6YsW4V4AaABAg",
-      "suggested_reply": "Thanks for your interest @Snidhn2001! \u2764\ufe0f Please message us on WhatsApp at https://baf727b8fbe7cf.lhr.life/youtube/r/Ugy0omoP-8vTw6YsW4V4AaABAg to place your order.",
-      "actual_reply": "Thanks for your interest @Snidhn2001! \u2764\ufe0f Please message us on WhatsApp at https://baf727b8fbe7cf.lhr.life/youtube/r/Ugy0omoP-8vTw6YsW4V4AaABAg to place your order.",
+      "suggested_reply": "Thanks for your interest @Snidhn2001! \u2764\ufe0f Please message us on WhatsApp at http://localhost:8000/youtube/r/Ugy0omoP-8vTw6YsW4V4AaABAg to place your order.",
+      "actual_reply": "Thanks for your interest @Snidhn2001! \u2764\ufe0f Please message us on WhatsApp at http://localhost:8000/youtube/r/Ugy0omoP-8vTw6YsW4V4AaABAg to place your order.",
       "reply_id": "Ugy0omoP-8vTw6YsW4V4AaABAg.AYOlPh5u1vAAYOllgQRtVJ",
       "status": "published",
       "published_at": "2026-06-23T16:32:25.645500",
@@ -4311,8 +4311,8 @@
     },
     {
       "comment_id": "UgzooiQT0eO_JZMM-Ih4AaABAg",
-      "suggested_reply": "Thanks for your interest @Snidhn2001! \u2764\ufe0f Please message us on WhatsApp at https://baf727b8fbe7cf.lhr.life/youtube/r/UgzooiQT0eO_JZMM-Ih4AaABAg to place your order.",
-      "actual_reply": "Thanks for your interest @Snidhn2001! \u2764\ufe0f Please message us on WhatsApp at https://baf727b8fbe7cf.lhr.life/youtube/r/UgzooiQT0eO_JZMM-Ih4AaABAg to place your order.",
+      "suggested_reply": "Thanks for your interest @Snidhn2001! \u2764\ufe0f Please message us on WhatsApp at http://localhost:8000/youtube/r/UgzooiQT0eO_JZMM-Ih4AaABAg to place your order.",
+      "actual_reply": "Thanks for your interest @Snidhn2001! \u2764\ufe0f Please message us on WhatsApp at http://localhost:8000/youtube/r/UgzooiQT0eO_JZMM-Ih4AaABAg to place your order.",
       "reply_id": "UgzooiQT0eO_JZMM-Ih4AaABAg.AYOlN6VJFRfAYOlm6BIQ_1",
       "status": "published",
       "published_at": "2026-06-23T16:32:28.994015",
@@ -4331,8 +4331,8 @@
     },
     {
       "comment_id": "UgzxPyKL71GLMQiAGHZ4AaABAg",
-      "suggested_reply": "Thanks for your interest @Snidhn2001! \u2764\ufe0f Please message us on WhatsApp at https://baf727b8fbe7cf.lhr.life/youtube/r/UgzxPyKL71GLMQiAGHZ4AaABAg to place your order.",
-      "actual_reply": "Thanks for your interest @Snidhn2001! \u2764\ufe0f Please message us on WhatsApp at https://baf727b8fbe7cf.lhr.life/youtube/r/UgzxPyKL71GLMQiAGHZ4AaABAg to place your order. Let's discuss on WhatsApp: https://baf727b8fbe7cf.lhr.life/youtube/r/UgzxPyKL71GLMQiAGHZ4AaABAg",
+      "suggested_reply": "Thanks for your interest @Snidhn2001! \u2764\ufe0f Please message us on WhatsApp at http://localhost:8000/youtube/r/UgzxPyKL71GLMQiAGHZ4AaABAg to place your order.",
+      "actual_reply": "Thanks for your interest @Snidhn2001! \u2764\ufe0f Please message us on WhatsApp at http://localhost:8000/youtube/r/UgzxPyKL71GLMQiAGHZ4AaABAg to place your order. Let's discuss on WhatsApp: http://localhost:8000/youtube/r/UgzxPyKL71GLMQiAGHZ4AaABAg",
       "reply_id": "UgzxPyKL71GLMQiAGHZ4AaABAg.AYOq7lEOnRJAYPfR7W6ief",
       "status": "published",
       "published_at": "2026-06-24T00:56:18.447460",
@@ -4342,7 +4342,7 @@
     {
       "comment_id": "Ugz9eVUB8h00mGIF_sp4AaABAg",
       "suggested_reply": "Thank you so much @MerlinMaryPonnachan! We appreciate the support! \ud83d\ude4f\u2728",
-      "actual_reply": "Thank you so much @MerlinMaryPonnachan! We appreciate the support! \ud83d\ude4f\u2728 Let's discuss on WhatsApp: https://baf727b8fbe7cf.lhr.life/youtube/r/Ugz9eVUB8h00mGIF_sp4AaABAg",
+      "actual_reply": "Thank you so much @MerlinMaryPonnachan! We appreciate the support! \ud83d\ude4f\u2728 Let's discuss on WhatsApp: http://localhost:8000/youtube/r/Ugz9eVUB8h00mGIF_sp4AaABAg",
       "reply_id": "Ugz9eVUB8h00mGIF_sp4AaABAg.AYPOxoxgQJ1AYPgnG26XUY",
       "status": "published",
       "published_at": "2026-06-24T01:08:12.212431",
@@ -4362,7 +4362,7 @@
     {
       "comment_id": "UgzWNOIUjX50E2lrZg94AaABAg",
       "suggested_reply": "Thank you so much @MerlinMaryPonnachan! We appreciate the support! \ud83d\ude4f\u2728",
-      "actual_reply": "Thank you so much @MerlinMaryPonnachan! We appreciate the support! \ud83d\ude4f\u2728 Let's discuss on WhatsApp: https://baf727b8fbe7cf.lhr.life/youtube/r/UgzWNOIUjX50E2lrZg94AaABAg",
+      "actual_reply": "Thank you so much @MerlinMaryPonnachan! We appreciate the support! \ud83d\ude4f\u2728 Let's discuss on WhatsApp: http://localhost:8000/youtube/r/UgzWNOIUjX50E2lrZg94AaABAg",
       "reply_id": "RPL_28605C1C69D_SIM",
       "status": "published",
       "published_at": "2026-06-24T12:14:15.979864",
@@ -4372,7 +4372,7 @@
     {
       "comment_id": "UgzQccA86yPEjGqBtrd4AaABAg",
       "suggested_reply": "Thank you so much @MerlinMaryPonnachan! We appreciate the support! \ud83d\ude4f\u2728",
-      "actual_reply": "Thank you so much @MerlinMaryPonnachan! We appreciate the support! \ud83d\ude4f\u2728 Let's discuss on WhatsApp: https://baf727b8fbe7cf.lhr.life/youtube/r/UgzQccA86yPEjGqBtrd4AaABAg",
+      "actual_reply": "Thank you so much @MerlinMaryPonnachan! We appreciate the support! \ud83d\ude4f\u2728 Let's discuss on WhatsApp: http://localhost:8000/youtube/r/UgzQccA86yPEjGqBtrd4AaABAg",
       "reply_id": "UgzQccA86yPEjGqBtrd4AaABAg.AYPP2RhNhP6AYTdJ1dCa8I",
       "status": "published",
       "published_at": "2026-06-25T13:54:41.878291",
@@ -4382,7 +4382,7 @@
     {
       "comment_id": "UgyNYHdn6JOgH6W28I54AaABAg",
       "suggested_reply": "Thank you so much @alangeorgejohnson! We appreciate the support! \ud83d\ude4f\u2728",
-      "actual_reply": "Thank you so much @alangeorgejohnson! We appreciate the support! \ud83d\ude4f\u2728 Let's discuss on WhatsApp: https://baf727b8fbe7cf.lhr.life/youtube/r/UgyNYHdn6JOgH6W28I54AaABAg",
+      "actual_reply": "Thank you so much @alangeorgejohnson! We appreciate the support! \ud83d\ude4f\u2728 Let's discuss on WhatsApp: http://localhost:8000/youtube/r/UgyNYHdn6JOgH6W28I54AaABAg",
       "reply_id": "UgyNYHdn6JOgH6W28I54AaABAg.AYPh11EGKUDAYQWUK6nFPR",
       "status": "published",
       "published_at": "2026-06-24T08:48:36.270854",
@@ -4391,8 +4391,8 @@
     },
     {
       "comment_id": "UgzAi0PR8hPgZImFfRd4AaABAg",
-      "suggested_reply": "Thanks for your interest @amaldev5837! \u2764\ufe0f Please message us on WhatsApp at https://baf727b8fbe7cf.lhr.life/youtube/r/UgzAi0PR8hPgZImFfRd4AaABAg to place your order.",
-      "actual_reply": "Thanks for your interest @amaldev5837! \u2764\ufe0f Please message us on WhatsApp at https://baf727b8fbe7cf.lhr.life/youtube/r/UgzAi0PR8hPgZImFfRd4AaABAg to place your order.",
+      "suggested_reply": "Thanks for your interest @amaldev5837! \u2764\ufe0f Please message us on WhatsApp at http://localhost:8000/youtube/r/UgzAi0PR8hPgZImFfRd4AaABAg to place your order.",
+      "actual_reply": "Thanks for your interest @amaldev5837! \u2764\ufe0f Please message us on WhatsApp at http://localhost:8000/youtube/r/UgzAi0PR8hPgZImFfRd4AaABAg to place your order.",
       "reply_id": "RPL_5A457AC6302_SIM",
       "status": "published",
       "published_at": "2026-06-24T12:11:37.760264",
@@ -4402,7 +4402,7 @@
     {
       "comment_id": "Ugwf_XMS9T6q7H9Q-sh4AaABAg",
       "suggested_reply": "Thank you so much @amaldev5837! We appreciate the support! \ud83d\ude4f\u2728",
-      "actual_reply": "Thank you so much @amaldev5837! We appreciate the support! \ud83d\ude4f\u2728 Let's discuss on WhatsApp: https://baf727b8fbe7cf.lhr.life/youtube/r/Ugwf_XMS9T6q7H9Q-sh4AaABAg",
+      "actual_reply": "Thank you so much @amaldev5837! We appreciate the support! \ud83d\ude4f\u2728 Let's discuss on WhatsApp: http://localhost:8000/youtube/r/Ugwf_XMS9T6q7H9Q-sh4AaABAg",
       "reply_id": "RPL_B45DC152A20_SIM",
       "status": "published",
       "published_at": "2026-06-24T12:13:33.514758",
@@ -4411,8 +4411,8 @@
     },
     {
       "comment_id": "UgzxaGqnKtoSopYYN1N4AaABAg",
-      "suggested_reply": "Thanks for your interest @amaldev5837! \u2764\ufe0f Please message us on WhatsApp at https://baf727b8fbe7cf.lhr.life/youtube/r/UgzxaGqnKtoSopYYN1N4AaABAg to place your order.",
-      "actual_reply": "Thanks for your interest @amaldev5837! \u2764\ufe0f Please message us on WhatsApp at https://baf727b8fbe7cf.lhr.life/youtube/r/UgzxaGqnKtoSopYYN1N4AaABAg to place your order.",
+      "suggested_reply": "Thanks for your interest @amaldev5837! \u2764\ufe0f Please message us on WhatsApp at http://localhost:8000/youtube/r/UgzxaGqnKtoSopYYN1N4AaABAg to place your order.",
+      "actual_reply": "Thanks for your interest @amaldev5837! \u2764\ufe0f Please message us on WhatsApp at http://localhost:8000/youtube/r/UgzxaGqnKtoSopYYN1N4AaABAg to place your order.",
       "reply_id": "RPL_CA1A6F454C2_SIM",
       "status": "published",
       "published_at": "2026-06-24T13:27:26.717325",
@@ -4421,8 +4421,8 @@
     },
     {
       "comment_id": "UgyhIJ2kLtBe0OhijZB4AaABAg",
-      "suggested_reply": "Thanks for your interest @amaldev5837! \u2764\ufe0f Please message us on WhatsApp at https://baf727b8fbe7cf.lhr.life/youtube/r/UgyhIJ2kLtBe0OhijZB4AaABAg to place your order.",
-      "actual_reply": "Thanks for your interest @amaldev5837! \u2764\ufe0f Please message us on WhatsApp at https://baf727b8fbe7cf.lhr.life/youtube/r/UgyhIJ2kLtBe0OhijZB4AaABAg to place your order.",
+      "suggested_reply": "Thanks for your interest @amaldev5837! \u2764\ufe0f Please message us on WhatsApp at http://localhost:8000/youtube/r/UgyhIJ2kLtBe0OhijZB4AaABAg to place your order.",
+      "actual_reply": "Thanks for your interest @amaldev5837! \u2764\ufe0f Please message us on WhatsApp at http://localhost:8000/youtube/r/UgyhIJ2kLtBe0OhijZB4AaABAg to place your order.",
       "reply_id": "UgyhIJ2kLtBe0OhijZB4AaABAg.AYQ_Pktf3oLAYTdGynGACp",
       "status": "published",
       "published_at": "2026-06-25T13:54:24.970096",
@@ -4432,7 +4432,7 @@
     {
       "comment_id": "UgyXNuGFWs0VOK8gRCl4AaABAg",
       "suggested_reply": "Thank you so much @amaldev5837! We appreciate the support! \ud83d\ude4f\u2728",
-      "actual_reply": "Thank you so much @amaldev5837! We appreciate the support! \ud83d\ude4f\u2728 Let's discuss on WhatsApp: https://baf727b8fbe7cf.lhr.life/youtube/r/UgyXNuGFWs0VOK8gRCl4AaABAg",
+      "actual_reply": "Thank you so much @amaldev5837! We appreciate the support! \ud83d\ude4f\u2728 Let's discuss on WhatsApp: http://localhost:8000/youtube/r/UgyXNuGFWs0VOK8gRCl4AaABAg",
       "reply_id": "RPL_C02AC823CD8",
       "status": "published",
       "published_at": "2026-06-26T13:37:24.258510",
@@ -4451,7 +4451,7 @@
     },
     {
       "comment_id": "MOCK_CMT_62724609",
-      "suggested_reply": "Thanks for your interest @arun_raj! \u2764\ufe0f Please message us on WhatsApp at https://baf727b8fbe7cf.lhr.life/youtube/r/MOCK_CMT_62724609 to place your order.",
+      "suggested_reply": "Thanks for your interest @arun_raj! \u2764\ufe0f Please message us on WhatsApp at http://localhost:8000/youtube/r/MOCK_CMT_62724609 to place your order.",
       "actual_reply": null,
       "reply_id": null,
       "status": "draft",
@@ -4461,7 +4461,7 @@
     },
     {
       "comment_id": "MOCK_CMT_EF42CD9F",
-      "suggested_reply": "Thanks for your interest @arun_raj! \u2764\ufe0f Please message us on WhatsApp at https://baf727b8fbe7cf.lhr.life/youtube/r/MOCK_CMT_EF42CD9F to place your order.",
+      "suggested_reply": "Thanks for your interest @arun_raj! \u2764\ufe0f Please message us on WhatsApp at http://localhost:8000/youtube/r/MOCK_CMT_EF42CD9F to place your order.",
       "actual_reply": null,
       "reply_id": null,
       "status": "draft",
@@ -4471,7 +4471,7 @@
     },
     {
       "comment_id": "MOCK_CMT_0DF3A293",
-      "suggested_reply": "Thanks for your interest @arun_raj! \u2764\ufe0f Please message us on WhatsApp at https://baf727b8fbe7cf.lhr.life/youtube/r/MOCK_CMT_0DF3A293 to place your order.",
+      "suggested_reply": "Thanks for your interest @arun_raj! \u2764\ufe0f Please message us on WhatsApp at http://localhost:8000/youtube/r/MOCK_CMT_0DF3A293 to place your order.",
       "actual_reply": null,
       "reply_id": null,
       "status": "draft",
@@ -4481,7 +4481,7 @@
     },
     {
       "comment_id": "MOCK_CMT_0A9F2A98",
-      "suggested_reply": "Thanks for your interest @hema_bhat! \u2764\ufe0f Please message us on WhatsApp at https://baf727b8fbe7cf.lhr.life/youtube/r/MOCK_CMT_0A9F2A98 to place your order.",
+      "suggested_reply": "Thanks for your interest @hema_bhat! \u2764\ufe0f Please message us on WhatsApp at http://localhost:8000/youtube/r/MOCK_CMT_0A9F2A98 to place your order.",
       "actual_reply": null,
       "reply_id": null,
       "status": "draft",
@@ -4491,7 +4491,7 @@
     },
     {
       "comment_id": "MOCK_CMT_DE0EEF2C",
-      "suggested_reply": "Thanks for your interest @hema_bhat! \u2764\ufe0f Please message us on WhatsApp at https://baf727b8fbe7cf.lhr.life/youtube/r/MOCK_CMT_DE0EEF2C to place your order.",
+      "suggested_reply": "Thanks for your interest @hema_bhat! \u2764\ufe0f Please message us on WhatsApp at http://localhost:8000/youtube/r/MOCK_CMT_DE0EEF2C to place your order.",
       "actual_reply": null,
       "reply_id": null,
       "status": "draft",
@@ -4561,7 +4561,7 @@
     },
     {
       "comment_id": "MOCK_CMT_1368517B",
-      "suggested_reply": "Thanks for your interest @vicky_sharma! \u2764\ufe0f Please message us on WhatsApp at https://baf727b8fbe7cf.lhr.life/youtube/r/MOCK_CMT_1368517B to place your order.",
+      "suggested_reply": "Thanks for your interest @vicky_sharma! \u2764\ufe0f Please message us on WhatsApp at http://localhost:8000/youtube/r/MOCK_CMT_1368517B to place your order.",
       "actual_reply": null,
       "reply_id": null,
       "status": "draft",
@@ -4571,7 +4571,7 @@
     },
     {
       "comment_id": "MOCK_CMT_6EF6D98B",
-      "suggested_reply": "Thanks for your interest @vicky_sharma! \u2764\ufe0f Please message us on WhatsApp at https://baf727b8fbe7cf.lhr.life/youtube/r/MOCK_CMT_6EF6D98B to place your order.",
+      "suggested_reply": "Thanks for your interest @vicky_sharma! \u2764\ufe0f Please message us on WhatsApp at http://localhost:8000/youtube/r/MOCK_CMT_6EF6D98B to place your order.",
       "actual_reply": null,
       "reply_id": null,
       "status": "draft",
@@ -4581,7 +4581,7 @@
     },
     {
       "comment_id": "MOCK_CMT_1BC4B6F4",
-      "suggested_reply": "Thanks for your interest @vicky_sharma! \u2764\ufe0f Please message us on WhatsApp at https://baf727b8fbe7cf.lhr.life/youtube/r/MOCK_CMT_1BC4B6F4 to place your order.",
+      "suggested_reply": "Thanks for your interest @vicky_sharma! \u2764\ufe0f Please message us on WhatsApp at http://localhost:8000/youtube/r/MOCK_CMT_1BC4B6F4 to place your order.",
       "actual_reply": null,
       "reply_id": null,
       "status": "draft",
@@ -4592,7 +4592,7 @@
     {
       "comment_id": "UgwSr6RP75zw9pL7Pl14AaABAg",
       "suggested_reply": "Thank you so much @adithyas6079! We appreciate the support! \ud83d\ude4f\u2728",
-      "actual_reply": "Thank you so much @adithyas6079! We appreciate the support! \ud83d\ude4f\u2728 Let's discuss on WhatsApp: https://baf727b8fbe7cf.lhr.life/youtube/r/UgwSr6RP75zw9pL7Pl14AaABAg",
+      "actual_reply": "Thank you so much @adithyas6079! We appreciate the support! \ud83d\ude4f\u2728 Let's discuss on WhatsApp: http://localhost:8000/youtube/r/UgwSr6RP75zw9pL7Pl14AaABAg",
       "reply_id": "UgwSr6RP75zw9pL7Pl14AaABAg.AYRaARNTm3wAYTdFHMtJUa",
       "status": "published",
       "published_at": "2026-06-25T13:54:11.493709",
@@ -4602,7 +4602,7 @@
     {
       "comment_id": "Ugzl5oLW4-hmRmT2qy94AaABAg",
       "suggested_reply": "Thank you so much @ShibuRavindran-y4b! We appreciate the support! \ud83d\ude4f\u2728",
-      "actual_reply": "Thank you so much @ShibuRavindran-y4b! We appreciate the support! \ud83d\ude4f\u2728 Let's discuss on WhatsApp: https://baf727b8fbe7cf.lhr.life/youtube/r/Ugzl5oLW4-hmRmT2qy94AaABAg",
+      "actual_reply": "Thank you so much @ShibuRavindran-y4b! We appreciate the support! \ud83d\ude4f\u2728 Let's discuss on WhatsApp: http://localhost:8000/youtube/r/Ugzl5oLW4-hmRmT2qy94AaABAg",
       "reply_id": "Ugzl5oLW4-hmRmT2qy94AaABAg.AYQtq7KIbmQAYTVe-QlXKE",
       "status": "published",
       "published_at": "2026-06-25T12:39:03.198733",
@@ -4612,7 +4612,7 @@
     {
       "comment_id": "UgwjRKBCvK2I9oxCdxt4AaABAg",
       "suggested_reply": "Thank you so much @ShibuRavindran-y4b! We appreciate the support! \ud83d\ude4f\u2728",
-      "actual_reply": "Thank you so much @ShibuRavindran-y4b! We appreciate the support! \ud83d\ude4f\u2728 Let's discuss on WhatsApp: https://baf727b8fbe7cf.lhr.life/youtube/r/UgwjRKBCvK2I9oxCdxt4AaABAg",
+      "actual_reply": "Thank you so much @ShibuRavindran-y4b! We appreciate the support! \ud83d\ude4f\u2728 Let's discuss on WhatsApp: http://localhost:8000/youtube/r/UgwjRKBCvK2I9oxCdxt4AaABAg",
       "reply_id": "UgwjRKBCvK2I9oxCdxt4AaABAg.AYQtoxOjdimAYTZ7GnIoZG",
       "status": "published",
       "published_at": "2026-06-25T13:09:24.306370",
@@ -4621,7 +4621,7 @@
     },
     {
       "comment_id": "UgzEr8vbwhbykugnlGR4AaABAg",
-      "suggested_reply": "Thanks for your interest @ShibuRavindran-y4b! \u2764\ufe0f Please message us on WhatsApp at https://baf727b8fbe7cf.lhr.life/youtube/r/UgzEr8vbwhbykugnlGR4AaABAg to place your order.",
+      "suggested_reply": "Thanks for your interest @ShibuRavindran-y4b! \u2764\ufe0f Please message us on WhatsApp at http://localhost:8000/youtube/r/UgzEr8vbwhbykugnlGR4AaABAg to place your order.",
       "actual_reply": null,
       "reply_id": null,
       "status": "draft",
@@ -4631,7 +4631,7 @@
     },
     {
       "comment_id": "UgyDK2TTOXXX0_SYt014AaABAg",
-      "suggested_reply": "Thanks for your interest @ShibuRavindran-y4b! \u2764\ufe0f Please message us on WhatsApp at https://baf727b8fbe7cf.lhr.life/youtube/r/UgyDK2TTOXXX0_SYt014AaABAg to place your order.",
+      "suggested_reply": "Thanks for your interest @ShibuRavindran-y4b! \u2764\ufe0f Please message us on WhatsApp at http://localhost:8000/youtube/r/UgyDK2TTOXXX0_SYt014AaABAg to place your order.",
       "actual_reply": null,
       "reply_id": null,
       "status": "draft",
@@ -4641,8 +4641,8 @@
     },
     {
       "comment_id": "UgxHE3Iyd8spTi5JIHd4AaABAg",
-      "suggested_reply": "Thanks for your interest @ShibuRavindran-y4b! \u2764\ufe0f Please message us on WhatsApp at https://baf727b8fbe7cf.lhr.life/youtube/r/UgxHE3Iyd8spTi5JIHd4AaABAg to place your order.",
-      "actual_reply": "Thanks for your interest @ShibuRavindran-y4b! \u2764\ufe0f Please message us on WhatsApp at https://baf727b8fbe7cf.lhr.life/youtube/r/UgxHE3Iyd8spTi5JIHd4AaABAg to place your order.",
+      "suggested_reply": "Thanks for your interest @ShibuRavindran-y4b! \u2764\ufe0f Please message us on WhatsApp at http://localhost:8000/youtube/r/UgxHE3Iyd8spTi5JIHd4AaABAg to place your order.",
+      "actual_reply": "Thanks for your interest @ShibuRavindran-y4b! \u2764\ufe0f Please message us on WhatsApp at http://localhost:8000/youtube/r/UgxHE3Iyd8spTi5JIHd4AaABAg to place your order.",
       "reply_id": "UgxHE3Iyd8spTi5JIHd4AaABAg.AYT_lrLzSHLAYTaGct1yFP",
       "status": "published",
       "published_at": "2026-06-25T13:28:09.322399",
@@ -4651,8 +4651,8 @@
     },
     {
       "comment_id": "UgyuyWOlILiuWHRp2lh4AaABAg",
-      "suggested_reply": "Thanks for your interest @ShibuRavindran-y4b! \u2764\ufe0f Please message us on WhatsApp at https://baf727b8fbe7cf.lhr.life/youtube/r/UgyuyWOlILiuWHRp2lh4AaABAg to place your order.",
-      "actual_reply": "Thanks for your interest @ShibuRavindran-y4b! \u2764\ufe0f Please message us on WhatsApp at https://baf727b8fbe7cf.lhr.life/youtube/r/UgyuyWOlILiuWHRp2lh4AaABAg to place your order.",
+      "suggested_reply": "Thanks for your interest @ShibuRavindran-y4b! \u2764\ufe0f Please message us on WhatsApp at http://localhost:8000/youtube/r/UgyuyWOlILiuWHRp2lh4AaABAg to place your order.",
+      "actual_reply": "Thanks for your interest @ShibuRavindran-y4b! \u2764\ufe0f Please message us on WhatsApp at http://localhost:8000/youtube/r/UgyuyWOlILiuWHRp2lh4AaABAg to place your order.",
       "reply_id": "UgyuyWOlILiuWHRp2lh4AaABAg.AYT_kb6NsCRAYTc-oTmEHr",
       "status": "published",
       "published_at": "2026-06-25T13:43:20.123964",
@@ -4691,7 +4691,7 @@
     },
     {
       "comment_id": "UgynN8cnfchIt6pPUZx4AaABAg",
-      "suggested_reply": "Thanks for your interest @QuizApp-v9r! \u2764\ufe0f Please message us on WhatsApp at https://baf727b8fbe7cf.lhr.life/youtube/r/UgynN8cnfchIt6pPUZx4AaABAg to place your order.",
+      "suggested_reply": "Thanks for your interest @QuizApp-v9r! \u2764\ufe0f Please message us on WhatsApp at http://localhost:8000/youtube/r/UgynN8cnfchIt6pPUZx4AaABAg to place your order.",
       "actual_reply": null,
       "reply_id": null,
       "status": "draft",
@@ -4701,7 +4701,7 @@
     },
     {
       "comment_id": "UgyHzLWURO_oEMoCwMR4AaABAg",
-      "suggested_reply": "Thanks for your interest @QuizApp-v9r! \u2764\ufe0f Please message us on WhatsApp at https://baf727b8fbe7cf.lhr.life/youtube/r/UgyHzLWURO_oEMoCwMR4AaABAg to place your order.",
+      "suggested_reply": "Thanks for your interest @QuizApp-v9r! \u2764\ufe0f Please message us on WhatsApp at http://localhost:8000/youtube/r/UgyHzLWURO_oEMoCwMR4AaABAg to place your order.",
       "actual_reply": null,
       "reply_id": null,
       "status": "draft",
@@ -5175,7 +5175,7 @@
       "provider": "evolution",
       "instance_name": "nidhin",
       "phone_number": "917306796590",
-      "status": "disconnected",
+      "status": "connected",
       "session_data": {},
       "id": "42a7185c-3f43-468a-b1f5-67b822e20683",
       "created_at": "2026-06-25T15:51:12.955747"

@@ -155,9 +155,18 @@ def payment_node(state: SalesState) -> SalesState:
     )
     
     state["order_id"] = order["id"]
+    
+    import os
+    public_url = os.getenv("PUBLIC_URL") or os.getenv("APP_BASE_URL") or "http://localhost:8000"
+    if "host.docker.internal" in public_url:
+        public_url = public_url.replace("host.docker.internal", "localhost")
+    if not public_url.endswith("/"):
+        public_url += "/"
+    pay_url = f"{public_url}payment/simulate?order_id={order['id']}&amount={price:.2f}"
+    
     state["agent_response"] = (
         f"Awesome! I have generated a payment request for Rs. {price:.2f}.\n\n"
-        f"👉 [PAY NOW WITH UPI](http://localhost:3000/pay?order_id={order['id']})\n\n"
+        f"👉 [PAY NOW WITH UPI]({pay_url})\n\n"
         "Please let me know once you have completed the payment so I can confirm your order."
     )
     state["current_state"] = "ORDER_CONFIRMED"
