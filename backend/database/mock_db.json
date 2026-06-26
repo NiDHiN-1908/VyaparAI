@@ -1863,6 +1863,26 @@
       "status": "new",
       "id": "313bb3eb-3274-4510-9d56-2d2a6551a2ea",
       "created_at": "2026-06-25T14:46:18.741739"
+    },
+    {
+      "business_id": "66ce1957-99f6-43b6-8dae-9952201b1115",
+      "comment_id": null,
+      "username": "wa_917559035036",
+      "language": null,
+      "intent": "HIGH_INTENT",
+      "status": "new",
+      "id": "5531ee45-6fd7-474b-9eab-5a21c5d13ec5",
+      "created_at": "2026-06-26T12:27:03.617536"
+    },
+    {
+      "business_id": "66ce1957-99f6-43b6-8dae-9952201b1115",
+      "comment_id": null,
+      "username": "wa_919400529112",
+      "language": null,
+      "intent": "HIGH_INTENT",
+      "status": "new",
+      "id": "d2a5331f-70eb-4d24-9342-102b51ec27d0",
+      "created_at": "2026-06-26T12:27:31.649170"
     }
   ],
   "conversations": [
@@ -2143,6 +2163,70 @@
       "id": "900772f1-109d-4e28-89b0-e38d25a0e76b",
       "created_at": "2026-06-25T14:46:17.557443",
       "updated_at": "2026-06-25T16:02:48.276487"
+    },
+    {
+      "tenant_id": "00000000-0000-0000-0000-000000000000",
+      "customer_phone": "917559035036",
+      "channel": "whatsapp",
+      "assigned_agent_id": null,
+      "status": "open",
+      "lead_id": "5531ee45-6fd7-474b-9eab-5a21c5d13ec5",
+      "state": "ADDRESS_COLLECTION",
+      "history": [
+        {
+          "role": "user",
+          "content": "Ok ni meeting munpe para"
+        },
+        {
+          "role": "assistant",
+          "content": "Namaste wa_917559035036! \ud83d\ude4f Welcome to VyaparAI Sales. We noticed you were interested in our Organic Cardamom. It is one of our best-selling items. Can I tell you more about its features and pricing?"
+        },
+        {
+          "role": "user",
+          "content": "Hi, I want to order organic cardamom. What is the price and shipping?"
+        },
+        {
+          "role": "assistant",
+          "content": "The Organic Cardamom is designed for top-tier performance. Description: Premium 8mm bold green cardamom pods, direct from Munnar hills..\nPrice: Rs. 350.00. Would you like to place an order, or do you have any questions about it?"
+        },
+        {
+          "role": "user",
+          "content": "Hi, I want to order organic cardamom. What is the price and shipping?"
+        },
+        {
+          "role": "assistant",
+          "content": "Please provide your full shipping address (including house number, street name, city, and pincode) so we can calculate delivery."
+        }
+      ],
+      "ai_enabled": true,
+      "human_override": false,
+      "id": "7b726508-ecec-4e3e-a1ac-083e7e5d251e",
+      "created_at": "2026-06-26T12:26:46.150616",
+      "updated_at": "2026-06-26T12:53:01.127041"
+    },
+    {
+      "tenant_id": "00000000-0000-0000-0000-000000000000",
+      "customer_phone": "919400529112",
+      "channel": "whatsapp",
+      "assigned_agent_id": null,
+      "status": "open",
+      "lead_id": "d2a5331f-70eb-4d24-9342-102b51ec27d0",
+      "state": "PRODUCT_INFO",
+      "history": [
+        {
+          "role": "user",
+          "content": "\ud83d\udc4f\ud83d\udc4f"
+        },
+        {
+          "role": "assistant",
+          "content": "Namaste wa_919400529112! \ud83d\ude4f Welcome to VyaparAI Sales. We noticed you were interested in our Organic Cardamom. It is one of our best-selling items. Can I tell you more about its features and pricing?"
+        }
+      ],
+      "ai_enabled": true,
+      "human_override": false,
+      "id": "847d96bb-e7cf-468c-82ff-f2e047a6d656",
+      "created_at": "2026-06-26T12:27:24.248161",
+      "updated_at": "2026-06-26T12:28:36.179064"
     }
   ],
   "orders": [],
@@ -5076,7 +5160,7 @@
       "provider": "evolution",
       "instance_name": "kochi_farm_whatsapp",
       "phone_number": null,
-      "status": "disconnected",
+      "status": "connecting",
       "session_data": {},
       "id": "87212d6f-bae4-493c-8db0-2e9674a292bf",
       "created_at": "2026-06-25T12:30:14.448433"
@@ -5688,6 +5772,222 @@
       },
       "id": "67603074-c644-47d6-b21c-8aa277b17994",
       "created_at": "2026-06-25T17:18:23.679733"
+    },
+    {
+      "conversation_id": "7b726508-ecec-4e3e-a1ac-083e7e5d251e",
+      "sender_type": "agent",
+      "sender_id": null,
+      "message_type": "text",
+      "content": "Da content generation il rag use cheyunnilla",
+      "metadata": {
+        "provider_message_sid": "A58BBF82D272946F86F85BE5EA9ED673",
+        "pushName": "Nidhin",
+        "status": "delivered"
+      },
+      "id": "d70de4ab-6ed2-4715-ab75-85c8fef1300d",
+      "created_at": "2026-06-26T12:26:46.214688"
+    },
+    {
+      "conversation_id": "7b726508-ecec-4e3e-a1ac-083e7e5d251e",
+      "sender_type": "customer",
+      "sender_id": null,
+      "message_type": "text",
+      "content": "Ok ni meeting munpe para",
+      "metadata": {
+        "provider_message_sid": "ACD2B9206D75CFE74551E7F58F8F0007",
+        "pushName": "AMAL DEV",
+        "status": "delivered"
+      },
+      "id": "c594e13b-dbbd-4a07-92ee-2976e8781e9b",
+      "created_at": "2026-06-26T12:27:00.850081"
+    },
+    {
+      "conversation_id": "7b726508-ecec-4e3e-a1ac-083e7e5d251e",
+      "sender_type": "ai",
+      "sender_id": null,
+      "message_type": "text",
+      "content": "Namaste wa_917559035036! \ud83d\ude4f Welcome to VyaparAI Sales. We noticed you were interested in our Organic Cardamom. It is one of our best-selling items. Can I tell you more about its features and pricing?",
+      "metadata": {
+        "status": "failed",
+        "media_url": null,
+        "caption": null,
+        "error": "Max retries exceeded"
+      },
+      "id": "45a6f203-d81e-488b-8e69-d1bb63186820",
+      "created_at": "2026-06-26T12:27:03.995129"
+    },
+    {
+      "conversation_id": "847d96bb-e7cf-468c-82ff-f2e047a6d656",
+      "sender_type": "customer",
+      "sender_id": null,
+      "message_type": "text",
+      "content": "\ud83d\udc4f\ud83d\udc4f",
+      "metadata": {
+        "provider_message_sid": "3EB054A446219BF30A12E7",
+        "pushName": "Dona",
+        "status": "delivered"
+      },
+      "id": "289cb2ff-939d-4e8e-a2c8-2ff78b91a353",
+      "created_at": "2026-06-26T12:27:24.303889"
+    },
+    {
+      "conversation_id": "847d96bb-e7cf-468c-82ff-f2e047a6d656",
+      "sender_type": "ai",
+      "sender_id": null,
+      "message_type": "text",
+      "content": "Namaste wa_919400529112! \ud83d\ude4f Welcome to VyaparAI Sales. We noticed you were interested in our Organic Cardamom. It is one of our best-selling items. Can I tell you more about its features and pricing?",
+      "metadata": {
+        "status": "failed",
+        "media_url": null,
+        "caption": null,
+        "error": "Max retries exceeded"
+      },
+      "id": "e137c760-2750-4794-b5a2-41e3f4c4f9e3",
+      "created_at": "2026-06-26T12:27:31.888064"
+    },
+    {
+      "conversation_id": "847d96bb-e7cf-468c-82ff-f2e047a6d656",
+      "sender_type": "agent",
+      "sender_id": null,
+      "message_type": "text",
+      "content": "Ath ok aaki aduthittond",
+      "metadata": {
+        "provider_message_sid": "A59724F6D1B7D24D9492635A0EE92487",
+        "pushName": "Nidhin",
+        "status": "delivered"
+      },
+      "id": "2f3da93d-a47d-47a3-b0cc-52078caaa70e",
+      "created_at": "2026-06-26T12:28:07.967358"
+    },
+    {
+      "conversation_id": "847d96bb-e7cf-468c-82ff-f2e047a6d656",
+      "sender_type": "agent",
+      "sender_id": null,
+      "message_type": "text",
+      "content": "WhatsApp link cheyunnathayirunnu task",
+      "metadata": {
+        "provider_message_sid": "A52978186EBE17ECA448B1E026824380",
+        "pushName": "Nidhin",
+        "status": "delivered"
+      },
+      "id": "960b7ba7-8783-468f-828f-0858757c1d8b",
+      "created_at": "2026-06-26T12:28:15.095473"
+    },
+    {
+      "conversation_id": "847d96bb-e7cf-468c-82ff-f2e047a6d656",
+      "sender_type": "agent",
+      "sender_id": null,
+      "message_type": "text",
+      "content": "Eni kurache karyagalum koode ollu",
+      "metadata": {
+        "provider_message_sid": "A5A572AF38F4ABEB5EBFE08C322AE300",
+        "pushName": "Nidhin",
+        "status": "delivered"
+      },
+      "id": "01811f3c-4fd0-492d-8a84-71614dc6cf7b",
+      "created_at": "2026-06-26T12:28:36.128230"
+    },
+    {
+      "conversation_id": "7b726508-ecec-4e3e-a1ac-083e7e5d251e",
+      "sender_type": "agent",
+      "sender_id": null,
+      "message_type": "text",
+      "content": "Crct agents aathokke aanane lap nokkiyale parayan pattu",
+      "metadata": {
+        "provider_message_sid": "A57B408FBE46D6A2E5998F777F6B05E6",
+        "pushName": "Nidhin",
+        "status": "delivered"
+      },
+      "id": "83ebd54f-6b77-46da-b632-49e515b5e794",
+      "created_at": "2026-06-26T12:28:41.317238"
+    },
+    {
+      "conversation_id": "7b726508-ecec-4e3e-a1ac-083e7e5d251e",
+      "sender_type": "agent",
+      "sender_id": null,
+      "message_type": "text",
+      "content": "Ath matte",
+      "metadata": {
+        "provider_message_sid": "A5AF7FA67051CA74B5B991DA01715AE1",
+        "pushName": "Nidhin",
+        "status": "delivered"
+      },
+      "id": "2e45a9be-61bb-4983-89fe-faad31d48a70",
+      "created_at": "2026-06-26T12:28:58.696489"
+    },
+    {
+      "conversation_id": "7b726508-ecec-4e3e-a1ac-083e7e5d251e",
+      "sender_type": "agent",
+      "sender_id": null,
+      "message_type": "image",
+      "content": "https://mmg.whatsapp.net/v/t62.7118-24/561984268_1564485361969710_8230344240694884030_n.enc?ccb=11-4&oh=01_Q5Aa4wGtAjFW_kJSjwT2f6zl3lImlvD2IBgLecil5urFmtUFwQ&oe=6A65A097&_nc_sid=5e03e0&mms3=true",
+      "metadata": {
+        "provider_message_sid": "A53654D8C4C1C0B125980F72BEEC3655",
+        "pushName": "Nidhin",
+        "status": "delivered",
+        "mimetype": "image/jpeg",
+        "caption": ""
+      },
+      "id": "0c747835-3518-4ead-99ec-7adc25b93ab3",
+      "created_at": "2026-06-26T12:33:22.589223"
+    },
+    {
+      "conversation_id": "7b726508-ecec-4e3e-a1ac-083e7e5d251e",
+      "sender_type": "customer",
+      "sender_id": null,
+      "message_type": "text",
+      "content": "Hi, I want to order organic cardamom. What is the price and shipping?",
+      "metadata": {
+        "provider_message_sid": "msg_askzzvq8f",
+        "pushName": "Customer Sandbox",
+        "status": "delivered"
+      },
+      "id": "7e7e576a-ae95-4d79-b9b6-0dfc41f50891",
+      "created_at": "2026-06-26T12:42:58.145210"
+    },
+    {
+      "conversation_id": "7b726508-ecec-4e3e-a1ac-083e7e5d251e",
+      "sender_type": "ai",
+      "sender_id": null,
+      "message_type": "text",
+      "content": "The Organic Cardamom is designed for top-tier performance. Description: Premium 8mm bold green cardamom pods, direct from Munnar hills..\nPrice: Rs. 350.00. Would you like to place an order, or do you have any questions about it?",
+      "metadata": {
+        "status": "failed",
+        "media_url": null,
+        "caption": null,
+        "error": "Max retries exceeded"
+      },
+      "id": "e8a19934-f4d3-4814-b88c-d9ef3ec24bbd",
+      "created_at": "2026-06-26T12:43:04.952635"
+    },
+    {
+      "conversation_id": "7b726508-ecec-4e3e-a1ac-083e7e5d251e",
+      "sender_type": "customer",
+      "sender_id": null,
+      "message_type": "text",
+      "content": "Hi, I want to order organic cardamom. What is the price and shipping?",
+      "metadata": {
+        "provider_message_sid": "msg_f4073gwbl",
+        "pushName": "Customer Sandbox",
+        "status": "delivered"
+      },
+      "id": "8f89b219-505c-4f10-a406-80d0b84822d0",
+      "created_at": "2026-06-26T12:52:59.563651"
+    },
+    {
+      "conversation_id": "7b726508-ecec-4e3e-a1ac-083e7e5d251e",
+      "sender_type": "ai",
+      "sender_id": null,
+      "message_type": "text",
+      "content": "Please provide your full shipping address (including house number, street name, city, and pincode) so we can calculate delivery.",
+      "metadata": {
+        "status": "failed",
+        "media_url": null,
+        "caption": null,
+        "error": "Max retries exceeded"
+      },
+      "id": "0cbf16cf-4524-4b20-82b1-02db37629faf",
+      "created_at": "2026-06-26T12:53:00.890010"
     }
   ]
 }
