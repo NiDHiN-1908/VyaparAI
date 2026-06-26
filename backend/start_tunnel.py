@@ -38,6 +38,33 @@ def update_env_file(url):
         return False
 
 def main():
+    # 1. Check if a permanent/user-configured PUBLIC_URL already exists in .env
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    env_path = os.path.abspath(os.path.join(current_dir, "../.env"))
+    if not os.path.exists(env_path):
+        env_path = os.path.join(current_dir, ".env")
+        
+    if os.path.exists(env_path):
+        try:
+            with open(env_path, "r", encoding="utf-8") as f:
+                content = f.read()
+            match = re.search(r"^PUBLIC_URL\s*=\s*(https?://[^\s]+)", content, re.MULTILINE)
+            if match:
+                url = match.group(1)
+                # If the URL is NOT a localhost.run URL (e.g. contains ngrok or custom domain)
+                if "lhr.life" not in url and "lhr.rocks" not in url:
+                    print("===================================================")
+                    print("        VyaparAI Public Tunnel Launcher")
+                    print("===================================================")
+                    print(f"Permanent PUBLIC_URL is configured: {url}")
+                    print("Skipping automatic localhost.run tunnel startup.\n")
+                    print("Make sure your custom tunnel is running in the background!")
+                    print("===================================================\n")
+                    time.sleep(2)
+                    sys.exit(0)
+        except Exception as e:
+            print(f"Warning reading .env for existing PUBLIC_URL: {e}")
+
     print("===================================================")
     print("        VyaparAI Public Tunnel Launcher")
     print("       --- Starting localhost.run tunnel ---")

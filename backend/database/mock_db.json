@@ -2227,6 +2227,21 @@
       "id": "847d96bb-e7cf-468c-82ff-f2e047a6d656",
       "created_at": "2026-06-26T12:27:24.248161",
       "updated_at": "2026-06-26T12:28:36.179064"
+    },
+    {
+      "tenant_id": "00000000-0000-0000-0000-000000000000",
+      "customer_phone": "917306796590",
+      "channel": "whatsapp",
+      "assigned_agent_id": null,
+      "status": "open",
+      "lead_id": null,
+      "state": "WELCOME",
+      "history": [],
+      "ai_enabled": true,
+      "human_override": false,
+      "id": "e4ab0951-48bb-4a1c-a9f8-3c438acbee46",
+      "created_at": "2026-06-26T14:14:00.852122",
+      "updated_at": "2026-06-26T14:14:00.892309"
     }
   ],
   "orders": [],
@@ -5160,7 +5175,7 @@
       "provider": "evolution",
       "instance_name": "nidhin",
       "phone_number": "917306796590",
-      "status": "connected",
+      "status": "disconnected",
       "session_data": {},
       "id": "42a7185c-3f43-468a-b1f5-67b822e20683",
       "created_at": "2026-06-25T15:51:12.955747"
@@ -5988,6 +6003,20 @@
       },
       "id": "0cbf16cf-4524-4b20-82b1-02db37629faf",
       "created_at": "2026-06-26T12:53:00.890010"
+    },
+    {
+      "conversation_id": "e4ab0951-48bb-4a1c-a9f8-3c438acbee46",
+      "sender_type": "agent",
+      "sender_id": null,
+      "message_type": "text",
+      "content": "To set up a **free, permanent static tunnel domain** using **Ngrok** (Option 1), follow these steps:\n\n### Step 1: Claim your Free Static Domain\n1. Go to [ngrok.com](https://ngrok.com/) and sign up for a free account.\n2. Once logged in, go to the left sidebar and navigate to **Cloud Edge > Domains**.\n3. Click **Create Domain**. Ngrok will automatically assign you one **free permanent subdomain** (e.g. `something-unique.ngrok-free.app`). \n4. Copy that subdomain URL.\n\n---\n\n### Step 2: Get your Authtoken\n1. In the Ngrok dashboard, go to **Your Authtoken** in the left sidebar.\n2. Copy your unique authtoken string.\n\n---\n\n### Step 3: Install & Start the Permanent Tunnel\n\nOpen a command prompt (as **Administrator**) and run:\n\n1. **Install your authtoken:**\n   ```cmd\n   ngrok config add-authtoken YOUR_AUTHTOKEN_HERE\n   ```\n2. **Install Ngrok as a Windows background service:**\n   ```cmd\n   ngrok service install --authtoken YOUR_AUTHTOKEN_HERE --url=YOUR_CLAIMED_DOMAIN_HERE 8000\n   ```\n   *(Replace `YOUR_CLAIMED_DOMAIN_HERE` with your subdomain, e.g., `something-unique.ngrok-free.app`)*\n\n3. **Start the background service:**\n   ```cmd\n   ngrok service start\n   ```\n\n---\n\n### Step 4: Update `.env`\n\nOnce you have your domain, tell the VyaparAI system to use it. Open your [`.env`](file:///c:/Users/nidhi/Desktop/VyaparAI/.env) file and update `PUBLIC_URL` (line 23) to your permanent domain:\n\n```env\nPUBLIC_URL=https://something-unique.ngrok-free.app\n```\n\n### What happens now?\nEvery time you run `start_all.bat`, the system will see that a permanent `PUBLIC_URL` is set, bypass launching temporary tunnels, and route all WhatsApp redirection links through your fixed domain. The Ngrok service will run silently in the background 24/7.",
+      "metadata": {
+        "provider_message_sid": "3EB0998AA9E90A084CA226",
+        "pushName": "Nidhin",
+        "status": "delivered"
+      },
+      "id": "2e245339-7ee5-4964-a562-42135c2a1d55",
+      "created_at": "2026-06-26T14:14:00.873822"
     }
   ]
 }
