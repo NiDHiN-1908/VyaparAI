@@ -9,36 +9,46 @@ echo ===================================================
 echo.
 echo [1/3] Checking background dependencies...
 set "OLLAMA_LOCAL_RUNNING=0"
-tasklist /FI "IMAGENAME eq ollama_app.exe" 2>NUL | find /I /N "ollama_app.exe">NUL
-if not errorlevel 1 (
-    set "OLLAMA_LOCAL_RUNNING=1"
-    echo   ^/[x^] Ollama Local LLM runner [app] is already running.
-) else (
-    tasklist /FI "IMAGENAME eq ollama.exe" 2>NUL ^| find /I /N "ollama.exe">NUL
-    if not errorlevel 1 (
-        set "OLLAMA_LOCAL_RUNNING=1"
-        echo   ^/[x^] Ollama Local LLM runner [process] is already running.
-    )
+tasklist /FI "IMAGENAME eq ollama app.exe" 2>NUL | find /I /N "ollama app.exe" >NUL
+if not errorlevel 1 set "OLLAMA_LOCAL_RUNNING=1"
+tasklist /FI "IMAGENAME eq ollama.exe" 2>NUL | find /I /N "ollama.exe" >NUL
+if not errorlevel 1 set "OLLAMA_LOCAL_RUNNING=1"
+
+if "%OLLAMA_LOCAL_RUNNING%"=="1" (
+    echo   ^/[x^] Ollama Local LLM runner is already running.
+    goto ollama_ok
 )
 
-if "%OLLAMA_LOCAL_RUNNING%"=="0" (
-    docker info >nul 2>&1
-    if not errorlevel 1 (
-        docker ps --filter "name=vyaparai_ollama" --filter "status=running" ^| find /i "vyaparai_ollama" > nul
-        if not errorlevel 1 (
-            echo   ^/[x^] Ollama Docker container is already running.
-        ) else (
-            echo   [WARNING] Local Ollama not detected. Starting Ollama container...
-            docker compose -f docker\docker-compose.yml up -d ollama
-            echo   * Waiting 5 seconds for Ollama container to warm up...
-            timeout /t 5 /nobreak > nul
-        )
-        echo   * Ensuring model 'llama3.1' is pulled in Docker...
-        docker exec vyaparai_ollama ollama pull llama3.1
-    ) else (
-        echo   [WARNING] Ollama local runner not detected, and Docker is offline. AI responses will be rule-based.
-    )
+rem If not running, check if local app exists and start it
+if exist "C:\Users\nidhi\AppData\Local\Programs\Ollama\ollama app.exe" (
+    echo   [WARNING] Local Ollama is installed but not running. Launching it...
+    start "" "C:\Users\nidhi\AppData\Local\Programs\Ollama\ollama app.exe"
+    echo   * Waiting 4 seconds for Ollama to initialize...
+    timeout /t 4 /nobreak > nul
+    set "OLLAMA_LOCAL_RUNNING=1"
+    echo   ^/[x^] Ollama Local LLM runner launched.
+    goto ollama_ok
 )
+
+docker info >nul 2>&1
+if errorlevel 1 (
+    echo   [WARNING] Ollama local runner not detected, and Docker is offline. AI responses will be rule-based.
+    goto ollama_ok
+)
+
+docker ps --filter "name=vyaparai_ollama" --filter "status=running" | find /i "vyaparai_ollama" > nul
+if not errorlevel 1 (
+    echo   ^/[x^] Ollama Docker container is already running.
+) else (
+    echo   [WARNING] Local Ollama not detected. Starting Ollama container...
+    docker compose -f docker\docker-compose.yml up -d ollama
+    echo   * Waiting 5 seconds for Ollama container to warm up...
+    timeout /t 5 /nobreak > nul
+)
+echo   * Ensuring model 'llama3.1' is pulled in Docker...
+docker exec vyaparai_ollama ollama pull llama3.1
+
+:ollama_ok
 echo.
 echo   * Checking WhatsApp Evolution API...
 docker info >nul 2>&1
