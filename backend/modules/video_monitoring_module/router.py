@@ -526,7 +526,8 @@ async def get_youtube_analytics_dashboard():
             
         channel = channels[0]
         channel_id = channel["channel_id"]
-        is_mock_channel = channel.get("access_token") == "mock_access_token"
+        token_val = str(channel.get("access_token") or "")
+        is_mock_channel = token_val in ["mock_access_token", "MOCK_ACCESS_TOKEN"] or "MOCK" in token_val.upper()
         
         # Base database items
         all_comments = supabase_svc.get_youtube_comments()

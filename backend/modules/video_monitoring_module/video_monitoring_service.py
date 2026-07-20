@@ -88,7 +88,8 @@ class VideoMonitoringService:
                 videos = [mock_video]
 
             # Determine if we're in sandbox/simulation mode
-            is_mock_channel = channel.get("access_token") == "mock_access_token"
+            token_val = str(channel.get("access_token") or "")
+            is_mock_channel = token_val in ["mock_access_token", "MOCK_ACCESS_TOKEN"] or token_val.startswith("MOCK") or "MOCK" in token_val.upper()
             
             for video in videos:
                 video_id = video["video_id"]
@@ -220,7 +221,8 @@ class VideoMonitoringService:
         channel_id = channel["channel_id"]
         logger.info(f"Syncing videos for channel {channel_id} ({channel.get('channel_name')})...")
         
-        if channel.get("access_token") == "mock_access_token":
+        token_val = str(channel.get("access_token") or "")
+        if token_val in ["mock_access_token", "MOCK_ACCESS_TOKEN"] or "MOCK" in token_val.upper():
             # In mock mode, keep current monitored videos
             return supabase_svc.get_youtube_videos()
 

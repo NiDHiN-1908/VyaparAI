@@ -373,7 +373,8 @@ class YouTubeMonitorCrew:
         if not channel:
             raise ValueError(f"YouTube channel with ID {video['channel_id']} not found in database.")
 
-        is_mock_channel = channel.get("access_token") == "mock_access_token"
+        token_val = str(channel.get("access_token") or "")
+        is_mock_channel = token_val in ["mock_access_token", "MOCK_ACCESS_TOKEN"] or "MOCK" in token_val.upper()
         is_mock_comment = comment_id.startswith("MANUAL_CMT_") or comment_id.startswith("MOCK_CMT_")
         reply_id = None
         
