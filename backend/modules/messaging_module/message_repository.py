@@ -33,5 +33,11 @@ class MessageRepository:
         Appends or updates key-value pairs inside a message's JSONB metadata field.
         """
         return supabase_svc.update_message_metadata(message_id, updates)
+
+    def get_by_provider_sid(self, provider_message_sid: str) -> Optional[Dict[str, Any]]:
+        """
+        Retrieves a message by its provider message ID/SID.
+        """
+        return supabase_svc.get_message_by_provider_sid(provider_message_sid)
         
 message_repo = MessageRepository()

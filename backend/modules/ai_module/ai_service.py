@@ -36,7 +36,7 @@ class AiService:
         
         # Resolve target product from database (dynamically match product based on source video title)
         products = supabase_svc.get_products()
-        product_id = products[0]["id"] if products else "prod_cardamom"
+        product_id = products[0]["id"] if products else "prod_fig"
         
         if lead_id and products:
             try:
@@ -54,6 +54,8 @@ class AiService:
                             matched_product = next((p for p in products if "coconut" in p["name"].lower() or "oil" in p["name"].lower()), None)
                         elif "cardamom" in title_lower or "elaichi" in title_lower:
                             matched_product = next((p for p in products if "cardamom" in p["name"].lower() or "elaichi" in p["name"].lower()), None)
+                        elif any(kw in title_lower for kw in ["plant", "nursery", "fig", "bonsai", "rose"]):
+                            matched_product = next((p for p in products if any(kw in p["name"].lower() for kw in ["plant", "nursery", "fig", "bonsai", "rose"])), None)
                             
                         if matched_product:
                             product_id = matched_product["id"]
@@ -62,28 +64,33 @@ class AiService:
                 logger.error(f"Failed to dynamically match product for lead: {pe}")
         
         if not lead_id:
-            # Direct-to-WhatsApp customer. Create a lead record for LangGraph session tracking.
-            logger.info("Direct WhatsApp customer detected. Creating local lead record...")
-            businesses = supabase_svc.get_businesses()
-            business_id = businesses[0]["id"] if businesses else None
-            
-            # Form clean username from customer phone number
             customer_phone = conv.get("customer_phone", "unknown")
             username = f"wa_{customer_phone.replace('+', '')}"
-            
             try:
-                # Create qualified lead
-                lead = supabase_svc.create_lead(
-                    business_id=business_id,
-                    username=username,
-                    intent="HIGH_INTENT"
-                )
-                lead_id = lead["id"]
-                # Update conversation mapping
-                supabase_svc.update_conversation_v2(conversation_id, {"lead_id": lead_id})
-                logger.info(f"Mapped conversation {conversation_id} to new lead {lead_id}")
+                # Reuse existing direct WhatsApp lead if present
+                leads = supabase_svc.get_leads()
+                existing_lead = next((l for l in leads if l.get("username") == username), None)
+                if existing_lead:
+                    lead_id = existing_lead["id"]
+                    supabase_svc.update_conversation_v2(conversation_id, {"lead_id": lead_id})
+                    logger.info(f"Mapped conversation {conversation_id} to existing lead {lead_id}")
+                else:
+                    logger.info("Direct WhatsApp customer detected. Creating local lead record...")
+                    businesses = supabase_svc.get_businesses()
+                    business_id = businesses[0]["id"] if businesses else None
+                    
+                    # Create qualified lead
+                    lead = supabase_svc.create_lead(
+                        business_id=business_id,
+                        username=username,
+                        intent="HIGH_INTENT"
+                    )
+                    lead_id = lead["id"]
+                    # Update conversation mapping
+                    supabase_svc.update_conversation_v2(conversation_id, {"lead_id": lead_id})
+                    logger.info(f"Mapped conversation {conversation_id} to new lead {lead_id}")
             except Exception as e:
-                logger.error(f"Failed to create lead for customer: {e}")
+                logger.error(f"Failed to resolve/create lead for customer: {e}")
                 return
 
         # 3. Call LangGraph Sales Graph

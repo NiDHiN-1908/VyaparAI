@@ -69,7 +69,8 @@ def audit_campaign_quality(script_data: Dict[str, Any], keywords: list, product_
     food_kws = [
         "cardamom", "coconut", "oil", "food", "beverage", "tea", "coffee", "spice", 
         "honey", "juice", "fresh", "organic", "farm", "harvest", "fruit", "vegetable",
-        "agriculture", "farming", "gardening", "produce", "meat", "dairy", "spices", "elaichi"
+        "agriculture", "farming", "gardening", "produce", "meat", "dairy", "spices", "elaichi",
+        "plant", "nursery", "seed", "sapling", "succulent", "foliage", "bonsai", "vermicompost", "fig"
     ]
 
     is_food_or_agri = True

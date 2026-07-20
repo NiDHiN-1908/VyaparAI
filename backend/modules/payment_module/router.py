@@ -18,6 +18,19 @@ async def simulate_payment_page(order_id: str, amount: float):
     """
     Renders a checkout page to simulate a customer completing a Razorpay payment.
     """
+    merchant_name = "Green Haven Nursery"
+    try:
+        orders = supabase_svc.get_orders()
+        order = next((o for o in orders if o["id"] == order_id), None)
+        if order and order.get("lead_id"):
+            lead = supabase_svc._select_one("leads", order["lead_id"])
+            if lead and lead.get("business_id"):
+                business = supabase_svc._select_one("businesses", lead["business_id"])
+                if business and business.get("name"):
+                    merchant_name = business["name"]
+    except Exception as e:
+        logger.error(f"Failed to dynamically resolve merchant name for order {order_id}: {e}")
+
     html_content = f"""
     <!DOCTYPE html>
     <html lang="en">
@@ -153,7 +166,7 @@ async def simulate_payment_page(order_id: str, amount: float):
             
             <div class="details">
                 <div><strong>Order Reference:</strong> {order_id}</div>
-                <div><strong>Merchant:</strong> Kochi Spice Farm</div>
+                <div><strong>Merchant:</strong> {merchant_name}</div>
                 <div><strong>Payment Option:</strong> UPI (Auto Success Simulate)</div>
             </div>
             

@@ -53,10 +53,10 @@ export default function CRMPage() {
     
     // Seed initial CRM records
     setLeads([
-      { id: "1", username: "rahul_sharma", intent: "HIGH_INTENT", language: "Hindi", status: "new", comment: "What is the price of Cardamom?", created_at: "10 mins ago" },
-      { id: "2", username: "priya_menon", intent: "HIGH_INTENT", language: "Malayalam", status: "contacting", comment: "എത്രയാണ് ഇതിന്റെ വില? ഓർഡർ ചെയ്യണം.", created_at: "2 hours ago" },
+      { id: "1", username: "rahul_sharma", intent: "HIGH_INTENT", language: "Hindi", status: "new", comment: "What is the price of this Fiddle Leaf Fig?", created_at: "10 mins ago" },
+      { id: "2", username: "priya_menon", intent: "HIGH_INTENT", language: "Malayalam", status: "contacting", comment: "എത്രയാണ് ഈ ചെടിയുടെ വില? ഓർഡർ ചെയ്യണം.", created_at: "2 hours ago" },
       { id: "3", username: "karthik_v", intent: "MEDIUM_INTENT", language: "Tamil", status: "qualified", comment: "Is delivery free in Chennai?", created_at: "5 hours ago" },
-      { id: "4", username: "suresh_kumar", intent: "HIGH_INTENT", language: "Telugu", status: "customer", comment: "I want to buy cardamom. Please call me.", created_at: "1 day ago" }
+      { id: "4", username: "suresh_kumar", intent: "HIGH_INTENT", language: "Telugu", status: "customer", comment: "I want to buy a Fiddle Leaf Fig plant. Please call me.", created_at: "1 day ago" }
     ]);
   }, []);
 

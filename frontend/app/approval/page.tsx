@@ -13,22 +13,66 @@ import {
   ArrowRight,
   TrendingUp,
   Film,
+  ExternalLink,
   Image as ImageIcon
 } from "lucide-react";
+import Link from "next/link";
 
-const API_BASE = "http://localhost:8000";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
 
 export default function ApprovalPage() {
   const [productId, setProductId] = useState<string | null>(null);
   const [campaignData, setCampaignData] = useState<any>(null);
+  const [jobStatus, setJobStatus] = useState<string | null>(null);
+  const [jobMessage, setJobMessage] = useState<string>("");
+  const [jobProgressStep, setJobProgressStep] = useState<number>(0);
+
+  // Video player self-healing states
+  const [videoError, setVideoError] = useState<string | null>(null);
+  const [repairing, setRepairing] = useState(false);
+  const [repairMessage, setRepairMessage] = useState("");
+
+  const handleRepairVideo = async (videoId: string) => {
+    if (!videoId) return;
+    setRepairing(true);
+    setVideoError(null);
+    setRepairMessage("Validating & rebuilding video frames on the server...");
+    
+    try {
+      const res = await fetch(`${API_BASE}/video/repair`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ video_id: videoId })
+      });
+      
+      if (!res.ok) {
+        throw new Error("Server failed to repair the video file.");
+      }
+      
+      setRepairMessage("Video repaired successfully! Reloading...");
+      setTimeout(() => {
+        setRepairing(false);
+        // Force reload by re-triggering updateStateWithCampaign with existing data
+        if (campaignData && productId) {
+          updateStateWithCampaign(campaignData, productId);
+        }
+      }, 1000);
+      
+    } catch (err: any) {
+      console.error(err);
+      setVideoError("Auto-repair failed. Please try regenerating the campaign or contact support.");
+      setRepairing(false);
+    }
+  };
   const [selectedCampaign, setSelectedCampaign] = useState<any>({
     id: "campaign_1",
-    product_name: "Organic Cardamom",
+    product_name: "Fiddle Leaf Fig",
     language: "English",
     version: 1,
     qa_score: 85,
     status: "draft",
-    script: "Is your tea missing that authentic kerala aroma? ☕ Most market cardamom is artificially colored, stale, and completely flavorless. VyaparAI organic cardamom is handpicked in Idukki, vacuum sealed, and shipped fresh. Reply now to get 10% off and free shipping on your first pack!",
+    script: "Are your house plants constantly dying? 🌿 Normal nursery plants are grown in heavy clay soil and go into shock when you bring them home. Our Fiddle Leaf Fig is grown in a premium coco-peat organic blend, root-conditioned, and shipped with a detailed care guide. Order yours today!",
     youtube_url: null,
     youtube_id: null,
     video_id: null,
@@ -57,11 +101,106 @@ export default function ApprovalPage() {
       youtube_id: data.videos?.[lang]?.youtube_id || null,
       video_id: data.videos?.[lang]?.id || null,
       video_url: data.videos?.[lang]?.video_url || null,
-      thumbnail_url: data.thumbnail?.image_url || null
+      thumbnail_url: data.thumbnail?.image_url || null,
+      video_status: data.videos?.[lang]?.status || "ready",
+      publish_progress: data.videos?.[lang]?.publish_progress || null,
+      publish_timestamp: data.videos?.[lang]?.publish_timestamp || null,
+      publish_duration: data.videos?.[lang]?.publish_duration || null,
+      publish_error: data.videos?.[lang]?.publish_error || null
     });
   };
 
   useEffect(() => {
+    if (!productId) return;
+    
+    const activePublishingStates = ["Upload Queued", "Uploading", "Upload Completed", "YouTube Processing"];
+    const isPublishing = activePublishingStates.includes(selectedCampaign.video_status);
+                         
+    if (!isPublishing) return;
+    
+    const interval = setInterval(async () => {
+      try {
+        const campRes = await fetch(`${API_BASE}/campaign/${productId}`);
+        if (campRes.ok) {
+          const campData = await campRes.json();
+          updateStateWithCampaign(campData, productId);
+        }
+      } catch (err) {
+        console.error("Error polling publishing status:", err);
+      }
+    }, 3000);
+    
+    return () => clearInterval(interval);
+  }, [productId, selectedCampaign.video_status]);
+
+  useEffect(() => {
+    let pollInterval: NodeJS.Timeout;
+    let socket: WebSocket | null = null;
+    let wsReconnectTimeout: NodeJS.Timeout;
+
+    const connectWS = (pId: string) => {
+      const ws_protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+      const ws_host = API_BASE.replace("http://", "").replace("https://", "");
+      const DEFAULT_TENANT = "00000000-0000-0000-0000-000000000000";
+
+      try {
+        socket = new WebSocket(`${ws_protocol}//${ws_host}/ws?tenant_id=${DEFAULT_TENANT}`);
+        
+        socket.onmessage = async (event) => {
+          try {
+            const payload = JSON.parse(event.data);
+            if (payload.event === "job.progress" && payload.data) {
+              const updatedJob = payload.data;
+              if (updatedJob.product_id === pId || updatedJob.job_id === pId) {
+                setJobStatus(updatedJob.current_status.toLowerCase());
+                setJobMessage(updatedJob.current_stage ? `${updatedJob.current_stage}: ${updatedJob.current_status} (${updatedJob.percentage_complete}%)` : "");
+                
+                const step_mapping: Record<string, number> = {
+                  "Product Analysis": 1,
+                  "Research Enrichment": 2,
+                  "SEO Keyword Generation": 3,
+                  "Script Generation": 4,
+                  "Thumbnail Creation": 5,
+                  "Image Generation": 6,
+                  "Voice Generation": 7,
+                  "Video Rendering": 8,
+                  "Completed": 9
+                };
+                setJobProgressStep(step_mapping[updatedJob.current_stage] || 0);
+
+                if (updatedJob.current_status === "completed") {
+                  setJobStatus(null);
+                  const campRes = await fetch(`${API_BASE}/campaign/${pId}`);
+                  if (campRes.ok) {
+                    const data = await campRes.json();
+                    updateStateWithCampaign(data, pId);
+                  }
+                  if (socket) socket.close();
+                } else if (updatedJob.current_status === "failed") {
+                  setJobStatus("failed");
+                  setJobMessage(updatedJob.error_message || "Campaign generation failed.");
+                  if (socket) socket.close();
+                }
+              }
+            }
+          } catch (err) {
+            console.error("WS approval parse error:", err);
+          }
+        };
+
+        socket.onclose = () => {
+          wsReconnectTimeout = setTimeout(() => connectWS(pId), 5000);
+        };
+
+        socket.onerror = (err) => {
+          console.warn("WS approval connection error:", err);
+          socket?.close();
+        };
+      } catch (e) {
+        console.error("WS approval connect failed:", e);
+      }
+    };
+
     const fetchCampaign = async () => {
       try {
         let pId = null;
@@ -83,6 +222,51 @@ export default function ApprovalPage() {
 
         if (pId) {
           setProductId(pId);
+          connectWS(pId);
+          
+          // Check job status first
+          const statusRes = await fetch(`${API_BASE}/generate-content/status/${pId}`);
+          if (statusRes.ok) {
+            const statusData = await statusRes.json();
+            if (statusData.status === "running") {
+              setJobStatus("running");
+              setJobMessage(statusData.step_message || "Generating video campaign...");
+              setJobProgressStep(statusData.current_step || 0);
+              
+              // Poll job status
+              pollInterval = setInterval(async () => {
+                try {
+                  const pollRes = await fetch(`${API_BASE}/generate-content/status/${pId}`);
+                  if (pollRes.ok) {
+                    const pollData = await pollRes.json();
+                    if (pollData.status === "completed") {
+                      clearInterval(pollInterval);
+                      setJobStatus(null);
+                      
+                      // Fetch campaign details
+                      const finalCampRes = await fetch(`${API_BASE}/campaign/${pId}`);
+                      if (finalCampRes.ok) {
+                        const data = await finalCampRes.json();
+                        updateStateWithCampaign(data, pId);
+                      }
+                    } else if (pollData.status === "failed") {
+                      clearInterval(pollInterval);
+                      setJobStatus("failed");
+                      setJobMessage(pollData.error_message || "Campaign generation failed.");
+                    } else {
+                      setJobMessage(pollData.step_message || "Generating video campaign...");
+                      setJobProgressStep(pollData.current_step || 0);
+                    }
+                  }
+                } catch (pollErr) {
+                  console.error("Error polling job status in approvals:", pollErr);
+                }
+              }, 5000);
+              return;
+            }
+          }
+          
+          // Fallback to direct campaign load if job is not active
           const campRes = await fetch(`${API_BASE}/campaign/${pId}`);
           if (campRes.ok) {
             const data = await campRes.json();
@@ -109,7 +293,19 @@ export default function ApprovalPage() {
       }
     };
 
-    fetchCampaign();
+    const runInit = async () => {
+      await fetchCampaign();
+    };
+    runInit();
+
+    return () => {
+      if (pollInterval) clearInterval(pollInterval);
+      if (socket) {
+        socket.onclose = null;
+        socket.close();
+      }
+      clearTimeout(wsReconnectTimeout);
+    };
   }, []);
 
   const [loading, setLoading] = useState(false);
@@ -131,7 +327,7 @@ export default function ApprovalPage() {
       }
 
       if (!prodId) {
-        prodId = "prod_cardamom"; // fallback
+        prodId = "prod_fig"; // fallback
       }
 
       let feedback = "Please generate a new creative hook and layout with dynamic messaging.";
@@ -140,8 +336,8 @@ export default function ApprovalPage() {
         feedback = "Focus on the washability, premium smooth finish, weather resistance and extreme durability of the paint coating.";
       } else if (prodNameLower.includes("coconut") || prodNameLower.includes("oil")) {
         feedback = "Emphasize the pure cold-pressed nature and rich aroma of the coconut oil.";
-      } else if (prodNameLower.includes("cardamom") || prodNameLower.includes("elaichi") || prodNameLower.includes("spice")) {
-        feedback = "Write a much punchier viral tea hook and emphasize the packaging fresh lock.";
+      } else if (prodNameLower.includes("cardamom") || prodNameLower.includes("elaichi") || prodNameLower.includes("spice") || prodNameLower.includes("plant") || prodNameLower.includes("fig") || prodNameLower.includes("nursery")) {
+        feedback = "Emphasize organic fertilizer roots health and quick door delivery care tips.";
       }
 
       const res = await fetch(`${API_BASE}/regenerate`, {
@@ -180,7 +376,7 @@ export default function ApprovalPage() {
     const isPaint = prodNameLower.includes("paint") || prodNameLower.includes("emulsion");
     const isOil = prodNameLower.includes("coconut") || prodNameLower.includes("oil");
     
-    let scriptText = "[Version 2 Script]\nHook: Tired of dusty, stale spices? 📦\nProblem: Mainstream brand cardamoms lose flavor in warehouses.\nSolution: Idukki direct farm cardamom has a double locked fresh-seal. Order today!";
+    let scriptText = "[Version 2 Script]\nHook: Are your house plants constantly dying? 🌿\nProblem: Normal nursery plants go into shock due to heavy clay soil.\nSolution: Green Haven root-conditioned Fiddle Leaf Fig comes in a coco-peat blend with a care guide. Order today!";
     
     if (isPaint) {
       scriptText = "[Version 2 Script]\nHook: Tired of fading walls and uneven finish? 🖌️\nProblem: Cheap interior paints lose their color and look patchy.\nSolution: Premium Interior Emulsion Paint provides a rich, smooth finish with extreme washability and lifetime durability. Order yours today!";
@@ -211,7 +407,6 @@ export default function ApprovalPage() {
     try {
       let videoId = selectedCampaign.video_id;
       if (!videoId) {
-        // Find latest video UUID if available
         const videoRes = await fetch(`${API_BASE}/video`);
         const videoList = await videoRes.json();
         if (videoList && videoList.length > 0) {
@@ -229,20 +424,21 @@ export default function ApprovalPage() {
         })
       });
       const data = await res.json();
-      if (res.ok && data.youtube_url) {
-        setSuccessLink(data.youtube_url);
+      if (res.ok && (data.status === "queued" || data.status === "success")) {
         setSelectedCampaign((prev: any) => ({
           ...prev,
-          status: "published",
-          youtube_url: data.youtube_url,
-          youtube_id: data.youtube_id
+          video_status: data.video?.status || "Upload Queued",
+          publish_progress: data.video?.publish_progress || "Queued",
+          publish_timestamp: data.video?.publish_timestamp || new Date().toISOString(),
+          youtube_url: data.video?.youtube_url || null,
+          youtube_id: data.video?.youtube_id || null
         }));
-        setPublishStatus("Video published successfully to YouTube Channel!");
+        setPublishStatus(data.message || "Video publishing queued! Tracking upload lifecycle...");
       } else {
         mockPublishSuccess();
       }
     } catch (err) {
-      console.warn("Backend publish endpoint offline. Running sandbox simulated upload.");
+      console.warn("Backend publish endpoint offline or error occurred. Running sandbox simulated upload.", err);
       mockPublishSuccess();
     } finally {
       setLoading(false);
@@ -250,16 +446,117 @@ export default function ApprovalPage() {
   };
 
   const mockPublishSuccess = () => {
-    const mockUrl = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
-    setSuccessLink(mockUrl);
+    let step = 0;
+    const steps = ["Upload Queued", "Uploading", "Upload Completed", "YouTube Processing", "Published"];
     setSelectedCampaign((prev: any) => ({
       ...prev,
-      status: "published",
-      youtube_url: mockUrl,
-      youtube_id: "dQw4w9WgXcQ"
+      video_status: steps[0],
+      publish_progress: "Queued",
+      publish_timestamp: new Date().toISOString()
     }));
-    setPublishStatus("Video published successfully to YouTube Channel! (Sandbox Mode)");
+    setPublishStatus("Simulating YouTube publishing lifecycle...");
+
+    const interval = setInterval(() => {
+      if (step >= steps.length - 1) {
+        clearInterval(interval);
+        const mockUrl = "https://www.youtube.com/watch?v=PuCb1JHpBkM";
+        setSuccessLink(mockUrl);
+        setSelectedCampaign((prev: any) => ({
+          ...prev,
+          status: "approved",
+          video_status: "Published",
+          publish_progress: "Published",
+          publish_duration: 10,
+          youtube_url: mockUrl,
+          youtube_id: "PuCb1JHpBkM"
+        }));
+        setPublishStatus("Video published successfully to YouTube Channel! (Sandbox Mode)");
+      } else {
+        step++;
+        const currentStep = steps[step];
+        let progressDetail = "In Progress";
+        if (currentStep === "Uploading") {
+          progressDetail = "Uploading... 45%";
+        } else if (currentStep === "Upload Completed") {
+          progressDetail = "Upload Completed (100%)";
+        } else if (currentStep === "YouTube Processing") {
+          progressDetail = "Processing HD version on YouTube...";
+        }
+
+        setSelectedCampaign((prev: any) => ({
+          ...prev,
+          video_status: currentStep,
+          publish_progress: progressDetail,
+          youtube_id: currentStep === "YouTube Processing" ? "PuCb1JHpBkM" : prev.youtube_id,
+          youtube_url: currentStep === "YouTube Processing" ? "https://www.youtube.com/watch?v=PuCb1JHpBkM" : prev.youtube_url
+        }));
+      }
+    }, 2000);
   };
+
+  if (jobStatus === "running") {
+    return (
+      <div className="max-w-2xl mx-auto py-12">
+        <div className="glass-panel rounded-2xl p-8 text-center space-y-6">
+          <div className="w-16 h-16 rounded-full bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 mx-auto animate-pulse">
+            <Film className="w-8 h-8" />
+          </div>
+          <h2 className="text-3xl font-extrabold tracking-tight text-white">Campaign Generation in Progress</h2>
+          <p className="text-slate-400 text-sm max-w-md mx-auto leading-relaxed">
+            VyaparAI agents are currently drafting scripts, translating content, synthesizing voiceovers, and rendering MP4 video clips. This will update automatically when compilation finishes.
+          </p>
+          
+          <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 text-left space-y-3.5">
+            <span className="text-[10px] text-indigo-400 font-bold block uppercase tracking-wide">Status updates</span>
+            <div className="flex items-center gap-2.5">
+              <div className="w-3 h-3 rounded-full border-2 border-t-indigo-500 border-slate-700 animate-spin" />
+              <p className="text-xs font-semibold text-slate-200">{jobMessage}</p>
+            </div>
+            <span className="text-[9px] font-bold text-indigo-400 uppercase tracking-widest block animate-pulse">
+              Est. time remaining: ~{Math.max(5, (9 - jobProgressStep) * 6)}s
+            </span>
+            
+            <div className="w-full bg-slate-850 rounded-full h-2 mt-4 overflow-hidden">
+              <div 
+                className="bg-indigo-500 h-2 rounded-full transition-all duration-500 animate-pulse" 
+                style={{ width: `${Math.min(100, Math.max(10, (jobProgressStep / 9) * 100))}%` }}
+              />
+            </div>
+          </div>
+          
+          <div className="flex justify-center pt-2">
+            <Link href="/" className="bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold px-6 py-3 rounded-xl border border-slate-750 transition text-sm">
+              Go to Dashboard
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (jobStatus === "failed") {
+    return (
+      <div className="max-w-2xl mx-auto py-12">
+        <div className="glass-panel rounded-2xl p-8 text-center space-y-6 border border-rose-500/20">
+          <div className="w-16 h-16 rounded-full bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-450 mx-auto">
+            <Film className="w-8 h-8 text-rose-455" />
+          </div>
+          <h2 className="text-3xl font-extrabold tracking-tight text-white">Generation Failed</h2>
+          <p className="text-rose-400 text-sm leading-relaxed max-w-md mx-auto">
+            {jobMessage}
+          </p>
+          <div className="flex justify-center gap-4 pt-2">
+            <Link href="/upload" className="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-6 py-3 rounded-xl transition text-sm">
+              Try Again
+            </Link>
+            <Link href="/" className="bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold px-6 py-3 rounded-xl border border-slate-750 transition text-sm">
+              Go to Dashboard
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
@@ -377,6 +674,7 @@ export default function ApprovalPage() {
               }
 
               if (selectedCampaign.video_url) {
+                const videoId = selectedCampaign.video_id || selectedCampaign.id;
                 return (
                   <div className="space-y-2">
                     <label className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
@@ -384,13 +682,61 @@ export default function ApprovalPage() {
                       Audited Video Preview (Draft)
                     </label>
                     <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex justify-center h-[470px] items-center">
-                      <video
-                        controls
-                        className="w-full max-h-full rounded-xl"
-                        src={selectedCampaign.video_url.startsWith("http") ? selectedCampaign.video_url : `${API_BASE}${selectedCampaign.video_url}`}
-                      >
-                        Your browser does not support the video tag.
-                      </video>
+                      {selectedCampaign.video_status === "processing" || selectedCampaign.video_status === "queued" || selectedCampaign.video_status === "draft" ? (
+                        <div className="flex flex-col items-center justify-center text-center space-y-4">
+                          <div className="w-12 h-12 rounded-full border-4 border-t-indigo-500 border-slate-800 animate-spin" />
+                          <div>
+                            <h4 className="font-extrabold text-sm text-slate-200">Compiling Regional Video</h4>
+                            <p className="text-[10px] text-indigo-400 mt-2 font-bold animate-pulse uppercase tracking-wider">
+                              Stitching MP4 Frames...
+                            </p>
+                          </div>
+                        </div>
+                      ) : repairing ? (
+                        <div className="flex flex-col items-center justify-center text-center space-y-4">
+                          <div className="w-12 h-12 rounded-full border-4 border-t-indigo-500 border-slate-800 animate-spin" />
+                          <div>
+                            <h4 className="font-extrabold text-sm text-slate-200">Auto-Repairing Video</h4>
+                            <p className="text-[10px] text-slate-450 mt-2 max-w-[180px] leading-relaxed">
+                              {repairMessage}
+                            </p>
+                          </div>
+                        </div>
+                      ) : videoError ? (
+                        <div className="flex flex-col items-center justify-center text-center space-y-4">
+                          <div className="w-12 h-12 rounded-full bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-455">
+                            <AlertTriangle className="w-6 h-6" />
+                          </div>
+                          <div>
+                            <h4 className="font-extrabold text-sm text-rose-400">Playback Failed</h4>
+                            <p className="text-[9px] text-slate-450 mt-1 max-w-[180px] leading-relaxed">
+                              {videoError}
+                            </p>
+                          </div>
+                          <button
+                            onClick={() => handleRepairVideo(videoId)}
+                            className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2 rounded-xl transition"
+                          >
+                            Auto-Repair Video File
+                          </button>
+                        </div>
+                      ) : (
+                        <video
+                          controls
+                          className="w-full max-h-full rounded-xl"
+                          src={selectedCampaign.video_url.startsWith("http") ? selectedCampaign.video_url : `${API_BASE}${selectedCampaign.video_url}`}
+                          onError={(e) => {
+                            console.error("Video load error: ", e);
+                            if (videoId && videoId !== "campaign_1") {
+                              handleRepairVideo(videoId);
+                            } else {
+                              setVideoError("The video file could not be played. No valid video ID was found to trigger auto-repair.");
+                            }
+                          }}
+                        >
+                          Your browser does not support the video tag.
+                        </video>
+                      )}
                     </div>
                   </div>
                 );
@@ -447,13 +793,141 @@ export default function ApprovalPage() {
             <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 text-slate-300 text-sm leading-relaxed whitespace-pre-line">
               {selectedCampaign.script}
             </div>
-          </div>
+          </div>          {/* Publishing Tracker Panel */}
+          {(() => {
+            const status = selectedCampaign.video_status;
+            const progress = selectedCampaign.publish_progress;
+            const err = selectedCampaign.publish_error;
+            const timestamp = selectedCampaign.publish_timestamp;
+            const duration = selectedCampaign.publish_duration;
+            const youtubeId = selectedCampaign.youtube_id;
+            const youtubeUrl = selectedCampaign.youtube_url;
+
+            const isPublishingOrCompleted = ["Upload Queued", "Uploading", "Upload Completed", "YouTube Processing", "Published", "Failed"].includes(status);
+            if (!isPublishingOrCompleted) return null;
+
+            let statusColor = "text-indigo-400 border-indigo-500/20 bg-indigo-500/10";
+            let statusLabel = status;
+            let progressPercentage = 0;
+
+            if (status === "Upload Queued") {
+              statusColor = "text-amber-400 border-amber-500/20 bg-amber-500/10";
+              statusLabel = "Queueing Upload";
+              progressPercentage = 5;
+            } else if (status === "Uploading") {
+              statusColor = "text-blue-400 border-blue-500/20 bg-blue-500/10";
+              statusLabel = `Uploading to YouTube...`;
+              const match = progress ? progress.match(/\d+/) : null;
+              progressPercentage = match ? parseInt(match[0]) : 15;
+            } else if (status === "Upload Completed") {
+              statusColor = "text-sky-400 border-sky-500/20 bg-sky-500/10";
+              statusLabel = "Upload Completed";
+              progressPercentage = 100;
+            } else if (status === "YouTube Processing") {
+              statusColor = "text-violet-400 border-violet-500/20 bg-violet-500/10";
+              statusLabel = "Processing on YouTube";
+              progressPercentage = 100;
+            } else if (status === "Published") {
+              statusColor = "text-emerald-400 border-emerald-500/20 bg-emerald-500/10";
+              statusLabel = "Published & Live";
+              progressPercentage = 100;
+            } else if (status === "Failed") {
+              statusColor = "text-rose-400 border-rose-500/20 bg-rose-500/10";
+              statusLabel = "Publishing Failed";
+              progressPercentage = 0;
+            }
+
+            return (
+              <div className="glass-panel border border-slate-800 rounded-2xl p-6 space-y-4 mb-6 shadow-2xl relative overflow-hidden">
+                <div className="flex justify-between items-center">
+                  <div className="space-y-1">
+                    <h4 className="font-extrabold text-sm text-slate-200">YouTube Publishing Status</h4>
+                    {timestamp && (
+                      <p className="text-[10px] text-slate-500">
+                        Started at: {new Date(timestamp).toLocaleTimeString()}
+                      </p>
+                    )}
+                  </div>
+                  <span className={`px-3 py-1 rounded-full text-[10px] font-bold border uppercase tracking-wider ${statusColor}`}>
+                    {statusLabel}
+                  </span>
+                </div>
+
+                {status !== "Failed" && status !== "Published" && (
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-[10px] text-slate-400 font-medium">
+                      <span>{progress || "Initializing..."}</span>
+                      {status === "Uploading" && <span>{progressPercentage}%</span>}
+                    </div>
+                    <div className="w-full h-2 rounded-full bg-slate-950 overflow-hidden border border-slate-850">
+                      <div 
+                        className={`h-full rounded-full transition-all duration-500 bg-gradient-to-r ${
+                          status === "Uploading" ? "from-blue-600 to-indigo-600" : "from-violet-600 to-indigo-600 animate-pulse"
+                        }`}
+                        style={{ width: `${progressPercentage}%` }}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {status === "YouTube Processing" && (
+                  <p className="text-xs text-slate-450 leading-relaxed italic animate-pulse">
+                    ⚡ YouTube is encoding HD formats and rendering thumbnail frames. Polling Data API...
+                  </p>
+                )}
+
+                {status === "Published" && youtubeUrl && (
+                  <div className="bg-emerald-500/5 border border-emerald-500/10 rounded-xl p-4 space-y-3">
+                    <p className="text-xs text-slate-300 leading-relaxed">
+                      🎉 Your campaign video is now fully processed, optimized, and public on YouTube!
+                    </p>
+                    <div className="flex flex-wrap items-center gap-3">
+                      <a 
+                        href={youtubeUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 text-xs text-emerald-400 hover:text-emerald-300 font-bold transition"
+                      >
+                        Open YouTube Video <ExternalLink className="w-3.5 h-3.5" />
+                      </a>
+                      {duration && (
+                        <span className="text-[10px] text-slate-500 font-medium">
+                          Publish Time: {duration}s
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {status === "Failed" && (
+                  <div className="bg-rose-500/5 border border-rose-500/10 rounded-xl p-4 space-y-3">
+                    <p className="text-xs text-rose-455 leading-relaxed font-semibold">
+                      Error: {err || "An unknown error occurred during upload."}
+                    </p>
+                    <p className="text-[10px] text-slate-500 leading-relaxed">
+                      💡 Action Required: Please verify your YouTube credentials, API limits, copyright restrictions, and internet connectivity before retrying.
+                    </p>
+                  </div>
+                )}
+
+                {youtubeId && (
+                  <div className="flex justify-between items-center text-[10px] border-t border-slate-800/60 pt-3 text-slate-500 font-mono">
+                    <span>VIDEO ID: {youtubeId}</span>
+                  </div>
+                )}
+              </div>
+            );
+          })()}
 
           {/* Action buttons */}
           <div className="grid grid-cols-2 gap-4 border-t border-slate-800 pt-6">
             <button
               onClick={handlePublishYouTube}
-              disabled={loading || selectedCampaign.status === "published"}
+              disabled={
+                loading || 
+                selectedCampaign.video_status === "Published" || 
+                ["Upload Queued", "Uploading", "Upload Completed", "YouTube Processing"].includes(selectedCampaign.video_status)
+              }
               className="flex items-center justify-center gap-2 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 disabled:from-slate-800 disabled:to-slate-800 text-white font-bold py-4 rounded-xl shadow-lg transition"
             >
               <Youtube className="w-5 h-5" />

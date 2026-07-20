@@ -1,6 +1,7 @@
 # backend/modules/messaging_module/router.py
+import os
 import logging
-from fastapi import APIRouter, HTTPException, Request, status
+from fastapi import APIRouter, HTTPException, Request, status, Query, Response
 from pydantic import BaseModel
 from typing import Optional
 from .messaging_service import messaging_svc
@@ -45,14 +46,67 @@ async def send_manual_message(conversation_id: str, payload: OutboundMessageRequ
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@router.get("/webhooks/whatsapp")
+async def verify_whatsapp_webhook(
+    request: Request,
+    hub_mode: Optional[str] = Query(None, alias="hub.mode"),
+    hub_challenge: Optional[str] = Query(None, alias="hub.challenge"),
+    hub_verify_token: Optional[str] = Query(None, alias="hub.verify_token")
+):
+    """
+    WhatsApp / Meta webhook GET verification flow (Requirement 4 & 5).
+    """
+    headers_dict = dict(request.headers)
+    query_params = dict(request.query_params)
+    
+    logger.info(
+        f"[WEBHOOK GET] Incoming WhatsApp Verification:\n"
+        f"  Path: {request.url.path}\n"
+        f"  Query Params: {query_params}\n"
+        f"  Headers: {headers_dict}\n"
+        f"  Verification Token Received: '{hub_verify_token}'"
+    )
+
+    local_verify_token = os.getenv("WHATSAPP_VERIFY_TOKEN", "vyaparai_verify_token_secret")
+    
+    if hub_mode == "subscribe" and hub_verify_token == local_verify_token:
+        logger.info(f"[WEBHOOK GET] Verification succeeded! Returning challenge: {hub_challenge}")
+        return Response(content=str(hub_challenge or ""), media_type="text/plain")
+        
+    logger.warning(
+        f"[WEBHOOK GET] Verification failed. Token mismatch or missing subscribe mode.\n"
+        f"  Expected: '{local_verify_token}'\n"
+        f"  Received: '{hub_verify_token}'"
+    )
+    raise HTTPException(
+        status_code=403, 
+        detail="Verification token mismatch or invalid verification request parameters"
+    )
+
 @router.post("/webhooks/whatsapp")
 async def process_whatsapp_webhook(request: Request):
     """
-    Evolution API webhook endpoint to receive real-time messages.
+    Evolution API/Meta webhook endpoint to receive real-time messages.
     """
+    headers_dict = dict(request.headers)
+    query_params = dict(request.query_params)
+    
+    logger.info(
+        f"[WEBHOOK POST] Incoming WhatsApp Webhook Payload:\n"
+        f"  Path: {request.url.path}\n"
+        f"  Query Params: {query_params}\n"
+        f"  Headers: {headers_dict}"
+    )
+    
     try:
         payload = await request.json()
-        logger.info(f"Evolution Webhook raw payload received.")
+        logger.info(f"Webhook raw payload: {payload}")
+        
+        # Intercept local ping validation requests (used by the Validate button)
+        if payload.get("event") == "ping":
+            logger.info("[WEBHOOK POST] Intercepted validation ping. Returning pong.")
+            return {"status": "success", "message": "pong"}
+            
         res = await handle_evolution_webhook(payload)
         return res
     except Exception as e:

@@ -135,7 +135,7 @@ async def youtube_callback(code: str = None, state: str = None, error: str = Non
         
         # Trigger background task to sync videos and comments immediately
         import asyncio
-        from backend.services.youtube_monitor_service import youtube_monitor_svc
+        from backend.modules.video_monitoring_module import video_monitoring_svc as youtube_monitor_svc
         asyncio.create_task(youtube_monitor_svc.poll_comments_for_all_channels())
         
         logger.info(f"Successfully linked YouTube channel: {channel_name} ({channel_id})")
@@ -151,7 +151,7 @@ async def mock_youtube_connect():
     logger.info("Connecting mock YouTube channel for sandbox testing")
     try:
         mock_id = "UC_MOCK_VYAPAR_AI"
-        mock_name = "VyaparAI Organic Foods"
+        mock_name = "VyaparAI Green Haven Nursery"
         mock_thumb = "https://images.unsplash.com/photo-1542838132-92c53300491e?w=100&auto=format&fit=crop&q=60"
         
         channel = supabase_svc.create_youtube_channel(
@@ -167,14 +167,7 @@ async def mock_youtube_connect():
         supabase_svc.create_youtube_video(
             channel_id=mock_id,
             video_id="PuCb1JHpBkM",
-            title="Cardamom Export Launch Campaign",
-            publish_date=datetime.now().isoformat(),
-            status="monitored"
-        )
-        supabase_svc.create_youtube_video(
-            channel_id=mock_id,
-            video_id="dQw4w9WgXcQ",
-            title="Coconut Oil Regional Promo Clip",
+            title="Nursery Greenery Launch Campaign",
             publish_date=datetime.now().isoformat(),
             status="monitored"
         )
@@ -192,45 +185,23 @@ async def get_youtube_status():
     """Check connection status and return details"""
     error_msg = None
     try:
-        mock_id = "UC_MOCK_VYAPAR_AI"
-        mock_name = "VyaparAI Organic Foods"
-        mock_thumb = "https://images.unsplash.com/photo-1542838132-92c53300491e?w=100&auto=format&fit=crop&q=60"
+        from backend.modules.video_monitoring_module import video_monitoring_svc as youtube_monitor_svc
+        error_msg = getattr(youtube_monitor_svc, "last_sync_error", None)
+        logger.info(f"[/status] youtube_monitor_svc.last_sync_error is: {error_msg} (id: {id(youtube_monitor_svc)})")
         
-        # Check if already exists in database
-        existing = supabase_svc.get_youtube_channel(mock_id)
-        if not existing:
-            supabase_svc.create_youtube_channel(
-                channel_id=mock_id,
-                channel_name=mock_name,
-                thumbnail=mock_thumb,
-                subscriber_count=2480,
-                access_token="mock_access_token",
-                refresh_token="mock_refresh_token"
-            )
-            # Seed mock videos
-            supabase_svc.create_youtube_video(
-                channel_id=mock_id,
-                video_id="PuCb1JHpBkM",
-                title="Cardamom Export Launch Campaign",
-                publish_date=datetime.now().isoformat(),
-                status="monitored"
-            )
-            supabase_svc.create_youtube_video(
-                channel_id=mock_id,
-                video_id="dQw4w9WgXcQ",
-                title="Coconut Oil Regional Promo Clip",
-                publish_date=datetime.now().isoformat(),
-                status="monitored"
-            )
+        channels = supabase_svc.get_youtube_channels()
+        if channels:
+            # Prioritize returning a real channel if one exists alongside the mock channel
+            active_chan = next((c for c in channels if c.get("access_token") != "mock_access_token"), channels[0])
+            return {"connected": True, "channel": active_chan, "temp_error": error_msg}
     except Exception as e:
         import traceback
         error_msg = f"{e}\n{traceback.format_exc()}"
-        logger.error(f"Temp mock connection failed: {error_msg}")
+        logger.error(f"Status check failed: {error_msg}")
         
-    channels = supabase_svc.get_youtube_channels()
-    if channels:
-        return {"connected": True, "channel": channels[0], "temp_error": error_msg}
     return {"connected": False, "channel": None, "temp_error": error_msg}
+
+
 
 @router.post("/disconnect")
 async def youtube_disconnect():

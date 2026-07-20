@@ -5,7 +5,7 @@ from typing import List, Optional
 class BusinessCreate(BaseModel):
     name: str = Field(..., example="Ravi Organics")
     location: str = Field(..., example="Kochi, Kerala")
-    contact: Optional[str] = Field(None, example="+91 7306796590")
+    contact: Optional[str] = Field(None, example="+91 9744506034")
     industry: Optional[str] = Field(None, example="Agriculture")
 
 class ProductCreate(BaseModel):

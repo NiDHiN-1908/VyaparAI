@@ -58,7 +58,7 @@ function ChatContent() {
 
       // Mock / Fetch Products
       const mockProducts = [
-        { id: "prod_cardamom", name: "Organic Cardamom", price: 350.00 },
+        { id: "prod_fig", name: "Fiddle Leaf Fig", price: 499.00 },
         { id: "prod_oil", name: "Virgin Coconut Oil", price: 299.00 }
       ];
       setProductList(mockProducts);

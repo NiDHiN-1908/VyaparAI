@@ -16,3 +16,12 @@
 - [x] Verification & Testing
     - [x] Inject comment and verify auto-appended CTA
     - [x] Test webhook attribution mapping using mock message payload
+
+# Refactoring Video Generation to Support Asynchronous Workflows
+
+- [x] Database Schema: Create `004_video_jobs.sql` migration script and register in `MOCK_DB`
+- [x] Supabase Service: Implement accessor methods for `video_jobs` table in `supabase_service.py`
+- [x] Backend router: Modify `generate-content` and status check routes, and add `/video-jobs/active` in `marketing.py`
+- [x] Upload Page: Update `upload/page.tsx` to handle background job status, timeouts and transition to non-blocking UI
+- [x] Preview Page: Update `preview/page.tsx` to support job tracking and dynamic video loading on completion
+- [x] Approval Page: Update `approval/page.tsx` with same tracking behaviours

@@ -10,7 +10,8 @@ logger = logging.getLogger("vyaparai.supabase_service")
 import os
 import json
 
-MOCK_DB_PATH = os.path.join(os.path.dirname(__file__), "..", "database", "mock_db.json")
+MOCK_DB_PATH = os.path.expanduser("~/.vyapar_mock_db.json")
+OLD_MOCK_DB_PATH = os.path.join(os.path.dirname(__file__), "..", "database", "mock_db.json")
 
 # In-Memory database for mock operations
 MOCK_DB: Dict[str, List[Dict[str, Any]]] = {
@@ -32,19 +33,33 @@ MOCK_DB: Dict[str, List[Dict[str, Any]]] = {
     "youtube_comments": [],
     "youtube_replies": [],
     "youtube_leads": [],
-    "youtube_analytics": []
+    "youtube_analytics": [],
+    "video_jobs": []
 }
 
 def load_mock_db():
     global MOCK_DB
+    # Migrate old mock db if it exists and new one does not
+    if not os.path.exists(MOCK_DB_PATH) and os.path.exists(OLD_MOCK_DB_PATH):
+        try:
+            import shutil
+            shutil.copy2(OLD_MOCK_DB_PATH, MOCK_DB_PATH)
+            logger.info(f"Migrated mock database from {OLD_MOCK_DB_PATH} to {MOCK_DB_PATH} successfully.")
+        except Exception as migration_err:
+            logger.error(f"Failed to migrate old mock db: {migration_err}")
+
     if os.path.exists(MOCK_DB_PATH):
         try:
             with open(MOCK_DB_PATH, "r", encoding="utf-8") as f:
-                MOCK_DB = json.load(f)
+                data = json.load(f)
+                # Merge loaded keys
+                for k, v in data.items():
+                    MOCK_DB[k] = v
         except Exception as e:
             logger.error(f"Failed to load mock DB: {e}")
+
     # Ensure keys exist
-    for key in ["tenants", "whatsapp_instances", "conversations", "messages"]:
+    for key in ["tenants", "whatsapp_instances", "conversations", "messages", "video_jobs"]:
         if key not in MOCK_DB:
             MOCK_DB[key] = []
 
@@ -198,7 +213,20 @@ class SupabaseService:
         return self._insert("products", data)
 
     def get_products(self) -> List[Dict[str, Any]]:
-        return self._select_all("products")
+        raw_products = self._select_all("products")
+        seen_names = set()
+        clean_products = []
+        excluded_keywords = ["saree", "fabric", "clothing", "paint", "emulsion", "cardamom", "coconut", "oil"]
+        for p in raw_products:
+            pname = (p.get("name") or "").strip()
+            pname_lower = pname.lower()
+            # Filter out non-nursery test artifacts and empty items
+            if not pname or any(kw in pname_lower for kw in excluded_keywords):
+                continue
+            if pname_lower not in seen_names:
+                seen_names.add(pname_lower)
+                clean_products.append(p)
+        return clean_products
 
     def get_product(self, product_id: str) -> Optional[Dict[str, Any]]:
         return self._select_one("products", product_id)
@@ -749,7 +777,24 @@ class SupabaseService:
                 return False
 
     # --- YouTube Comments ---
-    def create_youtube_comment(self, video_id: str, comment_id: str, username: str, text: str, timestamp: str, intent: str = "SPAM", confidence: float = 1.0, status: str = "pending_approval") -> Dict[str, Any]:
+    def create_youtube_comment(self, video_id: str, comment_id: str, username: str, text: str, timestamp: str, intent: str = "SPAM", confidence: float = 1.0, status: str = "pending_approval", reply_link: str = None) -> Dict[str, Any]:
+        # Duplicate detection (Requirement 1 & Diagnostics)
+        existing = self.get_youtube_comment(comment_id)
+        if existing:
+            logger.info(f"[DB DUPLICATE DETECTED] Comment {comment_id} from @{username} already exists. Skipping insertion.")
+            return existing
+
+        # Generate default reply link if not provided
+        if not reply_link:
+            import os
+            from backend.config import settings
+            public_url = settings.PUBLIC_URL or os.getenv("PUBLIC_URL") or os.getenv("APP_BASE_URL") or "http://localhost:8000"
+            if "host.docker.internal" in public_url:
+                public_url = "http://localhost:8000"
+            if not public_url.endswith("/"):
+                public_url += "/"
+            reply_link = f"{public_url}youtube/r/{comment_id}"
+
         data = {
             "video_id": video_id,
             "comment_id": comment_id,
@@ -758,9 +803,56 @@ class SupabaseService:
             "timestamp": timestamp,
             "intent": intent,
             "confidence": confidence,
-            "status": status
+            "status": status,
+            "reply_link": reply_link
         }
-        return self._insert("youtube_comments", data)
+        
+        logger.info(f"[DB INSERT] Inserting comment {comment_id} from @{username} (intent: {intent}, reply_link: {reply_link})")
+        
+        if self.is_mock:
+            # Avoid id collision/empty
+            if "id" not in data:
+                data["id"] = str(uuid.uuid4())
+            if "created_at" not in data:
+                data["created_at"] = datetime.now().isoformat()
+            MOCK_DB["youtube_comments"].append(data)
+            logger.info(f"[MOCK DB] Inserted into youtube_comments: {data['id']}")
+            save_mock_db()
+            return data
+        else:
+            try:
+                res = self.client.table("youtube_comments").insert(data).execute()
+                if res.data:
+                    return res.data[0]
+                return data
+            except Exception as e:
+                err_msg = str(e)
+                if "reply_link" in err_msg or "column" in err_msg:
+                    logger.warning(
+                        f"[DB WARNING] youtube_comments table lacks 'reply_link' column. Retrying without column. Error: {e}"
+                    )
+                    data_fallback = dict(data)
+                    data_fallback.pop("reply_link", None)
+                    try:
+                        res = self.client.table("youtube_comments").insert(data_fallback).execute()
+                        if res.data:
+                            record = res.data[0]
+                            record["reply_link"] = data["reply_link"]
+                            return record
+                    except Exception as fallback_e:
+                        logger.error(f"[DB ERROR] Fallback insert failed: {fallback_e}")
+                else:
+                    logger.error(f"[DB ERROR] Failed to insert comment: {e}")
+                
+                # Fallback to Mock DB
+                logger.warning("[DB FALLBACK] Falling back to local in-memory DB for this comment record.")
+                if "id" not in data:
+                    data["id"] = str(uuid.uuid4())
+                if "created_at" not in data:
+                    data["created_at"] = datetime.now().isoformat()
+                MOCK_DB["youtube_comments"].append(data)
+                save_mock_db()
+                return data
 
     def get_youtube_comments(self) -> List[Dict[str, Any]]:
         return self._select_all("youtube_comments")
@@ -792,16 +884,48 @@ class SupabaseService:
         return self._update("youtube_comments", comment["id"], {"intent": intent, "confidence": confidence})
 
     # --- YouTube Replies ---
-    def create_youtube_reply(self, comment_id: str, suggested_reply: str, actual_reply: str = None, reply_id: str = None, status: str = "draft", published_at: str = None) -> Dict[str, Any]:
+    def create_youtube_reply(self, comment_id: str, suggested_reply: str, actual_reply: str = None, reply_id: str = None, status: str = "draft", published_at: str = None, failure_reason: str = None) -> Dict[str, Any]:
         data = {
             "comment_id": comment_id,
             "suggested_reply": suggested_reply,
             "actual_reply": actual_reply,
             "reply_id": reply_id,
             "status": status,
-            "published_at": published_at
+            "published_at": published_at,
+            "failure_reason": failure_reason
         }
-        return self._insert("youtube_replies", data)
+        if self.is_mock:
+            if "id" not in data:
+                data["id"] = str(uuid.uuid4())
+            if "created_at" not in data:
+                data["created_at"] = datetime.now().isoformat()
+            MOCK_DB["youtube_replies"].append(data)
+            logger.info(f"[MOCK DB] Inserted into youtube_replies: {data['id']}")
+            save_mock_db()
+            return data
+        else:
+            try:
+                if "id" not in data:
+                    data["id"] = str(uuid.uuid4())
+                if "created_at" not in data:
+                    data["created_at"] = datetime.now().isoformat()
+                res = self.client.table("youtube_replies").insert(data).execute()
+                if res.data:
+                    return res.data[0]
+                return data
+            except Exception as e:
+                logger.warning(f"[DB WARNING] youtube_replies table insert with failure_reason failed: {e}. Retrying fallback.")
+                data_fallback = dict(data)
+                data_fallback.pop("failure_reason", None)
+                try:
+                    res = self.client.table("youtube_replies").insert(data_fallback).execute()
+                    if res.data:
+                        return res.data[0]
+                except Exception as inner_e:
+                    logger.error(f"[DB ERROR] Fallback insert failed: {inner_e}")
+                MOCK_DB["youtube_replies"].append(data)
+                save_mock_db()
+                return data
 
     def get_youtube_replies(self) -> List[Dict[str, Any]]:
         return self._select_all("youtube_replies")
@@ -821,7 +945,25 @@ class SupabaseService:
                 return None
 
     def update_youtube_reply(self, reply_db_id: str, data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
-        return self._update("youtube_replies", reply_db_id, data)
+        if self.is_mock:
+            return self._update("youtube_replies", reply_db_id, data)
+        else:
+            try:
+                res = self.client.table("youtube_replies").update(data).eq("id", reply_db_id).execute()
+                if res.data:
+                    return res.data[0]
+                return None
+            except Exception as e:
+                logger.warning(f"[DB WARNING] youtube_replies update failed: {e}. Retrying fallback.")
+                data_fallback = dict(data)
+                data_fallback.pop("failure_reason", None)
+                try:
+                    res = self.client.table("youtube_replies").update(data_fallback).eq("id", reply_db_id).execute()
+                    if res.data:
+                        return res.data[0]
+                except Exception as inner_e:
+                    logger.error(f"[DB ERROR] Fallback update failed: {inner_e}")
+                return self._update("youtube_replies", reply_db_id, data)
 
     # --- YouTube Leads ---
     def create_youtube_lead(self, comment_id: str, video_id: str, username: str, intent: str = "HIGH_INTENT", reply: str = None, autopilot: bool = True) -> Dict[str, Any]:
@@ -833,13 +975,77 @@ class SupabaseService:
             "reply": reply,
             "autopilot": autopilot
         }
-        return self._insert("youtube_leads", data)
+        
+        if self.is_mock:
+            if "id" not in data:
+                data["id"] = str(uuid.uuid4())
+            if "created_at" not in data:
+                data["created_at"] = datetime.now().isoformat()
+            MOCK_DB["youtube_leads"].append(data)
+            save_mock_db()
+            return data
+        else:
+            try:
+                res = self.client.table("youtube_leads").insert(data).execute()
+                if res.data:
+                    return res.data[0]
+                return data
+            except Exception as e:
+                err_msg = str(e)
+                if "autopilot" in err_msg or "column" in err_msg:
+                    logger.warning(
+                        f"[DB WARNING] youtube_leads table lacks 'autopilot' column. Retrying without column. Error: {e}"
+                    )
+                    data_fallback = dict(data)
+                    data_fallback.pop("autopilot", None)
+                    try:
+                        res = self.client.table("youtube_leads").insert(data_fallback).execute()
+                        if res.data:
+                            record = res.data[0]
+                            record["autopilot"] = data["autopilot"]
+                            return record
+                    except Exception as fallback_e:
+                        logger.error(f"[DB ERROR] Fallback lead insert failed: {fallback_e}")
+                else:
+                    logger.error(f"[DB ERROR] Failed to insert lead: {e}")
+                
+                # Fallback to local mock db
+                logger.warning("[DB FALLBACK] Falling back to local in-memory DB for this lead record.")
+                if "id" not in data:
+                    data["id"] = str(uuid.uuid4())
+                if "created_at" not in data:
+                    data["created_at"] = datetime.now().isoformat()
+                MOCK_DB["youtube_leads"].append(data)
+                save_mock_db()
+                return data
 
     def get_youtube_leads(self) -> List[Dict[str, Any]]:
         return self._select_all("youtube_leads")
 
     def update_youtube_lead_autopilot(self, lead_id: str, autopilot: bool) -> Optional[Dict[str, Any]]:
-        return self._update("youtube_leads", lead_id, {"autopilot": autopilot})
+        if self.is_mock:
+            return self._update("youtube_leads", lead_id, {"autopilot": autopilot})
+        else:
+            try:
+                res = self.client.table("youtube_leads").update({"autopilot": autopilot}).eq("id", lead_id).execute()
+                if res.data:
+                    return res.data[0]
+                return None
+            except Exception as e:
+                err_msg = str(e)
+                if "autopilot" in err_msg or "column" in err_msg:
+                    logger.warning(f"[DB WARNING] youtube_leads table lacks 'autopilot' column. Ignoring autopilot update in DB: {e}")
+                    # Update local mock as fallback
+                    for item in MOCK_DB["youtube_leads"]:
+                        if item.get("id") == lead_id:
+                            item["autopilot"] = autopilot
+                            save_mock_db()
+                            return item
+                    return None
+                else:
+                    logger.error(f"[DB ERROR] Failed to update lead autopilot: {e}")
+                    return self._update("youtube_leads", lead_id, {"autopilot": autopilot})
+
 
     # --- YouTube Analytics ---
     def create_youtube_analytics(self, channel_id: str, comments_processed: int = 0, reply_rate: float = 0.0, lead_count: int = 0, conversion_rate: float = 0.0, top_videos: List[Dict[str, Any]] = None) -> Dict[str, Any]:
@@ -866,8 +1072,7 @@ class SupabaseService:
                 "lead_count": 5,
                 "conversion_rate": 41.6,
                 "top_videos": [
-                    {"video_id": "PuCb1JHpBkM", "title": "Cardamom Export Launch Campaign", "comments": 8, "leads": 4},
-                    {"video_id": "dQw4w9WgXcQ", "title": "Coconut Oil Regional Promo Clip", "comments": 4, "leads": 1}
+                    {"video_id": "PuCb1JHpBkM", "title": "Cardamom Export Launch Campaign", "comments": 8, "leads": 4}
                 ],
                 "created_at": datetime.now().isoformat(),
                 "updated_at": datetime.now().isoformat()
@@ -1028,7 +1233,31 @@ class SupabaseService:
         if session_data is not None:
             updates["session_data"] = session_data
             
-        return self._update("whatsapp_instances", instance["id"], updates)
+        res = self._update("whatsapp_instances", instance["id"], updates)
+        try:
+            self.update_all_reply_links()
+        except Exception as e:
+            logger.error(f"Failed to automatically update reply links on status update: {e}")
+        return res
+
+    def update_whatsapp_instance_webhook(self, instance_id_or_name: str, webhook_url: str) -> Optional[Dict[str, Any]]:
+        instance = self.get_whatsapp_instance_by_name(instance_id_or_name)
+        if not instance:
+            instance = self.get_whatsapp_instance(instance_id_or_name)
+        if not instance:
+            return None
+        
+        session_data = instance.get("session_data") or {}
+        if not isinstance(session_data, dict):
+            session_data = {}
+        session_data["webhook_url"] = webhook_url
+        
+        res = self._update("whatsapp_instances", instance["id"], {"session_data": session_data})
+        try:
+            self.update_all_reply_links()
+        except Exception as e:
+            logger.error(f"Failed to automatically update reply links on webhook update: {e}")
+        return res
 
     def delete_whatsapp_instance(self, instance_id_or_name: str) -> bool:
         instance = self.get_whatsapp_instance_by_name(instance_id_or_name)
@@ -1050,7 +1279,7 @@ class SupabaseService:
                 return False
 
     # --- Conversations v2 ---
-    def create_conversation_v2(self, tenant_id: str, customer_phone: str, channel: str = "whatsapp", assigned_agent_id: str = None, status: str = "open", lead_id: str = None, state: str = "WELCOME") -> Dict[str, Any]:
+    def create_conversation_v2(self, tenant_id: str, customer_phone: str, channel: str = "whatsapp", assigned_agent_id: str = None, status: str = "open", lead_id: str = None, state: str = "WELCOME", instance_name: str = None) -> Dict[str, Any]:
         data = {
             "tenant_id": tenant_id,
             "customer_phone": customer_phone,
@@ -1060,54 +1289,201 @@ class SupabaseService:
             "lead_id": lead_id,
             "state": state,
             "history": [],
+            "state_metadata": {},
             "ai_enabled": True,
-            "human_override": False
+            "human_override": False,
+            "instance_name": instance_name
         }
         return self._insert("conversations", data)
 
     def get_conversations(self, tenant_id: str, status: str = None) -> List[Dict[str, Any]]:
+        conversations = []
         if self.is_mock:
-            items = [c for c in MOCK_DB.get("conversations", []) if c.get("tenant_id") == tenant_id]
+            conversations = [c for c in MOCK_DB.get("conversations", []) if c.get("tenant_id") == tenant_id]
             if status:
-                items = [c for c in items if c.get("status") == status]
-            return items
+                conversations = [c for c in conversations if c.get("status") == status]
         else:
             try:
                 query = self.client.table("conversations").select("*").eq("tenant_id", tenant_id)
                 if status:
                     query = query.eq("status", status)
                 res = query.execute()
-                return res.data or []
+                conversations = res.data or []
             except Exception as e:
                 logger.error(f"Failed to fetch conversations for tenant {tenant_id}: {e}")
-                items = [c for c in MOCK_DB.get("conversations", []) if c.get("tenant_id") == tenant_id]
+                conversations = [c for c in MOCK_DB.get("conversations", []) if c.get("tenant_id") == tenant_id]
                 if status:
-                    items = [c for c in items if c.get("status") == status]
-                return items
+                    conversations = [c for c in conversations if c.get("status") == status]
+
+        # Filter conversations by currently connected WhatsApp instance name
+        instances = self.get_whatsapp_instances(tenant_id)
+        active_instance = next((i for i in instances if i.get("status") == "connected"), None)
+        if not active_instance and instances:
+            active_instance = next((i for i in instances if i.get("status") == "connecting"), None)
+            if not active_instance:
+                active_instance = instances[0]
+
+        active_instance_name = active_instance["instance_name"] if active_instance else None
+        
+        filtered = []
+        for conv in conversations:
+            conv_instance = conv.get("instance_name")
+            if not conv_instance:
+                if active_instance_name:
+                    # Dynamically bind legacy conversations to the current active instance
+                    self.update_conversation_v2(conv["id"], {"instance_name": active_instance_name})
+                    conv["instance_name"] = active_instance_name
+                    filtered.append(conv)
+                else:
+                    filtered.append(conv)
+            elif conv_instance == active_instance_name:
+                filtered.append(conv)
+
+        return filtered
 
     def get_conversation(self, conversation_id: str) -> Optional[Dict[str, Any]]:
         return self._select_one("conversations", conversation_id)
 
-    def get_conversation_by_phone(self, tenant_id: str, customer_phone: str) -> Optional[Dict[str, Any]]:
+    def get_conversation_by_phone(self, tenant_id: str, customer_phone: str, instance_name: str = None) -> Optional[Dict[str, Any]]:
         if self.is_mock:
             for item in MOCK_DB.get("conversations", []):
                 if item.get("tenant_id") == tenant_id and item.get("customer_phone") == customer_phone:
-                    return item
+                    if instance_name is None or item.get("instance_name") == instance_name:
+                        return item
             return None
         else:
             try:
-                res = self.client.table("conversations").select("*").eq("tenant_id", tenant_id).eq("customer_phone", customer_phone).execute()
+                query = self.client.table("conversations").select("*").eq("tenant_id", tenant_id).eq("customer_phone", customer_phone)
+                if instance_name:
+                    query = query.eq("instance_name", instance_name)
+                res = query.execute()
                 return res.data[0] if res.data else None
             except Exception as e:
                 logger.error(f"Failed to get conversation by phone {customer_phone}: {e}")
                 # Fallback to mock search
                 for item in MOCK_DB.get("conversations", []):
                     if item.get("tenant_id") == tenant_id and item.get("customer_phone") == customer_phone:
-                        return item
+                        if instance_name is None or item.get("instance_name") == instance_name:
+                            return item
                 return None
 
     def update_conversation_v2(self, conversation_id: str, updates: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         return self._update("conversations", conversation_id, updates)
+
+    def delete_all_conversations(self, tenant_id: str) -> bool:
+        logger.info(f"Clearing all conversations for tenant {tenant_id}")
+        
+        # 1. Fetch conversations to get lead IDs and delete associated orders/leads
+        try:
+            convs = self.get_conversations(tenant_id)
+            lead_ids = [c["lead_id"] for c in convs if c.get("lead_id")]
+            for lead_id in lead_ids:
+                try:
+                    if self.is_mock:
+                        MOCK_DB["orders"] = [o for o in MOCK_DB.get("orders", []) if o.get("lead_id") != lead_id]
+                    else:
+                        self.client.table("orders").delete().eq("lead_id", lead_id).execute()
+                    
+                    lead_data = self._select_one("leads", lead_id)
+                    if lead_data and lead_data.get("username", "").startswith("wa_"):
+                        if self.is_mock:
+                            MOCK_DB["leads"] = [l for l in MOCK_DB.get("leads", []) if l.get("id") != lead_id]
+                        else:
+                            self.client.table("leads").delete().eq("id", lead_id).execute()
+                except Exception as ex:
+                    logger.error(f"Failed to clean up lead/orders on delete_all_conversations: {ex}")
+        except Exception as e:
+            logger.error(f"Failed to fetch conversations for clean up: {e}")
+
+        # 2. Delete conversations
+        if self.is_mock:
+            conv_ids = [c["id"] for c in MOCK_DB.get("conversations", []) if c.get("tenant_id") == tenant_id]
+            MOCK_DB["messages"] = [m for m in MOCK_DB.get("messages", []) if m.get("conversation_id") not in conv_ids]
+            MOCK_DB["conversations"] = [c for c in MOCK_DB.get("conversations", []) if c.get("tenant_id") != tenant_id]
+            save_mock_db()
+            return True
+        else:
+            try:
+                self.client.table("conversations").delete().eq("tenant_id", tenant_id).execute()
+                return True
+            except Exception as e:
+                logger.error(f"Failed to delete all conversations from Supabase: {e}")
+                conv_ids = [c["id"] for c in MOCK_DB.get("conversations", []) if c.get("tenant_id") == tenant_id]
+                MOCK_DB["messages"] = [m for m in MOCK_DB.get("messages", []) if m.get("conversation_id") not in conv_ids]
+                MOCK_DB["conversations"] = [c for c in MOCK_DB.get("conversations", []) if c.get("tenant_id") != tenant_id]
+                save_mock_db()
+                return True
+
+    def delete_conversation_by_id(self, conversation_id: str) -> bool:
+        logger.info(f"Deleting conversation ID {conversation_id}")
+        
+        # 1. Fetch conversation to get lead_id and delete associated orders/leads
+        try:
+            conv = self.get_conversation(conversation_id)
+            if conv and conv.get("lead_id"):
+                lead_id = conv["lead_id"]
+                if self.is_mock:
+                    MOCK_DB["orders"] = [o for o in MOCK_DB.get("orders", []) if o.get("lead_id") != lead_id]
+                else:
+                    self.client.table("orders").delete().eq("lead_id", lead_id).execute()
+                
+                lead_data = self._select_one("leads", lead_id)
+                if lead_data and lead_data.get("username", "").startswith("wa_"):
+                    if self.is_mock:
+                        MOCK_DB["leads"] = [l for l in MOCK_DB.get("leads", []) if l.get("id") != lead_id]
+                    else:
+                        self.client.table("leads").delete().eq("id", lead_id).execute()
+        except Exception as e:
+            logger.error(f"Failed to clean up lead/orders on delete_conversation_by_id: {e}")
+
+        # 2. Delete conversation
+        if self.is_mock:
+            MOCK_DB["messages"] = [m for m in MOCK_DB.get("messages", []) if m.get("conversation_id") != conversation_id]
+            MOCK_DB["conversations"] = [c for c in MOCK_DB.get("conversations", []) if c.get("id") != conversation_id]
+            save_mock_db()
+            return True
+        else:
+            try:
+                self.client.table("conversations").delete().eq("id", conversation_id).execute()
+                return True
+            except Exception as e:
+                logger.error(f"Failed to delete conversation {conversation_id} from Supabase: {e}")
+                MOCK_DB["messages"] = [m for m in MOCK_DB.get("messages", []) if m.get("conversation_id") != conversation_id]
+                MOCK_DB["conversations"] = [c for c in MOCK_DB.get("conversations", []) if c.get("id") != conversation_id]
+                save_mock_db()
+                return True
+
+    def edit_message(self, message_id: str, new_content: str) -> Optional[Dict[str, Any]]:
+        logger.info(f"Editing message ID {message_id} to '{new_content}'")
+        msg = self._select_one("messages", message_id)
+        if not msg:
+            logger.warning(f"Message ID {message_id} not found for editing")
+            return None
+            
+        old_content = msg.get("content")
+        metadata = msg.get("metadata") or {}
+        if not isinstance(metadata, dict):
+            metadata = {}
+            
+        edit_history = metadata.get("edit_history", [])
+        if not isinstance(edit_history, list):
+            edit_history = []
+            
+        edit_history.append({
+            "content": old_content,
+            "edited_at": datetime.now().isoformat()
+        })
+        
+        metadata["edited"] = True
+        metadata["edited_at"] = datetime.now().isoformat()
+        metadata["edit_history"] = edit_history
+        
+        updates = {
+            "content": new_content,
+            "metadata": metadata
+        }
+        
+        return self._update("messages", message_id, updates)
 
     # --- Messages ---
     def create_message(self, conversation_id: str, sender_type: str, content: str, message_type: str = "text", sender_id: str = None, metadata: Dict[str, Any] = None) -> Dict[str, Any]:
@@ -1143,5 +1519,258 @@ class SupabaseService:
         current_metadata = msg.get("metadata") or {}
         current_metadata.update(metadata_updates)
         return self._update("messages", message_id, {"metadata": current_metadata})
+
+    def get_message_by_provider_sid(self, provider_message_sid: str) -> Optional[Dict[str, Any]]:
+        if self.is_mock:
+            for m in MOCK_DB.get("messages", []):
+                meta = m.get("metadata") or {}
+                if meta.get("provider_message_sid") == provider_message_sid:
+                    return m
+            return None
+        else:
+            try:
+                res = self.client.table("messages").select("*").eq("metadata->>provider_message_sid", provider_message_sid).execute()
+                if res.data:
+                    return res.data[0]
+                for m in MOCK_DB.get("messages", []):
+                    meta = m.get("metadata") or {}
+                    if meta.get("provider_message_sid") == provider_message_sid:
+                        return m
+                return None
+            except Exception as e:
+                logger.error(f"Failed to fetch message by provider_message_sid {provider_message_sid}: {e}")
+                for m in MOCK_DB.get("messages", []):
+                    meta = m.get("metadata") or {}
+                    if meta.get("provider_message_sid") == provider_message_sid:
+                        return m
+                return None
+
+    # --- Video Jobs ---
+    def create_video_job(self, product_id: str, status: str = "queued") -> Dict[str, Any]:
+        data = {
+            "product_id": product_id,
+            "status": status,
+            "progress_step": 0,
+            "progress_message": "Preparing assets...",
+            "error_message": None
+        }
+        return self._insert("video_jobs", data)
+
+    def update_video_job(self, job_id: str, status: str = None, progress_step: int = None, progress_message: str = None, error_message: str = None) -> Optional[Dict[str, Any]]:
+        updates = {}
+        if status is not None:
+            updates["status"] = status
+        if progress_step is not None:
+            updates["progress_step"] = progress_step
+        if progress_message is not None:
+            updates["progress_message"] = progress_message
+        if error_message is not None:
+            updates["error_message"] = error_message
+        
+        updates["updated_at"] = datetime.now().isoformat()
+        return self._update("video_jobs", job_id, updates)
+
+    def get_video_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        return self._select_one("video_jobs", job_id)
+
+    def get_video_jobs_by_product(self, product_id: str) -> List[Dict[str, Any]]:
+        if self.is_mock:
+            items = [j for j in MOCK_DB.get("video_jobs", []) if j.get("product_id") == product_id]
+            items.sort(key=lambda x: x.get("created_at") or "", reverse=True)
+            return items
+        else:
+            try:
+                res = self.client.table("video_jobs").select("*").eq("product_id", product_id).order("created_at", desc=True).execute()
+                return res.data or []
+            except Exception as e:
+                logger.error(f"Failed to fetch video jobs for product {product_id}: {e}")
+                items = [j for j in MOCK_DB.get("video_jobs", []) if j.get("product_id") == product_id]
+                items.sort(key=lambda x: x.get("created_at") or "", reverse=True)
+                return items
+
+    def get_unfinished_video_jobs(self) -> List[Dict[str, Any]]:
+        if self.is_mock:
+            items = [j for j in MOCK_DB.get("video_jobs", []) if j.get("status") in ["queued", "processing"]]
+            items.sort(key=lambda x: x.get("created_at") or "", reverse=True)
+            return items
+        else:
+            try:
+                res = self.client.table("video_jobs").select("*").in_("status", ["queued", "processing"]).order("created_at", desc=True).execute()
+                return res.data or []
+            except Exception as e:
+                logger.error(f"Failed to fetch unfinished video jobs: {e}")
+                items = [j for j in MOCK_DB.get("video_jobs", []) if j.get("status") in ["queued", "processing"]]
+                items.sort(key=lambda x: x.get("created_at") or "", reverse=True)
+                return items
+
+    def purge_campaign_data(self, product_id: str) -> bool:
+        """
+        Permanently purges all generated campaign records (scripts, thumbnails, translations,
+        voiceovers, videos, video_jobs, keywords) and physical media files associated with a product.
+        """
+        import glob
+        from backend.config import settings
+
+        logger.info(f"[PURGE CAMPAIGN] Purging all database records and media files for product {product_id}")
+        
+        try:
+            # 1. Fetch scripts
+            scripts = self.get_scripts_by_product(product_id)
+            script_ids = [s["id"] for s in scripts]
+
+            # 2. Fetch & delete thumbnails
+            for s_id in script_ids:
+                thumbnails = self.get_thumbnails_by_script(s_id)
+                for thumb in thumbnails:
+                    img_url = thumb.get("image_url")
+                    if img_url and img_url.startswith("/static/"):
+                        file_p = settings.STATIC_DIR / img_url[8:]
+                        if os.path.exists(file_p):
+                            try: os.remove(file_p)
+                            except Exception: pass
+                    if self.is_mock:
+                        MOCK_DB["thumbnails"] = [t for t in MOCK_DB.get("thumbnails", []) if t.get("id") != thumb["id"]]
+                    else:
+                        try: self.client.table("thumbnails").delete().eq("id", thumb["id"]).execute()
+                        except Exception: pass
+
+            # 3. Fetch & delete translations, voiceovers, videos
+            for s_id in script_ids:
+                translations = self.get_translations_by_script(s_id)
+                for trans in translations:
+                    # Voiceovers
+                    voiceovers_list = self._select_all("voiceovers")
+                    voiceovers = [v for v in voiceovers_list if v.get("translation_id") == trans["id"]]
+                    for voice in voiceovers:
+                        audio_url = voice.get("audio_url")
+                        if audio_url and audio_url.startswith("/static/"):
+                            file_p = settings.STATIC_DIR / audio_url[8:]
+                            if os.path.exists(file_p):
+                                try: os.remove(file_p)
+                                except Exception: pass
+                        
+                        # Videos
+                        videos_list = self._select_all("videos")
+                        vids = [vid for vid in videos_list if vid.get("voiceover_id") == voice["id"]]
+                        for vid in vids:
+                            v_url = vid.get("video_url")
+                            if v_url and v_url.startswith("/static/"):
+                                file_p = settings.STATIC_DIR / v_url[8:]
+                                if os.path.exists(file_p):
+                                    try: os.remove(file_p)
+                                    except Exception: pass
+                            if self.is_mock:
+                                MOCK_DB["videos"] = [v for v in MOCK_DB.get("videos", []) if v.get("id") != vid["id"]]
+                            else:
+                                try: self.client.table("videos").delete().eq("id", vid["id"]).execute()
+                                except Exception: pass
+
+                        if self.is_mock:
+                            MOCK_DB["voiceovers"] = [v for v in MOCK_DB.get("voiceovers", []) if v.get("id") != voice["id"]]
+                        else:
+                            try: self.client.table("voiceovers").delete().eq("id", voice["id"]).execute()
+                            except Exception: pass
+
+                    if self.is_mock:
+                        MOCK_DB["translations"] = [t for t in MOCK_DB.get("translations", []) if t.get("id") != trans["id"]]
+                    else:
+                        try: self.client.table("translations").delete().eq("id", trans["id"]).execute()
+                        except Exception: pass
+
+            # Delete scripts
+            for s_id in script_ids:
+                if self.is_mock:
+                    MOCK_DB["scripts"] = [s for s in MOCK_DB.get("scripts", []) if s.get("id") != s_id]
+                else:
+                    try: self.client.table("scripts").delete().eq("id", s_id).execute()
+                    except Exception: pass
+
+            # Delete keywords
+            keywords = self.get_keywords_by_product(product_id)
+            for kw in keywords:
+                if self.is_mock:
+                    MOCK_DB["keywords"] = [k for k in MOCK_DB.get("keywords", []) if k.get("id") != kw["id"]]
+                else:
+                    try: self.client.table("keywords").delete().eq("id", kw["id"]).execute()
+                    except Exception: pass
+
+            # Delete video_jobs
+            if self.is_mock:
+                MOCK_DB["video_jobs"] = [j for j in MOCK_DB.get("video_jobs", []) if j.get("product_id") != product_id]
+                save_mock_db()
+            else:
+                try: self.client.table("video_jobs").delete().eq("product_id", product_id).execute()
+                except Exception: pass
+
+            # Physical files cleanup in media directory
+            patterns = [f"*{product_id}*", f"temp_*{product_id}*"]
+            for pat in patterns:
+                for filepath in glob.glob(os.path.join(str(settings.MEDIA_DIR), pat)):
+                    try:
+                        if os.path.exists(filepath): os.remove(filepath)
+                    except Exception: pass
+
+            logger.info(f"[PURGE CAMPAIGN] Purged campaign data completely for product {product_id}")
+            return True
+        except Exception as e:
+            logger.error(f"Failed to purge campaign data for product {product_id}: {e}")
+            return False
+
+    def update_all_reply_links(self, new_base_url: str = None) -> int:
+        """
+        Scan all youtube comments and replies in the database (or mock database)
+        and update the redirect URLs to use the latest base public URL.
+        Returns the number of records updated.
+        """
+        import re
+        import os
+        if not new_base_url:
+            from backend.config import settings
+            new_base_url = settings.PUBLIC_URL or os.getenv("PUBLIC_URL") or os.getenv("APP_BASE_URL") or "http://localhost:8000"
+            
+        if "host.docker.internal" in new_base_url:
+            new_base_url = new_base_url.replace("host.docker.internal", "localhost")
+        if not new_base_url.endswith("/"):
+            new_base_url += "/"
+            
+        logger.info(f"[LINK SYNC] Automatically updating all YouTube reply links to use base URL: {new_base_url}")
+        
+        updated_count = 0
+        
+        # 1. Update youtube_comments table
+        comments = self.get_youtube_comments()
+        for comment in comments:
+            comment_id = comment["comment_id"]
+            expected_link = f"{new_base_url}youtube/r/{comment_id}"
+            
+            # Check if current link matches expected link
+            if comment.get("reply_link") != expected_link:
+                comment["reply_link"] = expected_link
+                self._update("youtube_comments", comment["id"], {"reply_link": expected_link})
+                updated_count += 1
+                
+        # 2. Update youtube_replies table (suggested_reply & actual_reply containing old URLs)
+        replies = self.get_youtube_replies()
+        pattern = re.compile(r"https?://[^/]+/youtube/r/([a-zA-Z0-9_\-]+)")
+        
+        for reply in replies:
+            changed = False
+            updates = {}
+            for field in ["suggested_reply", "actual_reply"]:
+                val = reply.get(field)
+                if val and isinstance(val, str):
+                    if pattern.search(val):
+                        # Replace the URL matches
+                        new_val = pattern.sub(rf"{new_base_url}youtube/r/\1", val)
+                        if new_val != val:
+                            updates[field] = new_val
+                            reply[field] = new_val
+                            changed = True
+            if changed:
+                self._update("youtube_replies", reply["id"], updates)
+                updated_count += 1
+                
+        logger.info(f"[LINK SYNC] Completed. Updated {updated_count} records to use new base URL.")
+        return updated_count
 
 supabase_svc = SupabaseService()

@@ -26,34 +26,55 @@ class InstanceService:
         
         # 1. Check if instance already exists in DB
         existing = supabase_svc.get_whatsapp_instance_by_name(instance_name)
+        is_sandbox = getattr(self.provider, "is_sandbox", False)
+        
         if existing:
             instance_id = existing["id"]
             
-            # In sandbox mode, if already connected in DB, pre-fill sandbox counter to prevent reset
-            if existing.get("status") == "connected" and getattr(self.provider, "is_sandbox", False):
+            # In sandbox mode, if already connected in DB, pre-fill sandbox counter and return early to prevent reset
+            if existing.get("status") == "connected" and is_sandbox:
                 if hasattr(self.provider, "_sandbox_poll_counts") and instance_name not in self.provider._sandbox_poll_counts:
                     self.provider._sandbox_poll_counts[instance_name] = 5
-                    
-            # Check connection status on provider to see if it's already active
-            try:
-                provider_status = await self.provider.get_connection_status(instance_name)
-            except Exception as e:
-                logger.warning(f"Failed to check connection status on provider for {instance_name}: {e}")
-                provider_status = existing.get("status", "disconnected")
-
-            if provider_status in ["connected", "connecting"]:
-                if existing.get("status") != provider_status:
-                    supabase_svc.update_whatsapp_instance_status(instance_id, provider_status)
+                
                 return {
                     "id": instance_id,
                     "instance_name": instance_name,
-                    "status": provider_status,
+                    "status": "connected",
                     "provider": self.provider_name
                 }
             
-            # Update to connecting since it's not connected on provider
-            supabase_svc.update_whatsapp_instance_status(instance_id, "connecting")
+            # For real provider (e.g. Evolution API), implement clean session reset.
+            # Delete any existing session/instance on the provider side before initiating a new linking phase.
+            # This completely clears persistent browser context data, cookies, tokens, and IndexedDB cache files.
+            if not is_sandbox:
+                logger.info(f"Comprehensive session reset: deleting existing provider instance '{instance_name}' to purge cached browser state.")
+                try:
+                    await self.provider.delete_instance(instance_name)
+                except Exception as e:
+                    logger.warning(f"Failed to delete existing instance on provider: {e}")
+                
+                # Clear DB status, phone_number, and session_data of the old account to prevent displaying it in the UI
+                try:
+                    supabase_svc.update_whatsapp_instance_status(
+                        instance_id_or_name=instance_id,
+                        status="connecting",
+                        phone_number="",
+                        session_data={}
+                    )
+                except Exception as e:
+                    logger.warning(f"Failed to reset DB fields for instance in DB: {e}")
+            else:
+                supabase_svc.update_whatsapp_instance_status(instance_id, "connecting")
         else:
+            # If the instance does not exist in the DB, we still want to make sure
+            # there isn't an orphan instance with the same name on the real provider.
+            if not is_sandbox:
+                logger.info(f"Comprehensive session reset: ensuring no orphan instance '{instance_name}' exists on the provider.")
+                try:
+                    await self.provider.delete_instance(instance_name)
+                except Exception as e:
+                    logger.warning(f"Failed to delete existing instance on provider: {e}")
+            
             # Create instance record in DB
             inst_record = supabase_svc.create_whatsapp_instance(
                 tenant_id=tenant_id,
@@ -72,12 +93,25 @@ class InstanceService:
 
         # 3. Register incoming webhook to route to our backend
         app_url = os.getenv("APP_BASE_URL", "http://localhost:8000")
-        webhook_url = f"{app_url}/webhooks/whatsapp"
-        logger.info(f"Registering webhook: {webhook_url}")
+        webhook_url = f"{app_url.rstrip('/')}/webhooks/whatsapp"
+        
+        # Resolve public webhook URL utilizing ngrok endpoint for client/external visibility & validation
+        from backend.config import settings
+        public_url = settings.PUBLIC_URL or os.getenv("PUBLIC_URL") or os.getenv("APP_BASE_URL") or "http://localhost:8000"
+        public_webhook_url = f"{public_url.rstrip('/')}/webhooks/whatsapp"
+        
+        logger.info(f"Registering webhook with provider: {webhook_url} (Public counterpart: {public_webhook_url})")
         try:
-            await self.provider.register_webhook(instance_name, webhook_url)
+            provider_webhook = f"{webhook_url}?instance={instance_name}"
+            await self.provider.register_webhook(instance_name, provider_webhook)
         except Exception as e:
             logger.error(f"Failed to register webhook: {e}")
+
+        # Store the public webhook URL mapped to this WhatsApp account in the database
+        try:
+            supabase_svc.update_whatsapp_instance_webhook(instance_id, public_webhook_url)
+        except Exception as e:
+            logger.error(f"Failed to save webhook URL to database: {e}")
 
         # 4. Try connecting session
         try:

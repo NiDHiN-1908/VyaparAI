@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "VyaparAI API"
     PORT: int = 8000
     DEBUG: bool = True
+    PUBLIC_URL: Optional[str] = None
 
     # Supabase Settings
     SUPABASE_URL: str = "https://your-supabase-project.supabase.co"

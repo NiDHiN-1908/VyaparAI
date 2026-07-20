@@ -45,6 +45,11 @@ test_api.py
 test_upload.py
 test_upload2.py
 backend/startup_debug.txt
+*.log
+*.txt
+*.tsbuildinfo
+NUL
+powershell.bat
 
 # OS files
 .DS_Store

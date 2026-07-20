@@ -4,7 +4,7 @@ from fastapi.testclient import TestClient
 from backend.main import app
 from backend.services.supabase_service import supabase_svc
 from backend.crews.youtube_monitor_crew import fallback_classify_comment, fallback_generate_reply
-from backend.services.youtube_monitor_service import youtube_monitor_svc
+from backend.modules.video_monitoring_module import video_monitoring_svc as youtube_monitor_svc
 
 client = TestClient(app)
 
@@ -40,6 +40,12 @@ def test_fallback_reply_generation():
 
 
 def test_youtube_endpoints_mock_workflow():
+    # Ensure global auto-reply is disabled for baseline test state
+    client.post("/youtube/settings/auto-reply", json={"auto_reply": False, "confidence_threshold": 0.80})
+
+    # 0. Disconnect any existing channels first to ensure a clean test state
+    client.post("/auth/youtube/disconnect")
+
     # 1. Connect mock channel
     res = client.post("/auth/youtube/mock-connect")
     assert res.status_code == 200
@@ -113,7 +119,7 @@ def test_youtube_video_auto_reply_toggling():
     video_id = videos[0]["video_id"]
     
     # 3. Enable global auto_reply first
-    client.post("/youtube/settings/auto-reply", json={"auto_reply": True})
+    client.post("/youtube/settings/auto-reply", json={"auto_reply": True, "confidence_threshold": 0.80})
     
     # 4. Toggle video auto_reply to False
     toggle_res = client.post(f"/youtube/videos/{video_id}/auto-reply", json={"auto_reply": False})
@@ -164,4 +170,4 @@ def test_youtube_video_auto_reply_toggling():
     assert c_auto["status"] == "replied"
     
     # Clean up settings
-    client.post("/youtube/settings/auto-reply", json={"auto_reply": False})
+    client.post("/youtube/settings/auto-reply", json={"auto_reply": False, "confidence_threshold": 0.80})

@@ -1,0 +1,11 @@
+{
+  "enabled": true,
+  "free_min_distance": 5.0,
+  "free_max_distance": 10.0,
+  "charge_under_5km_per_km": 10.0,
+  "charge_over_10km_per_km": 15.0,
+  "huge_purchase_min_amount": 1500.0,
+  "huge_purchase_discount_pct": 10.0,
+  "permanent_customer_min_orders": 5,
+  "permanent_customer_discount_pct": 15.0
+}

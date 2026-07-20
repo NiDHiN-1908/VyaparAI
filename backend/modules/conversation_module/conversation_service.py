@@ -8,17 +8,20 @@ from backend.modules.websocket_module import websocket_manager
 logger = logging.getLogger("vyaparai.conversation.service")
 
 class ConversationService:
-    async def get_or_create_conversation(self, tenant_id: str, phone: str, channel: str = "whatsapp", lead_id: str = None) -> Dict[str, Any]:
+    async def get_or_create_conversation(self, tenant_id: str, phone: str, channel: str = "whatsapp", lead_id: str = None, instance_name: str = None) -> Dict[str, Any]:
         """
         Retrieves existing conversation by phone or creates a new one, broadcasting WebSocket events.
         """
-        conv = conversation_repo.get_by_phone(tenant_id, phone)
+        conv = conversation_repo.get_by_phone(tenant_id, phone, instance_name)
         if not conv and lead_id:
             conv = conversation_repo.get_by_lead(lead_id)
+            if conv and not conv.get("instance_name") and instance_name:
+                conversation_repo.update(conv["id"], {"instance_name": instance_name})
+                conv["instance_name"] = instance_name
             
         if not conv:
-            conv = conversation_repo.create(tenant_id, phone, channel, lead_id)
-            logger.info(f"Created new conversation: {conv['id']}")
+            conv = conversation_repo.create(tenant_id, phone, channel, lead_id, instance_name)
+            logger.info(f"Created new conversation: {conv['id']} for instance {instance_name}")
             # Broadcast conversation creation via Websocket
             await websocket_manager.broadcast_to_tenant(tenant_id, "conversation.created", conv)
         return conv

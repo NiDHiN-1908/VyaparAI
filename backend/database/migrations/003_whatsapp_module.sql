@@ -44,6 +44,7 @@ CREATE TABLE conversations (
     human_override BOOLEAN NOT NULL DEFAULT FALSE,
     state VARCHAR(50) NOT NULL DEFAULT 'WELCOME', -- preserve compatibility with LangGraph
     history JSONB DEFAULT '[]'::jsonb, -- preserve compatibility with LangGraph
+    state_metadata JSONB DEFAULT '{}'::jsonb, -- separate conversation state & memory
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );

@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Youtube, Link2, ShieldCheck, HelpCircle, LogOut, RefreshCw, AlertCircle } from "lucide-react";
+import { Youtube, ShieldCheck, HelpCircle, LogOut, RefreshCw, AlertCircle, Instagram } from "lucide-react";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -42,26 +42,6 @@ export default function YouTubeConnect() {
       window.history.replaceState({}, document.title, window.location.pathname);
     }
   }, []);
-
-  async function handleMockConnect() {
-    setActionLoading(true);
-    setError(null);
-    try {
-      const res = await fetch(`${API_BASE}/auth/youtube/mock-connect`, {
-        method: "POST",
-      });
-      const data = await res.json();
-      if (res.ok && data.status === "success") {
-        setChannel(data.data);
-      } else {
-        setError("Failed to connect mock channel.");
-      }
-    } catch (err) {
-      setError("Server connection failed.");
-    } finally {
-      setActionLoading(false);
-    }
-  }
 
   async function handleDisconnect() {
     setActionLoading(true);
@@ -200,30 +180,51 @@ export default function YouTubeConnect() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full pt-4">
+          <div className="flex flex-col items-center justify-center w-full pt-4">
             <a
               href={`${API_BASE}/auth/youtube/login`}
-              className="flex items-center justify-center gap-2 bg-rose-600 hover:bg-rose-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-rose-600/15 transition transform hover:-translate-y-0.5"
+              className="w-full max-w-sm flex items-center justify-center gap-2 bg-rose-600 hover:bg-rose-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-rose-600/15 transition transform hover:-translate-y-0.5"
             >
               <Youtube className="w-5 h-5" />
               Connect YouTube Channel
             </a>
-
-            <button
-              onClick={handleMockConnect}
-              disabled={actionLoading}
-              className="flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-indigo-300 border border-slate-700 font-bold py-4 rounded-xl transition transform hover:-translate-y-0.5"
-            >
-              <Link2 className="w-4 h-4" />
-              Simulate Connection (Sandbox)
-            </button>
           </div>
-
-          <p className="text-[10px] text-slate-500 leading-relaxed max-w-sm">
-            Sandbox mode connects a simulated channel and seeds mock videos for instant verification without needing a Google developer account.
-          </p>
         </div>
       )}
+
+      {/* Instagram Connection Section */}
+      <div className="border-t border-slate-800/60 pt-8 mt-12">
+        <div className="glass-panel rounded-2xl p-8 max-w-2xl mx-auto flex flex-col items-center text-center space-y-6 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-pink-500/5 rounded-full blur-xl pointer-events-none" />
+          <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-purple-500/5 rounded-full blur-2xl pointer-events-none" />
+          
+          <div className="flex items-center gap-2 text-xs font-bold text-pink-400 uppercase tracking-widest bg-pink-500/10 border border-pink-500/20 px-3 py-1.5 rounded-full">
+            <span className="w-1.5 h-1.5 rounded-full bg-pink-500 animate-pulse" />
+            Coming Soon
+          </div>
+
+          <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-yellow-500 via-red-500 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-purple-500/10">
+            <Instagram className="w-8 h-8" />
+          </div>
+
+          <div className="space-y-2">
+            <h2 className="text-2xl font-bold text-white">Instagram Connection</h2>
+            <p className="text-slate-400 text-sm max-w-md">
+              Connect your Instagram account to publish and manage content directly from the platform. Coming soon.
+            </p>
+          </div>
+
+          <div className="flex flex-col items-center justify-center w-full pt-4">
+            <button
+              disabled
+              className="w-full max-w-sm flex items-center justify-center gap-2 bg-slate-800 text-slate-500 border border-slate-750 font-bold py-4 rounded-xl cursor-not-allowed opacity-60"
+            >
+              <Instagram className="w-5 h-5" />
+              Connect Instagram
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

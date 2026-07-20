@@ -65,3 +65,65 @@ A browser subagent verified the dashboard performance:
 
 2. **Dashboard After Toggles (Cardamom campaign updated to unmonitored / auto-reply ON):**
    ![Toggled view showing updated status](/C:/Users/nidhi/.gemini/antigravity-ide/brain/900d2f97-5a3c-42ac-ac4c-a207704968c3/video_monitoring_toggled_1782338873514.png)
+
+---
+
+## 🎬 Asynchronous Video Generation & Status Tracking
+
+We have fully refactored and completed the asynchronous video generation workflow to support background processing across the entire campaign creation process:
+
+1. **Database Schema & Supabase Service:**
+   - Created the [004_video_jobs.sql](file:///c:/Users/nidhi/Desktop/VyaparAI/backend/database/migrations/004_video_jobs.sql) migration to register job entries.
+   - Added corresponding helper methods in [supabase_service.py](file:///c:/Users/nidhi/Desktop/VyaparAI/backend/services/supabase_service.py) for tracking active, completed, or failed jobs.
+2. **Backend Status Routes:**
+   - Exposed status tracking endpoints in [marketing.py](file:///c:/Users/nidhi/Desktop/VyaparAI/backend/routers/marketing.py) to check active jobs or details by job ID or product ID.
+   - Built a comprehensive auto-recovery and fallback check system to resolve stuck jobs automatically if translations or video assets are already complete.
+3. **Frontend Campaign Integration:**
+   - Implemented real-time polling# Walkthrough: Self-Healing SSH Tunnel Manager & Diagnostic Sync
+
+We have completed a comprehensive root-cause analysis and fixed the diagnostics discrepancy between the local backend and public tunnel states.
+
+---
+
+## 1. Root-Cause Analysis (Why the state changed to "Backend Offline / URL = None")
+
+The incorrect diagnostic report of the backend being "offline" and the tunnel URL becoming `None` was caused by three architectural bugs:
+
+1. **Diagnostic Logic Contradiction**: In the previous `/test-public-tunnel` endpoint implementation, the local backend check checked the status of the **SSH process** (`diags["ssh_process_status"] == "Running"`) rather than the actual local port 8000. When the SSH client stopped or failed to bind (e.g. before the tunnel stabilized), the endpoint reported `"local_health": "offline"`. The frontend took this value literally and declared the backend server dead, even though the backend was healthy enough to serve the diagnostics query itself.
+2. **Missing Tunnel Error Cascade**: When the tunnel URL failed to resolve (`public_url = None`), the backend's health validator set the error reason to `"local_backend_unreachable"` instead of `"tunnel_url_missing"`. This caused the diagnostics to incorrectly flag the backend as offline.
+3. **Stale Frontend State Caching**: When diagnostics tests ran, the React states in the frontend did not clear out the old cached `activeTunnelUrl` and webhook strings upon failure, resulting in mismatching states.
+
+---
+
+## 2. Implemented Fixes
+
+### A. Strict Step-by-Step Diagnostic Sequence (Requirement 4 & 5)
+We modified the `/test-public-tunnel` endpoint in [whatsapp.py](file:///c:/Users/nidhi/Desktop/VyaparAI/backend/routers/whatsapp.py) to run health pings in this exact sequence:
+1. **Port Listening Check**: Live check if port 8000 is open. If not, stops immediately with code `port_not_listening`.
+2. **Local `/health` Check**: Live check if `/health` resolves. If not, stops immediately with code `local_health_check_failed`.
+3. **Tunnel Process Check**: Verifies if the SSH client subprocess is alive. If not, stops with code `ssh_tunnel_offline` or `ssh_process_crashed`.
+4. **Tunnel URL Availability Check**: Checks if a domain is parsed. If not, stops with code `tunnel_url_missing`.
+5. **Public `/health` Check**: Live HTTP ping to the public URL. If it fails, distinguishes between `network_timeout`, `dns_resolution_failure`, or generic `tunnel_unreachable`.
+6. **Public Webhook Check**: Live POST ping to `/webhooks/whatsapp` through the public domain. If not responding, stops with code `webhook_endpoint_unavailable`.
+
+### B. Automatic Self-Healing Recovery (Requirement 6)
+- If the monitor detects `public_url` is `None` or missing, it triggers `tunnel_mgr.heal_tunnel(...)` to clear stale handles, establish a new SSH connection, update `.env`, and update active database records immediately.
+
+### C. State Synchronization & UI Improvements (Requirement 2 & 3 & 8)
+- Updated [comment-inbox/page.tsx](file:///c:/Users/nidhi/Desktop/VyaparAI/frontend/app/comment-inbox/page.tsx):
+  - **Cleared Stale States**: Every manual test clears old inputs, and failures clear cached active URL states immediately.
+  - **Conditionally Disabled Validation**: When the active tunnel is missing, validation is disabled, and the message `"No active tunnel detected"` is shown.
+  - **Extended Diagnostics Display**: Now renders Backend Status, Tunnel Status, Current Public URL, Last Health Check Time, Last Successful Tunnel Connection, Diagnostic Timestamp, and Overall System Status (Healthy/Warning/Error).
+
+---
+
+## 3. How to Verify
+
+1. Run `.\start_all.bat`.
+2. Open the [Comment Inbox](http://localhost:3050/comment-inbox) (or port 3000).
+3. Under the WhatsApp widget, click **Test Public Tunnel**.
+4. Observe the clean step-by-step diagnostic breakdown. Manually test tunnel recovery to watch the status indicators update seamlessly.
+ge.tsx) with a 10-minute timeout bound and connection error handlers.
+   - Upgraded [preview/page.tsx](file:///c:/Users/nidhi/Desktop/VyaparAI/frontend/app/preview/page.tsx) and [approval/page.tsx](file:///c:/Users/nidhi/Desktop/VyaparAI/frontend/app/approval/page.tsx) to automatically render a beautiful "Campaign Generation in Progress" progress layout when a running job is detected, switching to the interactive campaign content as soon as the background rendering completes.
+4. **Tunnel Compatibility Fix:**
+   - Corrected the hardcoded API base URL in [approval/page.tsx](file:///c:/Users/nidhi/Desktop/VyaparAI/frontend/app/approval/page.tsx) to use `process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"`, allowing pages to communicate with the backend under remote tunnel URLs (e.g. `lhr.life`).

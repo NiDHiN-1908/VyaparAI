@@ -23,7 +23,8 @@ logger = logging.getLogger("vyaparai.crews.youtube_monitor_crew")
 
 def get_external_base_url() -> str:
     import os
-    url = os.getenv("PUBLIC_URL") or os.getenv("APP_BASE_URL") or "http://localhost:8000"
+    from backend.config import settings
+    url = settings.PUBLIC_URL or os.getenv("PUBLIC_URL") or os.getenv("APP_BASE_URL") or "http://localhost:8000"
     if "host.docker.internal" in url:
         url = url.replace("host.docker.internal", "localhost")
     if not url.endswith("/"):
@@ -32,7 +33,7 @@ def get_external_base_url() -> str:
 
 # Regex-based fallbacks for intent classification
 HIGH_INTENT_PATTERNS = [
-    r"\bprice\b", r"\bcost\b", r"\bhow\s+much\b", r"\brate\b", r"\bbuy\b", r"\border\b", 
+    r"\blink\b", r"\bprice\b", r"\bcost\b", r"\bhow\s+much\b", r"\brate\b", r"\bbuy\b", r"\border\b", 
     r"\bavailable\b", r"\bdelivery\b", r"\blocation\b", r"\baddress\b", r"\bcontact\b",
     r"\bwhatsapp\b", r"\bphone\b", r"\bnumber\b", r"\bcash\b", r"\bcod\b", r"\bpay\b",
     r"\bshipping\b", r"\bship\b", r"\bwant\b", r"\bneed\b", r"\bget\b", r"\bpurchase\b",
@@ -56,37 +57,44 @@ MEDIUM_INTENT_PATTERNS = [
 import json
 import os
 
-CONFIG_PATH = "auto_reply_config.json"
+# Absolute path resolving to workspace root auto_reply_config.json
+CONFIG_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "auto_reply_config.json")
 
-def get_auto_reply_setting() -> bool:
+def get_auto_reply_config() -> dict:
     if os.path.exists(CONFIG_PATH):
         try:
             with open(CONFIG_PATH, "r") as f:
                 data = json.load(f)
-                return data.get("auto_reply", False)
+                if isinstance(data, dict):
+                    # Set defaults if missing
+                    if "auto_reply" not in data:
+                        data["auto_reply"] = False
+                    if "confidence_threshold" not in data:
+                        data["confidence_threshold"] = 0.50
+                    return data
         except Exception:
             pass
-    return False
+    return {"auto_reply": False, "confidence_threshold": 0.50}
 
-def set_auto_reply_setting(val: bool):
+def set_auto_reply_config(config: dict):
     try:
         with open(CONFIG_PATH, "w") as f:
-            json.dump({"auto_reply": val}, f)
+            json.dump(config, f)
     except Exception:
         pass
 
 def fallback_classify_comment(text: str) -> Dict[str, Any]:
     text_lower = text.lower()
+    # Check if links or promotions are present first -> SPAM
+    if "http" in text_lower or ".com" in text_lower or "www." in text_lower or "subscribe" in text_lower:
+        return {"intent": "SPAM", "confidence": 0.99}
+
     for pattern in HIGH_INTENT_PATTERNS:
         if re.search(pattern, text_lower):
             return {"intent": "HIGH_INTENT", "confidence": 0.95}
     for pattern in MEDIUM_INTENT_PATTERNS:
         if re.search(pattern, text_lower):
             return {"intent": "MEDIUM_INTENT", "confidence": 0.80}
-    
-    # Check if links or promotions are present -> SPAM
-    if "http" in text_lower or ".com" in text_lower or "www." in text_lower or "subscribe" in text_lower:
-        return {"intent": "SPAM", "confidence": 0.99}
         
     return {"intent": "LOW_INTENT", "confidence": 0.70}
 
@@ -94,7 +102,7 @@ def fallback_generate_reply(text: str, intent: str, username: str, comment_id: O
     # Resolve contact phone number dynamically from active business
     from backend.services.supabase_service import supabase_svc
     businesses = supabase_svc.get_businesses()
-    contact_phone = "917306796590"
+    contact_phone = "919744506034"
     if businesses and businesses[0].get("contact"):
         import re
         cleaned = re.sub(r'\D', '', businesses[0]["contact"])
@@ -119,24 +127,78 @@ def fallback_generate_reply(text: str, intent: str, username: str, comment_id: O
 
 class YouTubeMonitorCrew:
     def __init__(self):
-        # Initialize agents
-        self.channel_agent = make_channel_agent()
-        self.video_agent = make_video_monitoring_agent()
-        self.collector_agent = make_comment_collector_agent()
-        self.intent_agent = make_intent_classification_agent()
-        self.reply_agent = make_reply_generation_agent()
-        self.approval_agent = make_approval_agent()
-        self.lead_agent = make_lead_creation_agent()
-        self.publisher_agent = make_reply_publisher_agent()
+        # Lazy initialization slots
+        self._channel_agent = None
+        self._video_agent = None
+        self._collector_agent = None
+        self._intent_agent = None
+        self._reply_agent = None
+        self._approval_agent = None
+        self._lead_agent = None
+        self._publisher_agent = None
         if not os.path.exists(CONFIG_PATH):
-            set_auto_reply_setting(False)
+            set_auto_reply_config({"auto_reply": False, "confidence_threshold": 0.80})
+
+    @property
+    def channel_agent(self):
+        if self._channel_agent is None:
+            self._channel_agent = make_channel_agent()
+        return self._channel_agent
+
+    @property
+    def video_agent(self):
+        if self._video_agent is None:
+            self._video_agent = make_video_monitoring_agent()
+        return self._video_agent
+
+    @property
+    def collector_agent(self):
+        if self._collector_agent is None:
+            self._collector_agent = make_comment_collector_agent()
+        return self._collector_agent
+
+    @property
+    def intent_agent(self):
+        if self._intent_agent is None:
+            self._intent_agent = make_intent_classification_agent()
+        return self._intent_agent
+
+    @property
+    def reply_agent(self):
+        if self._reply_agent is None:
+            self._reply_agent = make_reply_generation_agent()
+        return self._reply_agent
+
+    @property
+    def approval_agent(self):
+        if self._approval_agent is None:
+            self._approval_agent = make_approval_agent()
+        return self._approval_agent
+
+    @property
+    def lead_agent(self):
+        if self._lead_agent is None:
+            self._lead_agent = make_lead_creation_agent()
+        return self._lead_agent
+
+    @property
+    def publisher_agent(self):
+        if self._publisher_agent is None:
+            self._publisher_agent = make_reply_publisher_agent()
+        return self._publisher_agent
 
     @property
     def auto_reply(self) -> bool:
-        return get_auto_reply_setting()
+        return get_auto_reply_config().get("auto_reply", False)
+
+    @property
+    def confidence_threshold(self) -> float:
+        return get_auto_reply_config().get("confidence_threshold", 0.80)
 
     def set_auto_reply(self, val: bool):
-        set_auto_reply_setting(val)
+        cfg = get_auto_reply_config()
+        cfg["auto_reply"] = val
+        set_auto_reply_config(cfg)
         logger.info(f"YouTubeMonitorCrew auto reply set to: {val}")
 
     async def verify_channel(self, channel_id: str) -> Dict[str, Any]:
@@ -168,8 +230,8 @@ class YouTubeMonitorCrew:
             # Seed default video if empty for demo
             mock_video = supabase_svc.create_youtube_video(
                 channel_id=channel_id,
-                video_id="dQw4w9WgXcQ",
-                title="100% Organic Cold Pressed Coconut Oil - VyaparAI Promo",
+                video_id="PuCb1JHpBkM",
+                title="Cardamom Export Launch Campaign",
                 publish_date=datetime.now().isoformat(),
                 status="monitored"
             )
@@ -227,7 +289,7 @@ class YouTubeMonitorCrew:
         
         # Resolve contact phone number dynamically from active business
         businesses = supabase_svc.get_businesses()
-        contact_phone = "917306796590"
+        contact_phone = "919744506034"
         if businesses and businesses[0].get("contact"):
             import re
             cleaned = re.sub(r'\D', '', businesses[0]["contact"])
@@ -319,7 +381,8 @@ class YouTubeMonitorCrew:
             try:
                 from backend.services.youtube_auth_helper import execute_youtube_call
                 
-                response = execute_youtube_call(
+                response = await asyncio.to_thread(
+                    execute_youtube_call,
                     channel,
                     lambda yt: yt.comments().insert(
                         part="snippet",
@@ -334,9 +397,8 @@ class YouTubeMonitorCrew:
                 reply_id = response.get("id")
                 logger.info(f"Successfully posted real YouTube comment reply. ID: {reply_id}")
             except Exception as e:
-                logger.error(f"Failed to post real YouTube comment reply: {e}. Falling back to simulation mode to prevent blocking dashboard flow.")
-                import uuid
-                reply_id = f"RPL_{uuid.uuid4().hex[:11].upper()}_SIM"
+                logger.error(f"Failed to post real YouTube comment reply: {e}.")
+                raise e
         else:
             # Simulation Mode
             import uuid
@@ -373,96 +435,180 @@ class YouTubeMonitorCrew:
     async def process_single_comment(self, channel_id: str, video_id: str, comment_id: str, username: str, comment_text: str, timestamp: str) -> Dict[str, Any]:
         """Orchestrate Agents 3 -> 8 for an incoming comment"""
         logger.info(f"Processing comment {comment_id} from @{username}: '{comment_text}'")
+        try:
+            # 1. Classify intent (Agent 4)
+            classification = await self.classify_comment_intent(comment_text)
+            intent = classification["intent"]
+            confidence = classification["confidence"]
 
-        # Get video auto_reply setting
-        video = supabase_svc.get_youtube_video(video_id)
-        video_auto_reply = True # Default to True if video not found
-        if video:
-            video_auto_reply = video.get("auto_reply") is not False
+            # Get video auto_reply setting
+            video = supabase_svc.get_youtube_video(video_id)
+            video_auto_reply = True # Default to True if video not found
+            if video:
+                video_auto_reply = video.get("auto_reply") is not False
 
-        effective_auto_reply = self.auto_reply and video_auto_reply
+            is_confidence_low = confidence < self.confidence_threshold
+            effective_auto_reply = self.auto_reply and video_auto_reply and (not is_confidence_low)
+            logger.info(f"[AUTO REPLY CHECK] self.auto_reply={self.auto_reply}, video_auto_reply={video_auto_reply}, is_confidence_low={is_confidence_low}, effective_auto_reply={effective_auto_reply}")
 
-        # 1. Classify intent (Agent 4)
-        classification = await self.classify_comment_intent(comment_text)
-        intent = classification["intent"]
-        confidence = classification["confidence"]
+            # 2. Store comment in database
+            # Default status: pending_approval if effective_auto_reply=false, else approved
+            status = "approved" if effective_auto_reply else "pending_approval"
+            if intent == "SPAM":
+                status = "rejected" # Don't queue spam for approval
 
-        # 2. Store comment in database
-        # Default status: pending_approval if effective_auto_reply=false, else approved
-        status = "approved" if effective_auto_reply else "pending_approval"
-        if intent == "SPAM":
-            status = "rejected" # Don't queue spam for approval
+            public_base_url = get_external_base_url()
+            reply_link = f"{public_base_url}youtube/r/{comment_id}"
+            logger.info(f"[Ingestion] Generating unique reply link: {reply_link}")
 
-        comment_rec = supabase_svc.create_youtube_comment(
-            video_id=video_id,
-            comment_id=comment_id,
-            username=username,
-            text=comment_text,
-            timestamp=timestamp,
-            intent=intent,
-            confidence=confidence,
-            status=status
-        )
-
-        # 3. Generate Reply (Agent 5)
-        reply_text = ""
-        reply_rec = None
-        if intent != "SPAM":
-            reply_text = await self.generate_comment_reply(comment_text, intent, username, comment_id)
-            
-            # Save reply record
-            reply_status = "pending_publish" if effective_auto_reply else "draft"
-            reply_rec = supabase_svc.create_youtube_reply(
+            comment_rec = supabase_svc.create_youtube_comment(
+                video_id=video_id,
                 comment_id=comment_id,
-                suggested_reply=reply_text,
-                status=reply_status
+                username=username,
+                text=comment_text,
+                timestamp=timestamp,
+                intent=intent,
+                confidence=confidence,
+                status=status,
+                reply_link=reply_link
             )
 
-        # 4. Lead Creation (Agent 7)
-        lead_rec = None
-        if intent == "HIGH_INTENT":
-            lead_rec = await self.create_sales_lead(comment_id, video_id, username, intent, reply_text)
+            # 3. Generate Reply (Agent 5)
+            reply_text = ""
+            reply_rec = None
+            if intent != "SPAM":
+                try:
+                    reply_text = await self.generate_comment_reply(comment_text, intent, username, comment_id)
+                    
+                    # Save reply record
+                    reply_status = "pending_publish" if effective_auto_reply else "draft"
+                    reply_rec = supabase_svc.create_youtube_reply(
+                        comment_id=comment_id,
+                        suggested_reply=reply_text,
+                        status=reply_status
+                    )
+                except Exception as e:
+                    logger.error(f"Reply generation failed: {e}")
+                    supabase_svc.update_youtube_comment_status(comment_id, "failed")
+                    supabase_svc.create_youtube_reply(
+                        comment_id=comment_id,
+                        suggested_reply="",
+                        status="failed",
+                        failure_reason=f"Reply generation failed: {str(e)}"
+                    )
+                    return {
+                        "comment": supabase_svc.get_youtube_comment(comment_id),
+                        "reply": None,
+                        "lead": None
+                    }
 
-        # 5. Publisher (Agent 8) - Run if effective_auto_reply is enabled
-        if effective_auto_reply and reply_text:
-            published_rec = await self.publish_reply_to_youtube(comment_id, reply_text)
-            if reply_rec:
-                # Update reply record status to published
-                supabase_svc.update_youtube_reply(reply_rec["id"], {
-                    "status": "published",
-                    "reply_id": published_rec["reply_id"],
-                    "actual_reply": reply_text,
-                    "published_at": datetime.now().isoformat()
-                })
+            # 4. Lead Creation (Agent 7)
+            lead_rec = None
+            if intent == "HIGH_INTENT":
+                lead_rec = await self.create_sales_lead(comment_id, video_id, username, intent, reply_text)
 
-        # Update analytics count
-        try:
-            analytics = supabase_svc.get_youtube_analytics(channel_id)
-            if analytics:
-                new_processed = analytics.get("comments_processed", 0) + 1
-                new_leads = analytics.get("lead_count", 0) + (1 if intent == "HIGH_INTENT" else 0)
-                
-                # Recalculate rates
-                published_count = len([r for r in supabase_svc.get_youtube_replies() if r["status"] == "published"])
-                reply_rate = round((published_count / new_processed) * 100, 2) if new_processed > 0 else 0
-                
-                # Mock conversions
-                conversions = int(new_leads * 0.4)
-                conversion_rate = round((conversions / new_leads) * 100, 2) if new_leads > 0 else 0
-                
-                supabase_svc.update_youtube_analytics(analytics["id"], {
-                    "comments_processed": new_processed,
-                    "lead_count": new_leads,
-                    "reply_rate": reply_rate,
-                    "conversion_rate": conversion_rate
-                })
+            # 5. Publisher (Agent 8) - Run if effective_auto_reply is enabled
+            if effective_auto_reply and reply_text:
+                try:
+                    published_rec = await self.publish_reply_to_youtube(comment_id, reply_text)
+                    if reply_rec:
+                        # Update reply record status to published
+                        supabase_svc.update_youtube_reply(reply_rec["id"], {
+                            "status": "published",
+                            "reply_id": published_rec["reply_id"],
+                            "actual_reply": reply_text,
+                            "published_at": datetime.now().isoformat()
+                        })
+                except Exception as e:
+                    logger.error(f"YouTube publishing failed: {e}")
+                    supabase_svc.update_youtube_comment_status(comment_id, "failed")
+                    if reply_rec:
+                        supabase_svc.update_youtube_reply(reply_rec["id"], {
+                            "status": "failed",
+                            "failure_reason": f"YouTube publishing failed: {str(e)}"
+                        })
+                    else:
+                        supabase_svc.create_youtube_reply(
+                            comment_id=comment_id,
+                            suggested_reply=reply_text,
+                            status="failed",
+                            failure_reason=f"YouTube publishing failed: {str(e)}"
+                        )
+
+            # Update analytics count
+            try:
+                analytics = supabase_svc.get_youtube_analytics(channel_id)
+                if analytics:
+                    new_processed = analytics.get("comments_processed", 0) + 1
+                    new_leads = analytics.get("lead_count", 0) + (1 if intent == "HIGH_INTENT" else 0)
+                    
+                    # Recalculate rates
+                    published_count = len([r for r in supabase_svc.get_youtube_replies() if r["status"] == "published"])
+                    reply_rate = round((published_count / new_processed) * 100, 2) if new_processed > 0 else 0
+                    
+                    # Mock conversions
+                    conversions = int(new_leads * 0.4)
+                    conversion_rate = round((conversions / new_leads) * 100, 2) if new_leads > 0 else 0
+                    
+                    supabase_svc.update_youtube_analytics(analytics["id"], {
+                        "comments_processed": new_processed,
+                        "lead_count": new_leads,
+                        "reply_rate": reply_rate,
+                        "conversion_rate": conversion_rate
+                    })
+            except Exception as e:
+                logger.error(f"Failed to update channel analytics: {e}")
+
+            return {
+                "comment": comment_rec,
+                "reply": reply_rec,
+                "lead": lead_rec
+            }
         except Exception as e:
-            logger.error(f"Failed to update channel analytics: {e}")
+            logger.error(f"[MONITOR CREW ERROR] Failed to process comment {comment_id} from @{username}: {e}", exc_info=True)
+            raise e
 
-        return {
-            "comment": comment_rec,
-            "reply": reply_rec,
-            "lead": lead_rec
-        }
+    async def process_all_pending_comments(self) -> List[Dict[str, Any]]:
+        """Processes and auto-publishes all comments sitting in pending_approval status"""
+        logger.info("[AutoReply] Auto-flushing and replying to all pending comments...")
+        results = []
+        try:
+            all_comments = supabase_svc.get_youtube_comments()
+            pending_comments = [c for c in all_comments if c.get("status") in ["pending_approval", "pending", "draft"]]
+
+            logger.info(f"[AutoReply] Found {len(pending_comments)} pending comments to auto-process.")
+            for c in pending_comments:
+                cid = c["comment_id"]
+                ctext = c.get("text", "")
+                cuser = c.get("username", "user")
+                cintent = c.get("intent", "MEDIUM_INTENT")
+                
+                if cintent == "SPAM":
+                    supabase_svc.update_youtube_comment_status(cid, "rejected")
+                    continue
+                
+                # Check existing reply draft or generate a new one
+                reply_rec = supabase_svc.get_youtube_reply_by_comment(cid)
+                reply_text = ""
+                if reply_rec and reply_rec.get("suggested_reply"):
+                    reply_text = reply_rec["suggested_reply"]
+                else:
+                    try:
+                        reply_text = await self.generate_comment_reply(ctext, cintent, cuser, cid)
+                    except Exception as gen_err:
+                        logger.error(f"[AutoReply] Failed to generate reply for comment {cid}: {gen_err}")
+                        reply_text = fallback_generate_reply(ctext, cintent, cuser, cid)
+
+                if reply_text:
+                    try:
+                        published = await self.publish_reply_to_youtube(cid, reply_text)
+                        results.append({"comment_id": cid, "reply": published})
+                    except Exception as pub_err:
+                        logger.error(f"[AutoReply] Failed to publish reply for comment {cid}: {pub_err}")
+                        
+        except Exception as e:
+            logger.error(f"[AutoReply] Error during process_all_pending_comments: {e}")
+        return results
+
 
 youtube_monitor_crew = YouTubeMonitorCrew()

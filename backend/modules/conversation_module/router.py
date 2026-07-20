@@ -46,12 +46,15 @@ async def list_conversations(
                     "username": lead.get("username"),
                     "intent": lead.get("intent"),
                     "comment_text": "",
+                    "video_id": lead.get("video_id") or "",
                     "video_title": ""
                 }
                 if cmt_id and cmt_id in comments_map:
                     cmt = comments_map[cmt_id]
                     conv["lead"]["comment_text"] = cmt.get("text", "")
                     vid_id = cmt.get("video_id")
+                    if vid_id:
+                        conv["lead"]["video_id"] = vid_id
                     if vid_id and vid_id in videos_map:
                         conv["lead"]["video_title"] = videos_map[vid_id].get("title", "")
                         
@@ -82,12 +85,15 @@ async def get_conversation_details(conversation_id: str):
                 "username": lead.get("username"),
                 "intent": lead.get("intent"),
                 "comment_text": "",
+                "video_id": lead.get("video_id") or "",
                 "video_title": ""
             }
             if cmt_id:
                 cmt = supabase_svc.get_youtube_comment(cmt_id)
                 if cmt:
                     conv["lead"]["comment_text"] = cmt.get("text", "")
+                    if cmt.get("video_id"):
+                        conv["lead"]["video_id"] = cmt["video_id"]
                     video = supabase_svc.get_youtube_video(cmt["video_id"])
                     if video:
                         conv["lead"]["video_title"] = video.get("title", "")
@@ -137,6 +143,107 @@ async def toggle_conversation_autopilot(conversation_id: str, payload: ToggleAut
     """
     try:
         updated = await conversation_svc.toggle_autopilot(conversation_id, payload.ai_enabled)
+        return {"status": "success", "data": updated}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+class EditMessageRequest(BaseModel):
+    content: str
+
+@router.delete("")
+async def clear_all_conversations(tenant_id: str = Query("00000000-0000-0000-0000-000000000000")):
+    """
+    Clears all local conversation history for a tenant.
+    """
+    try:
+        success = conversation_repo.delete_all(tenant_id)
+        if not success:
+            raise HTTPException(status_code=500, detail="Failed to clear conversations")
+        
+        # Broadcast the clear event via WebSockets so all connected clients sync instantly
+        from backend.modules.websocket_module import websocket_manager
+        await websocket_manager.broadcast_to_tenant(tenant_id, "conversations.cleared", {})
+        return {"status": "success", "message": "All conversations cleared successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.delete("/{conversation_id}")
+async def delete_conversation(conversation_id: str):
+    """
+    Deletes an individual conversation by ID.
+    """
+    try:
+        conv = conversation_repo.get_by_id(conversation_id)
+        if not conv:
+            raise HTTPException(status_code=404, detail="Conversation not found")
+        
+        success = conversation_repo.delete_by_id(conversation_id)
+        if not success:
+            raise HTTPException(status_code=500, detail="Failed to delete conversation")
+        
+        # Broadcast the delete event via WebSockets
+        from backend.modules.websocket_module import websocket_manager
+        await websocket_manager.broadcast_to_tenant(conv["tenant_id"], "conversation.deleted", {"id": conversation_id})
+        return {"status": "success", "message": "Conversation deleted successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/{conversation_id}/reset")
+async def reset_conversation(conversation_id: str):
+    """
+    Clears all AI memory, workflow state, and associated orders for the conversation
+    without deleting the message history.
+    """
+    try:
+        conv = conversation_repo.get_by_id(conversation_id)
+        if not conv:
+            raise HTTPException(status_code=404, detail="Conversation not found")
+        
+        # 1. Reset state to WELCOME and empty state_metadata
+        updates = {
+            "state": "WELCOME",
+            "state_metadata": {}
+        }
+        updated_conv = conversation_repo.update(conversation_id, updates)
+        
+        # 2. Reset associated lead and orders if present
+        lead_id = conv.get("lead_id")
+        if lead_id:
+            supabase_svc.update_lead_status(lead_id, "new")
+            if supabase_svc.is_mock:
+                from backend.services.supabase_service import MOCK_DB, save_mock_db
+                MOCK_DB["orders"] = [o for o in MOCK_DB.get("orders", []) if o.get("lead_id") != lead_id]
+                save_mock_db()
+            else:
+                supabase_svc.client.table("orders").delete().eq("lead_id", lead_id).execute()
+        
+        # 3. Broadcast update via WebSockets
+        from backend.modules.websocket_module import websocket_manager
+        await websocket_manager.broadcast_to_tenant(conv["tenant_id"], "conversation.updated", updated_conv)
+        return {"status": "success", "message": "Conversation session reset successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.patch("/messages/{message_id}")
+async def edit_conversation_message(message_id: str, payload: EditMessageRequest):
+    """
+    Edits a message's content locally in the database and updates edit history.
+    """
+    try:
+        updated = supabase_svc.edit_message(message_id, payload.content)
+        if not updated:
+            raise HTTPException(status_code=404, detail="Message not found")
+            
+        # Broadcast the message update event via WebSocket so the frontend updates instantly
+        conversation_id = updated.get("conversation_id")
+        conv = conversation_repo.get_by_id(conversation_id)
+        if conv:
+            from backend.modules.websocket_module import websocket_manager
+            await websocket_manager.broadcast_to_tenant(
+                tenant_id=conv["tenant_id"],
+                event_type="message.created",
+                data=updated
+            )
         return {"status": "success", "data": updated}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

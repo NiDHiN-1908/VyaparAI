@@ -37,15 +37,49 @@ FALLBACK_TRANSLATIONS = {
     }
 }
 
+from functools import lru_cache
+
+@lru_cache(maxsize=128)
 def translate_content_indictrans2(text: str, target_lang: str) -> str:
     """
-    Placeholder representing the IndicTrans2 architecture.
-    If the environment has IndicTrans2 model files loaded, this translates it.
-    Otherwise, falls back to a clean dictionary mapper or OpenAI/Ollama fallback translation.
+    Translates marketing text into target regional languages.
+    Utilizes local LLM (Ollama Llama3.1) for high-fidelity translation first.
+    Falls back to a dictionary mapper if offline or error occurs.
     """
-    lang_lower = target_lang.lower()
+    # Clean surrogate characters from input text to prevent encoding crashes in LLM request
+    text = "".join(c for c in text if not (0xD800 <= ord(c) <= 0xDFFF))
+    
+    lang_lower = target_lang.lower().strip()
     if lang_lower == "english":
         return text
+
+    logger.info(f"Translating text to {target_lang} using local LLM...")
+    try:
+        llm = get_ollama_llm()
+        prompt = f"""You are a professional translator fluent in English and {target_lang}.
+Translate the following English marketing text into clean, natural, and persuasive {target_lang} as spoken/written in India.
+Do not add any preamble, explanations, warning labels, or brackets. Only output the exact translated text.
+
+Text to translate:
+"{text}"
+"""
+        response = llm.invoke(prompt)
+        translated = response.content.strip()
+        
+        # Clean surrogate characters from response
+        translated = "".join(c for c in translated if not (0xD800 <= ord(c) <= 0xDFFF))
+        
+        # Strip outer quotes if LLM returned them
+        if translated.startswith('"') and translated.endswith('"'):
+            translated = translated[1:-1].strip()
+        if translated.startswith("'") and translated.endswith("'"):
+            translated = translated[1:-1].strip()
+            
+        if translated:
+            logger.info(f"Dynamic translation succeeded for {target_lang}")
+            return translated
+    except Exception as e:
+        logger.error(f"LLM translation failed for {target_lang}: {e}. Falling back to default mock templates.")
     
     # Attempt to look up pre-translated clean blocks to guarantee beautiful translations in demo
     for phrase_key, translation_dict in FALLBACK_TRANSLATIONS.get(lang_lower, {}).items():

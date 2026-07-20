@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS youtube_comments (
     intent VARCHAR(50) DEFAULT 'SPAM', -- HIGH_INTENT, MEDIUM_INTENT, LOW_INTENT, SPAM
     confidence NUMERIC(4, 3) DEFAULT 1.000,
     status VARCHAR(50) DEFAULT 'pending_approval', -- pending_approval, approved, rejected, replied
+    reply_link TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 

@@ -22,7 +22,8 @@ import {
   Play,
   Volume2,
   Image as ImageIcon,
-  Youtube
+  Youtube,
+  Trash2
 } from "lucide-react";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
@@ -54,6 +55,10 @@ function LiveChatContent() {
   // AI Pipeline tracking states
   const [aiState, setAiState] = useState("WELCOME");
   const [activeOrderId, setActiveOrderId] = useState<string | null>(null);
+  
+  // Message editing states
+  const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
+  const [editingText, setEditingText] = useState("");
 
   const chatEndRef = useRef<HTMLDivElement>(null);
 
@@ -88,18 +93,71 @@ function LiveChatContent() {
           setAiState(defaultSelect.state || "WELCOME");
         }
       }
-      
-      // Fetch products
-      const mockProds = [
-        { id: "prod_cardamom", name: "Organic Cardamom", price: 350.00 },
-        { id: "prod_oil", name: "Virgin Coconut Oil", price: 299.00 }
-      ];
-      setProducts(mockProds);
-      setSelectedProduct(mockProds[0]);
     } catch (err) {
       console.error("Failed to load initial conversation data:", err);
     } finally {
       setLoadingConversations(false);
+    }
+  }
+
+  // Fetch all products from master catalog and pre-select the video's linked product
+  async function fetchProductsForVideo(videoId?: string) {
+    try {
+      // 1. Fetch full product catalog from master product service
+      const prodRes = await fetch(`${API_BASE}/product`);
+      let allCatalogProducts: any[] = [];
+      if (prodRes.ok) {
+        allCatalogProducts = await prodRes.json();
+      }
+
+      // 2. Fetch specific products for this video if available
+      let videoProducts: any[] = [];
+      if (videoId) {
+        try {
+          const vRes = await fetch(`${API_BASE}/youtube/videos/${videoId}/products`);
+          const vData = await vRes.json();
+          if (vRes.ok && vData.status === "success" && vData.data) {
+            videoProducts = vData.data;
+          }
+        } catch (e) {
+          console.warn("Error fetching video specific products:", e);
+        }
+      }
+
+      // Merge video products with all catalog products, deduplicating strictly by product name
+      const excludedKw = ["saree", "fabric", "paint", "emulsion", "cardamom", "coconut", "oil"];
+      const isAllowed = (key: string) => key && !excludedKw.some(kw => key.includes(kw));
+
+      const mergedMap = new Map<string, any>();
+      videoProducts.forEach(p => {
+        const nameKey = (p.name || "").toLowerCase().trim();
+        if (isAllowed(nameKey)) {
+          mergedMap.set(nameKey, p);
+        }
+      });
+      allCatalogProducts.forEach(p => {
+        const nameKey = (p.name || "").toLowerCase().trim();
+        if (isAllowed(nameKey)) {
+          if (!mergedMap.has(nameKey)) {
+            mergedMap.set(nameKey, p);
+          }
+        }
+      });
+
+      const finalProductList = Array.from(mergedMap.values());
+      setProducts(finalProductList);
+
+      if (finalProductList.length > 0) {
+        // Pre-select the video product if found, else default to first item
+        const defaultSel = videoProducts.length > 0 ? videoProducts[0] : finalProductList[0];
+        setSelectedProduct(defaultSel);
+      } else {
+        setSelectedProduct(null);
+      }
+    } catch (err) {
+      console.error("Failed to fetch products for live chat:", err);
+      setProducts([]);
+      setSelectedProduct(null);
     }
   }
 
@@ -131,19 +189,18 @@ function LiveChatContent() {
   // 3. Mount and check active connection badge (polling evolution api gateway status)
   async function checkLiveStatus() {
     try {
-      const res = await fetch(`${API_BASE}/whatsapp/connect`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tenant_id: DEFAULT_TENANT, instance_name: "kochi_farm_whatsapp" })
-      });
+      const res = await fetch(`${API_BASE}/whatsapp/instances?tenant_id=${DEFAULT_TENANT}`);
       if (res.ok) {
         const data = await res.json();
-        if (data.status === "success" && data.data) {
-          const statusRes = await fetch(`${API_BASE}/whatsapp/${data.data.id}/status`);
+        if (data.status === "success" && data.data && data.data.length > 0) {
+          const active = data.data[0];
+          const statusRes = await fetch(`${API_BASE}/whatsapp/${active.id}/status`);
           const statusData = await statusRes.json();
           if (statusRes.ok && statusData.status === "success") {
             setIsProduction(statusData.connection_status === "connected");
           }
+        } else {
+          setIsProduction(false);
         }
       }
     } catch (e) {
@@ -163,8 +220,14 @@ function LiveChatContent() {
       setAiState(selectedConversation.state || "WELCOME");
       fetchMessages(selectedConversation.id);
       setActiveOrderId(null);
+      
+      // Load products dynamically for the conversation's video
+      const videoId = selectedConversation.lead?.video_id;
+      fetchProductsForVideo(videoId);
     } else {
       setChatHistory([]);
+      setProducts([]);
+      setSelectedProduct(null);
     }
   }, [selectedConversation]);
 
@@ -189,11 +252,20 @@ function LiveChatContent() {
         const eventType = payload.event;
         const eventData = payload.data;
         
-        if (eventType === "message.created" || eventType === "message.sent" || eventType === "message.delivered") {
+        if (
+          eventType === "message.created" || 
+          eventType === "message.sent" || 
+          eventType === "message.delivered" || 
+          eventType === "message.failed" ||
+          eventType === "message.read"
+        ) {
           // If message is for the currently viewed conversation
           if (eventData.conversation_id === selectedConversation.id) {
             setChatHistory(prev => {
-              if (prev.some(m => m.id === eventData.id)) return prev;
+              if (prev.some(m => m.id === eventData.id)) {
+                // Replace existing message to update its metadata / status
+                return prev.map(m => m.id === eventData.id ? eventData : m);
+              }
               return [...prev, eventData];
             });
             
@@ -215,6 +287,16 @@ function LiveChatContent() {
             if (prev.some(c => c.id === eventData.id)) return prev;
             return [eventData, ...prev];
           });
+        } else if (eventType === "conversation.deleted") {
+          setConversations(prev => prev.filter(c => c.id !== eventData.id));
+          if (selectedConversation?.id === eventData.id) {
+            setSelectedConversation(null);
+            setChatHistory([]);
+          }
+        } else if (eventType === "conversations.cleared") {
+          setConversations([]);
+          setSelectedConversation(null);
+          setChatHistory([]);
         }
       } catch (err) {
         console.error("WS parse error:", err);
@@ -265,7 +347,7 @@ function LiveChatContent() {
           },
           pushName: "Customer Sandbox",
           message: {
-            conversation: "Hi, I want to order organic cardamom. What is the price and shipping?"
+            conversation: "Hi, I want to order a Fiddle Leaf Fig plant. What is the price and shipping?"
           },
           messageType: "conversation"
         }
@@ -329,6 +411,107 @@ function LiveChatContent() {
       });
     } catch (err) {
       console.error("Simulated payment failed:", err);
+    }
+  }
+
+  // 8. Clear All Chats (Local database only)
+  async function handleClearAllChats() {
+    const confirmed = window.confirm("Are you sure you want to clear all chat conversations? This will delete all local chat history and messages permanently. This action cannot be undone.");
+    if (!confirmed) return;
+
+    try {
+      const res = await fetch(`${API_BASE}/conversations?tenant_id=${DEFAULT_TENANT}`, {
+        method: "DELETE"
+      });
+      if (res.ok) {
+        setConversations([]);
+        setSelectedConversation(null);
+        setChatHistory([]);
+      } else {
+        alert("Failed to clear conversations.");
+      }
+    } catch (err) {
+      console.error("Error clearing chats:", err);
+      alert("Error clearing chats.");
+    }
+  }
+
+  // 9. Delete Individual Chat (Local database only)
+  async function handleDeleteChat(conversationId: string, phone: string) {
+    const confirmed = window.confirm(`Are you sure you want to delete the chat conversation with +${phone}? All messages will be permanently deleted from the local database.`);
+    if (!confirmed) return;
+
+    try {
+      const res = await fetch(`${API_BASE}/conversations/${conversationId}`, {
+        method: "DELETE"
+      });
+      if (res.ok) {
+        setConversations(prev => prev.filter(c => c.id !== conversationId));
+        if (selectedConversation?.id === conversationId) {
+          setSelectedConversation(null);
+          setChatHistory([]);
+        }
+      } else {
+        alert("Failed to delete conversation.");
+      }
+    } catch (err) {
+      console.error("Error deleting chat:", err);
+      alert("Error deleting chat.");
+    }
+  }
+
+  // 9b. Reset Autopilot Session state (Keeps history, resets AI memory & checkout stage)
+  async function handleResetConversation() {
+    if (!selectedConversation) return;
+    const confirmed = window.confirm("Are you sure you want to reset the conversation state, AI memory, and order progress for this customer? This will clear all AI memory context but preserve chat message history.");
+    if (!confirmed) return;
+
+    try {
+      const res = await fetch(`${API_BASE}/conversations/${selectedConversation.id}/reset`, {
+        method: "POST"
+      });
+      if (res.ok) {
+        setConversations(prev => prev.map(c => c.id === selectedConversation.id ? { ...c, state: "WELCOME", state_metadata: {} } : c));
+        setSelectedConversation((prev: any) => prev ? { ...prev, state: "WELCOME", state_metadata: {} } : null);
+        setAiState("WELCOME");
+        alert("Conversation session reset successfully!");
+      } else {
+        alert("Failed to reset conversation.");
+      }
+    } catch (err) {
+      console.error("Error resetting conversation:", err);
+      alert("Error resetting conversation.");
+    }
+  }
+
+  // 10. Edit Message Helpers
+  function handleStartEditMessage(msg: any) {
+    setEditingMessageId(msg.id);
+    setEditingText(msg.content);
+  }
+
+  async function handleSaveEditMessage(messageId: string) {
+    if (!editingText.trim()) return;
+    try {
+      const res = await fetch(`${API_BASE}/conversations/messages/${messageId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: editingText })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.status === "success" && data.data) {
+          // Update chat history locally
+          setChatHistory(prev => prev.map(m => m.id === messageId ? data.data : m));
+          setEditingMessageId(null);
+          setEditingText("");
+        }
+      } else {
+        alert("Failed to save edited message.");
+      }
+    } catch (err) {
+      console.error("Error editing message:", err);
+      alert("Error editing message.");
     }
   }
 
@@ -404,13 +587,25 @@ function LiveChatContent() {
                     >
                       <div className="flex justify-between items-center w-full">
                         <span className="font-bold text-xs truncate">+{c.customer_phone}</span>
-                        <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded border ${
-                          c.status === "open"
-                            ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/25" 
-                            : "bg-slate-800 text-slate-400 border-slate-700/60"
-                        }`}>
-                          {c.status.toUpperCase()}
-                        </span>
+                        <div className="flex items-center gap-1.5">
+                          <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded border ${
+                            c.status === "open"
+                              ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/25" 
+                              : "bg-slate-800 text-slate-400 border-slate-700/60"
+                          }`}>
+                            {c.status.toUpperCase()}
+                          </span>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteChat(c.id, c.customer_phone);
+                            }}
+                            className="text-slate-500 hover:text-rose-400 transition p-0.5"
+                            title="Delete Chat"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                       </div>
                       <div className="flex justify-between items-center text-[10px] text-slate-500 mt-1">
                         <span>Channel: {c.channel}</span>
@@ -427,9 +622,9 @@ function LiveChatContent() {
             </div>
 
             {/* Product catalog display */}
-            {products.length > 0 && (
-              <div className="border-t border-slate-800/80 pt-4 space-y-2.5">
-                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Target Catalog Product</label>
+            <div className="border-t border-slate-800/80 pt-4 space-y-2.5">
+              <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Target Catalog Product</label>
+              {products.length > 0 ? (
                 <select
                   onChange={(e) => setSelectedProduct(products.find(p => p.id === e.target.value))}
                   value={selectedProduct?.id || ""}
@@ -439,18 +634,31 @@ function LiveChatContent() {
                     <option key={prod.id} value={prod.id}>{prod.name} (Rs. {prod.price})</option>
                   ))}
                 </select>
-              </div>
-            )}
+              ) : (
+                <div className="text-[11px] text-amber-400 bg-amber-950/20 border border-amber-900/30 px-3 py-2 rounded-xl text-center font-medium">
+                  No products are linked to this monitored video.
+                </div>
+              )}
+            </div>
 
           </div>
           
-          <button 
-            onClick={fetchConversations} 
-            className="w-full flex items-center justify-center gap-2 bg-slate-950 border border-slate-800/80 hover:bg-slate-900 text-xs font-bold text-slate-400 py-3 rounded-xl transition mt-4"
-          >
-            <RefreshCw className="w-3.5 h-3.5" />
-            Refresh Threads
-          </button>
+          <div className="flex gap-2 mt-4">
+            <button 
+              onClick={fetchConversations} 
+              className="flex-1 flex items-center justify-center gap-2 bg-slate-950 border border-slate-800/80 hover:bg-slate-900 text-xs font-bold text-slate-400 py-3 rounded-xl transition"
+            >
+              <RefreshCw className="w-3.5 h-3.5" />
+              Refresh
+            </button>
+            <button 
+              onClick={handleClearAllChats} 
+              className="flex-1 flex items-center justify-center gap-2 bg-rose-500/10 border border-rose-500/25 hover:bg-rose-500/20 text-xs font-bold text-rose-450 py-3 rounded-xl transition"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+              Clear Chats
+            </button>
+          </div>
         </div>
 
         {/* Right Pane: Unified Chat Terminal */}
@@ -501,6 +709,17 @@ function LiveChatContent() {
                   >
                     <Sparkles className="w-3.5 h-3.5" />
                     Simulate Customer Inbound
+                  </button>
+                )}
+
+                {selectedConversation && (
+                  <button
+                    type="button"
+                    onClick={handleResetConversation}
+                    className="flex items-center gap-1.5 text-[10px] font-bold bg-rose-950/20 border border-rose-500/30 hover:bg-rose-900/30 text-rose-400 px-3.5 py-2 rounded-xl transition active:scale-95"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5" />
+                    Reset Session
                   </button>
                 )}
 
@@ -661,7 +880,34 @@ function LiveChatContent() {
                           : "bg-slate-900 border-slate-800/80 text-slate-200"
                       }`}>
                         {msg.message_type === "text" && (
-                          <p>{msg.content}</p>
+                          editingMessageId === msg.id ? (
+                            <div className="space-y-2 min-w-[200px]">
+                              <textarea
+                                value={editingText}
+                                onChange={(e) => setEditingText(e.target.value)}
+                                className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs text-slate-100 focus:outline-none focus:border-indigo-500"
+                                rows={3}
+                              />
+                              <div className="flex justify-end gap-1.5">
+                                <button
+                                  type="button"
+                                  onClick={() => setEditingMessageId(null)}
+                                  className="px-2.5 py-1 text-[10px] font-bold bg-slate-800 hover:bg-slate-700 text-slate-300 rounded transition"
+                                >
+                                  Cancel
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleSaveEditMessage(msg.id)}
+                                  className="px-2.5 py-1 text-[10px] font-bold bg-indigo-600 hover:bg-indigo-500 text-white rounded transition"
+                                >
+                                  Save
+                                </button>
+                              </div>
+                            </div>
+                          ) : (
+                            <p>{msg.content}</p>
+                          )
                         )}
 
                         {msg.message_type === "image" && (
@@ -695,9 +941,36 @@ function LiveChatContent() {
                         )}
                       </div>
 
-                      <span className="text-[8px] text-slate-600 block px-1 text-right">
-                        {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                      </span>
+                      <div className="flex items-center justify-between gap-3 px-1">
+                        {msg.message_type === "text" && editingMessageId !== msg.id && (
+                          <button
+                            onClick={() => handleStartEditMessage(msg)}
+                            className="text-[10px] text-slate-500 hover:text-indigo-400 transition"
+                          >
+                            Edit
+                          </button>
+                        )}
+                        {msg.metadata?.edited && (
+                          <span 
+                            className="text-[9px] text-slate-500 italic block cursor-help" 
+                            title={
+                              msg.metadata.edit_history && msg.metadata.edit_history.length > 0
+                                ? `Original: "${msg.metadata.edit_history[0].content}" at ${new Date(msg.metadata.edit_history[0].edited_at).toLocaleTimeString()}`
+                                : "Edited"
+                            }
+                          >
+                            (edited)
+                          </span>
+                        )}
+                        {msg.metadata?.status === "failed" && (
+                          <span className="text-[9px] text-rose-500 font-semibold max-w-[220px] truncate block" title={msg.metadata.error}>
+                            ⚠️ {msg.metadata.error || "Delivery failed"}
+                          </span>
+                        )}
+                        <span className="text-[8px] text-slate-600 block ml-auto text-right">
+                          {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 );

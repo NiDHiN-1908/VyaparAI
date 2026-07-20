@@ -10,11 +10,14 @@ logger = logging.getLogger("vyaparai.agents.content_agent")
 def get_ollama_llm() -> ChatOpenAI:
     """Helper to initialize Ollama LLM using the OpenAI-compatible endpoint."""
     model_name = settings.OLLAMA_MODEL
+    if not model_name.startswith("ollama/"):
+        model_name = f"ollama/{model_name}"
     return ChatOpenAI(
         model=model_name,
         openai_api_key="ollama",  # Placeholder key
         openai_api_base=f"{settings.OLLAMA_BASE_URL}/v1",
-        temperature=0.7
+        temperature=0.7,
+        timeout=15.0
     )
 
 def make_content_agent() -> Agent:

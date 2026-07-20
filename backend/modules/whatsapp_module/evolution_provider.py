@@ -271,6 +271,7 @@ class EvolutionProvider(WhatsappProviderInterface):
                 "events": [
                     "CONNECTION_UPDATE",
                     "MESSAGES_UPSERT",
+                    "MESSAGES_UPDATE",
                     "SEND_MESSAGE"
                 ]
             }
@@ -278,9 +279,9 @@ class EvolutionProvider(WhatsappProviderInterface):
         async with httpx.AsyncClient() as client:
             try:
                 res = await client.post(url, headers=self._get_headers(), json=payload, timeout=10.0)
-                if res.status_code != 200:
+                if res.status_code not in [200, 201]:
                     logger.error(f"Failed to register webhook in Evolution API: {res.text}")
-                return res.status_code == 200
+                return res.status_code in [200, 201]
             except Exception as e:
                 logger.error(f"Network error in register_webhook: {e}")
                 return True

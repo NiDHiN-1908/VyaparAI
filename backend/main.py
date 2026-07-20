@@ -1,18 +1,28 @@
 # backend/main.py
+import time
+start_all_time = time.time()
+
+# 1. Environment Loading
+start_env = time.time()
 import os
 from pathlib import Path
-# Set working directory to project root to allow writing temporary files
 project_root = Path(__file__).resolve().parent.parent
 os.chdir(project_root)
 
-# Set global socket timeout to prevent hanging HTTP requests (e.g. Google API)
 import socket
 socket.setdefaulttimeout(10.0)
 
-# Disable Pydantic V2 protected namespace checks globally to prevent startup errors with CrewAI
 import pydantic
 pydantic.BaseModel.model_config["protected_namespaces"] = ()
 
+from dotenv import load_dotenv
+load_dotenv()
+
+from backend.config import settings
+env_loading_duration = time.time() - start_env
+
+# 2. Dependency Initialization
+start_deps = time.time()
 import uvicorn
 import logging
 from fastapi import FastAPI, Request
@@ -20,9 +30,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse
 
-from backend.config import settings
-from backend.routers import business, marketing, lead, sales, analytics, youtube_auth, youtube_monitor, whatsapp
-from backend.services.youtube_monitor_service import youtube_monitor_svc
+from backend.routers import business, marketing, lead, sales, analytics, youtube_auth, whatsapp, health
+from backend.modules.video_monitoring_module import video_monitoring_router, video_monitoring_svc
 
 # Clean Architecture WhatsApp Module imports
 from backend.modules.websocket_module import websocket_router
@@ -30,6 +39,7 @@ from backend.modules.whatsapp_module import whatsapp_router
 from backend.modules.conversation_module import conversation_router
 from backend.modules.messaging_module import messaging_router
 from backend.modules.payment_module import payment_router
+deps_initialization_duration = time.time() - start_deps
 
 # Setup logging configuration
 logging.basicConfig(
@@ -39,6 +49,15 @@ logging.basicConfig(
 )
 logger = logging.getLogger("vyaparai.main")
 
+# Register metrics in StartupManager
+from backend.services.startup_manager import startup_mgr
+startup_mgr.set_metric("environment_loading", env_loading_duration, True)
+startup_mgr.set_metric("dependency_initialization", deps_initialization_duration, True)
+
+# Register Database Connection wrapper time
+from backend.database.connection import db_conn_duration
+startup_mgr.set_metric("database_connection", db_conn_duration, True)
+
 app = FastAPI(
     title=settings.PROJECT_NAME,
     version="1.0.0",
@@ -46,12 +65,23 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
+# Explicitly initialize and register correct MIME types to prevent Windows Registry issues where .mp4 is served as application/octet-stream
+import mimetypes
+mimetypes.init()
+mimetypes.add_type("video/mp4", ".mp4")
+mimetypes.add_type("audio/mpeg", ".mp3")
+mimetypes.add_type("audio/mp4", ".m4a")
+
 # CORS Policy configuration
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",
         "http://127.0.0.1:3000",
+        "http://localhost:3001",
+        "http://127.0.0.1:3001",
+        "http://localhost:3002",
+        "http://127.0.0.1:3002",
         "http://localhost:8000",
         "http://127.0.0.1:8000",
     ],
@@ -60,8 +90,34 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Mount media static directory to serve generated MP3s and MP4s
-app.mount("/static", StaticFiles(directory=settings.STATIC_DIR), name="static")
+# Mount media static directory to serve generated MP3s and MP4s wrapped in CORSMiddleware to prevent browser CORS issues
+static_app = StaticFiles(directory=settings.STATIC_DIR)
+cors_static_app = CORSMiddleware(
+    app=static_app,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+app.mount("/static", cors_static_app, name="static")
+
+@app.middleware("http")
+async def log_request_lifecycle(request: Request, call_next):
+    host = request.headers.get("host", "")
+    is_tunnel = any(dom in host for dom in ["lhr.life", "lhr.rocks", "lhr.run", "ngrok-free.dev", "ngrok-free.app", "trycloudflare.com"])
+    prefix = "[PUBLIC TUNNEL REQUEST]" if is_tunnel else "[LOCAL REQUEST]"
+    start_time = time.time()
+    logger.info(f"{prefix} Received: {request.method} {request.url.path} from client {request.client.host if request.client else 'unknown'} (Host: {host}, X-Forwarded-For: {request.headers.get('x-forwarded-for', 'none')})")
+    try:
+        response = await call_next(request)
+        duration = time.time() - start_time
+        logger.info(f"{prefix} Completed: {request.method} {request.url.path} - Status: {response.status_code} (Duration: {duration:.4f}s)")
+        return response
+    except Exception as e:
+        duration = time.time() - start_time
+        logger.error(f"{prefix} Failed: {request.method} {request.url.path} - Error: {e} (Duration: {duration:.4f}s)", exc_info=True)
+        raise e
+
 
 # Register modular routers
 app.include_router(business.router)
@@ -70,8 +126,9 @@ app.include_router(lead.router)
 app.include_router(sales.router)
 app.include_router(analytics.router)
 app.include_router(youtube_auth.router)
-app.include_router(youtube_monitor.router)
+app.include_router(video_monitoring_router)
 app.include_router(whatsapp.router)
+app.include_router(health.router)
 
 # Mount Clean Architecture WhatsApp Modules
 app.include_router(websocket_router)
@@ -83,7 +140,25 @@ app.include_router(payment_router)
 # Background Polling Service Startup
 @app.on_event("startup")
 async def start_youtube_monitor():
-    youtube_monitor_svc.start()
+    startup_mgr.start_metric("api_server_startup")
+    startup_mgr.start_metric("background_workers")
+    
+    video_monitoring_svc.start()
+    
+    startup_mgr.stop_metric("background_workers", True)
+    startup_mgr.stop_metric("api_server_startup", True)
+    
+    # Start checkingSupabase/Ollama/WhatsApp/Tunnel concurrently in the background
+    startup_mgr.start_background_initialization()
+    
+    # Start the tunnel self-healing monitoring loop in the background
+    from backend.services.tunnel_manager import tunnel_mgr
+    tunnel_mgr.start_monitoring_loop()
+    
+@app.on_event("shutdown")
+async def shutdown_services():
+    from backend.services.tunnel_manager import tunnel_mgr
+    tunnel_mgr.shutdown()
     
     # Seed default mock data if running in mock mode and DB is empty
     from backend.services.supabase_service import supabase_svc
@@ -91,35 +166,35 @@ async def start_youtube_monitor():
         businesses = supabase_svc.get_businesses()
         if not businesses:
             biz = supabase_svc.create_business(
-                name="Kochi Spice Farm",
-                location="Kochi, Kerala",
-                contact="+91 7306796590",
-                industry="Agriculture"
+                name="Green Haven Nursery",
+                location="Kottayam, Kerala",
+                contact="+91 9744506034",
+                industry="Nursery & Gardening"
             )
-            # Create a default cardamom product
+            # Create a default Fiddle Leaf Fig product
             prod = supabase_svc.create_product(
                 business_id=biz["id"],
-                name="Organic Cardamom",
-                description="Premium 8mm bold green cardamom pods, direct from Munnar hills.",
-                price=350.00,
+                name="Fiddle Leaf Fig",
+                description="Stunning air-purifying indoor plant with large, glossy fiddle-shaped leaves. Perfect for home decor.",
+                price=499.00,
                 images=["/static/media/prod_eb2705d428d74da489cdff6685567b1a.png"]
             )
             
             # Seed script
             script = supabase_svc.create_script(
                 product_id=prod["id"],
-                title="Festive Spice Campaign",
-                hook="Is your tea missing that authentic kerala aroma? ☕",
-                script_text="Are you looking for the best organic green elaichi? Introducing our premium Kochi Spice Farm cardamom. Sourced directly from local farms in Idukki. It is high quality, chemical free, and vacuum sealed. Order yours today!",
+                title="Nursery Greenery Launch Campaign",
+                hook="Are your house plants constantly dying? \ud83c\udf3f",
+                script_text="Are you looking for low-maintenance house plants? Introducing our premium Fiddle Leaf Fig. Sourced directly from Green Haven Nursery in Kottayam. It is grown in nutrient-rich soil and shipped with a plant care guide. Order yours today!",
                 scene_breakdown=[
-                    {"scene": 1, "instruction": "Show organic cardamom pods", "voiceover": "Are you looking for the best organic green elaichi?"}
+                    {"scene": 1, "instruction": "Show stunning fiddle leaf fig plants", "voiceover": "Are you looking for low-maintenance house plants?"}
                 ],
                 caption_timeline=[
-                    {"start": 0.0, "end": 5.0, "text": "Are you looking for the best organic green elaichi?"}
+                    {"start": 0.0, "end": 5.0, "text": "Are you looking for low-maintenance house plants?"}
                 ],
-                thumbnail_text="Pure Elaichi!",
-                seo_description="Buy premium quality organic cardamom online with nationwide shipping.",
-                hashtags=["Cardamom", "LocalSpices", "KochiFarm"],
+                thumbnail_text="Beautiful Fiddle Leaf Fig!",
+                seo_description="Buy premium quality indoor plants online with care guides and free delivery.",
+                hashtags=["FiddleLeafFig", "NurseryPlants", "GreenHaven"],
                 version=1
             )
             
@@ -127,8 +202,8 @@ async def start_youtube_monitor():
             supabase_svc.create_thumbnail(
                 script_id=script["id"],
                 layout="Product centered with bold yellow text overlay",
-                text="Pure Elaichi!",
-                prompt="Cardamom pods overflowing from a clay bowl, dark rustic background"
+                text="Beautiful Fiddle Leaf Fig!",
+                prompt="Fiddle leaf fig plant in a modern white ceramic pot, sunlit minimal room background"
             )
             
             # Seed translation, voiceover, and video for multiple languages
@@ -136,27 +211,27 @@ async def start_youtube_monitor():
                 "English": {
                     "audio": "voiceover_english_v2_cf375002.mp3", "audio_len": 11.59,
                     "video": "video_english_v2_3ce14206.mp4",
-                    "text": "Are you looking for the best organic green elaichi? Sourced directly from local farms. It is high quality, chemical free, and vacuum sealed. Order yours today!"
+                    "text": "Are you looking for low-maintenance house plants? Sourced directly from our organic nursery. It is high quality, healthy, and shipped with care. Order yours today!"
                 },
                 "Hindi": {
                     "audio": "voiceover_hindi_v2_0e98b3b2.mp3", "audio_len": 20.23,
                     "video": "video_hindi_v2_63b2d922.mp4",
-                    "text": "क्या आपकी चाय में केरल की असली खुशबू गायब है? हमारी प्रीमियम इलायची सीधे इडुक्की के खेतों से लाई गई है।"
+                    "text": "क्या आपके घर के पौधे बार-बार सूख जाते हैं? हमारी प्रीमियम फिडेल लीफ फिग सीधे नर्सरी से मंगवाएं।"
                 },
                 "Tamil": {
                     "audio": "voiceover_tamil_v2_edede122.mp3", "audio_len": 19.32,
                     "video": "video_tamil_v2_12efcce8.mp4",
-                    "text": "உங்கள் தேநீரில் கேரளா ஏலக்காயின் நறுமணம் இல்லையா? எங்களது ஏலக்காய் இடுக்கியில் அறுவடை செய்யப்படுகிறது."
+                    "text": "உங்கள் வீட்டு செடிகள் அடிக்கடி காய்ந்து விடுகிறதா? எங்கள் பசுமையான ஃபிடில் லீஃப் பிக் செடியை ஆர்டர் செய்யுங்கள்."
                 },
                 "Telugu": {
                     "audio": "voiceover_telugu_v2_a8476c99.mp3", "audio_len": 18.86,
                     "video": "video_telugu_v2_6a2efde3.mp4",
-                    "text": "మీ టీలో కేరళ యాలకుల సువాసన లోపించిందా? మా ఆర్గానిక్ యాలకులు కొండల నుండి సేకరించబడ్డాయి."
+                    "text": "మీ ఇంట్లోని మొక్కలు తరచుగా చనిపోతున్నాయా? మా ప్రీమియం ఫిడిల్ లీఫ్ ఫిగ్ మొక్కను ఆర్డర్ చేయండి."
                 },
                 "Malayalam": {
                     "audio": "voiceover_malayalam_v2_56a549d6.mp3", "audio_len": 14.50,
                     "video": "video_malayalam_v2_b9304c03.mp4",
-                    "text": "നിങ്ങളുടെ ചായയിൽ യഥാർത്ഥ കേരള ഏലക്കായുടെ മണം കുറവാണോ? ഇടുക്കിയിലെ തോട്ടങ്ങളിൽ നിന്ന് നേരിട്ട് ശേഖരിച്ച ഏലക്കായ."
+                    "text": "നിങ്ങളുടെ വീട്ടിലെ ചെടികൾ പെട്ടെന്ന് ഉണങ്ങിപ്പോകാറുണ്ടോ? ഞങ്ങളുടെ ഫിഡിൽ ലീഫ് ഫിഗ് ചെടി ഇപ്പോൾ തന്നെ ഓർഡർ ചെയ്യൂ."
                 }
             }
             
@@ -226,3 +301,7 @@ async def root_health_check():
 
 if __name__ == "__main__":
     uvicorn.run("backend.main:app", host="0.0.0.0", port=settings.PORT, reload=settings.DEBUG)
+
+# Restored clean main.py reloader after merchant name dynamic lookup
+# Trigger auto-reload for PUBLIC_URL env update - ngrok prioritized
+

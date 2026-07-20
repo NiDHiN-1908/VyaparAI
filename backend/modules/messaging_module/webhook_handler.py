@@ -20,6 +20,10 @@ async def handle_evolution_webhook(payload: Dict[str, Any]) -> Dict[str, Any]:
     6. Triggers AI agent if autopilot is active.
     """
     event_type = payload.get("event")
+    if event_type == "ping":
+        logger.info("Received WhatsApp webhook verification ping")
+        return {"status": "success", "message": "pong"}
+
     instance_name = payload.get("instance")
     
     logger.info(f"Incoming Evolution webhook event '{event_type}' for instance '{instance_name}'")
@@ -55,6 +59,66 @@ async def handle_evolution_webhook(payload: Dict[str, Any]) -> Dict[str, Any]:
                         data={"instance_id": instance["id"], "instance_name": instance_name, "status": mapped_status}
                     )
                     return {"status": "success", "event": "connection_update_synced"}
+
+            # If the event is message update, sync message delivery/read status in DB
+            if event_type == "messages.update":
+                data_payload = payload.get("data", {})
+                if not data_payload:
+                    return {"status": "ignored", "reason": "Empty event data payload"}
+                
+                updates_list = []
+                if isinstance(data_payload, list):
+                    updates_list = data_payload
+                elif isinstance(data_payload, dict):
+                    if "key" in data_payload and "update" in data_payload:
+                        updates_list = [data_payload]
+                    else:
+                        updates_list = [data_payload]
+                
+                updated_count = 0
+                for item in updates_list:
+                    key = item.get("key", {})
+                    message_sid = key.get("id")
+                    
+                    update = item.get("update", {})
+                    status_val = update.get("status")
+                    
+                    if not message_sid or status_val is None:
+                        continue
+                        
+                    msg = message_repo.get_by_provider_sid(message_sid)
+                    if msg:
+                        status_str = str(status_val)
+                        mapped_status = None
+                        error_msg = None
+                        
+                        if status_str == "0" or status_str.upper() in ["ERROR", "FAILED"]:
+                            mapped_status = "failed"
+                            stub_params = update.get("messageStubParameters")
+                            if stub_params:
+                                if "463" in str(stub_params):
+                                    error_msg = "WhatsApp delivery failed: Account restricted or rate-limited by WhatsApp (Error 463)"
+                                else:
+                                    error_msg = f"WhatsApp delivery failed (Error code: {stub_params})"
+                            else:
+                                error_msg = "WhatsApp delivery failed"
+                        elif status_str in ["2", "SERVER_ACK"]:
+                            mapped_status = "delivered"
+                        elif status_str in ["3", "DELIVERY_ACK"]:
+                            mapped_status = "delivered"
+                        elif status_str in ["4", "READ"]:
+                            mapped_status = "read"
+                            
+                        if mapped_status:
+                            updates = {"status": mapped_status}
+                            if error_msg:
+                                updates["error"] = error_msg
+                                
+                            updated_msg = message_repo.update_metadata(msg["id"], updates)
+                            await websocket_manager.broadcast_to_tenant(tenant_id, f"message.{mapped_status}", updated_msg)
+                            updated_count += 1
+                            
+                return {"status": "success", "event": "messages_update_synced", "count": updated_count}
 
     # 2. Only process message inserts
     if event_type not in ["messages.upsert", "messages.send"]:
@@ -116,7 +180,7 @@ async def handle_evolution_webhook(payload: Dict[str, Any]) -> Dict[str, Any]:
 
     # 4. Resolve Conversation ID
     # Get or create the conversation thread
-    conv = await conversation_svc.get_or_create_conversation(tenant_id, customer_phone, channel="whatsapp")
+    conv = await conversation_svc.get_or_create_conversation(tenant_id, customer_phone, channel="whatsapp", instance_name=instance_name)
     conversation_id = conv["id"]
 
     # 5. Determine Sender Type

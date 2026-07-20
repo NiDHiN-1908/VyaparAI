@@ -22,4 +22,5 @@ chromadb>=0.5.0
 sentence-transformers>=2.7.0
 python-multipart>=0.0.9
 langchain-openai
+SpeechRecognition==3.17.0
 

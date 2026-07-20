@@ -7,20 +7,44 @@ import { Upload, Sparkles, Building2, Package, MapPin, CheckCircle2, Circle, Ima
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
+function getEstimatedRemainingTime(step: number): string {
+  const estimates = [
+    50, // Step 0: Registering Business Profile
+    48, // Step 1: Uploading Product
+    45, // Step 2: Keyword Discovery
+    42, // Step 3: SEO Trend Signals
+    38, // Step 4: Script Generation
+    22, // Step 5: Thumbnail Blueprint
+    20, // Step 6: Quality Check
+    18, // Step 7: Subtitle/Video Rendering (Parallel)
+    5,  // Step 8: Finalizing Output
+    0   // Step 9: Completed
+  ];
+  const sec = estimates[step] !== undefined ? estimates[step] : 0;
+  if (sec === 0) return "Ready";
+  return `Est. time remaining: ~${sec}s`;
+}
+
 export default function UploadPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
+  const [backgroundProcessing, setBackgroundProcessing] = useState(false);
+  const [progressMessage, setProgressMessage] = useState("Initializing campaign workflow...");
+  const [jobError, setJobError] = useState<string | null>(null);
+  const [jobId, setJobId] = useState<string | null>(null);
 
   // Form states
-  const [businessName, setBusinessName] = useState("");
-  const [location, setLocation] = useState("");
-  const [contact, setContact] = useState("");
-  const [industry, setIndustry] = useState("");
+  const [businessName, setBusinessName] = useState("Green Haven Nursery");
+  const [location, setLocation] = useState("Kottayam, Kerala");
+  const [contact, setContact] = useState("+91 9744506034");
+  const [industry, setIndustry] = useState("Nursery & Gardening");
 
   const [productName, setProductName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
+  
+
   
   // Image file paths simulation
   const [images, setImages] = useState<string[]>([]);
@@ -62,17 +86,6 @@ export default function UploadPage() {
       console.error(err);
       alert("Error uploading image.");
     }
-  };
-
-  const handleAddMockImage = () => {
-    if (images.length >= 10) return;
-    const mockImgs = [
-      "/static/media/prod_eb2705d428d74da489cdff6685567b1a.png",
-      "/static/media/prod_057ae7e9abcb43bbb26531adb6643c4f.png",
-      "/static/media/prod_087e8e8136634d318a1d5fbfd8ce626b.png"
-    ];
-    const pick = mockImgs[Math.floor(Math.random() * mockImgs.length)];
-    setImages(prev => [...prev, pick]);
   };
 
   const handleRemoveImage = (index: number) => {
@@ -122,18 +135,7 @@ export default function UploadPage() {
 
       setCurrentStep(2);
 
-      // Trigger sequential steps timer for loader
-      const interval = setInterval(() => {
-        setCurrentStep((prev) => {
-          if (prev >= pipelineSteps.length - 1) {
-            clearInterval(interval);
-            return prev;
-          }
-          return prev + 1;
-        });
-      }, 2500);
-
-      // Step 3: Run CrewAI campaign generator (8-agent)
+      // Trigger campaign generation async background task
       const crewRes = await fetch(`${API_BASE}/generate-content`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -142,21 +144,28 @@ export default function UploadPage() {
           location: "IN"
         })
       });
-      
-      clearInterval(interval);
-      setCurrentStep(pipelineSteps.length);
 
-      if (crewRes.ok) {
-        localStorage.setItem("latest_product_id", prodId);
-        router.push(`/preview?product_id=${prodId}`);
-      } else {
-        alert("Failed to execute 8-agent pipeline.");
+      if (!crewRes.ok) {
+        throw new Error("Failed to trigger campaign generation");
       }
-    } catch (err) {
-      console.error(err);
-      alert("An error occurred during workflow execution.");
-    } finally {
+
+      const crewData = await crewRes.json();
+      const activeJobId = crewData.job_id || prodId;
+      setJobId(activeJobId);
+
+      // Save latest product ID for redirect/quick access
+      localStorage.setItem("latest_product_id", prodId);
+
+      // Reset loading states and redirect immediately
       setLoading(false);
+      setBackgroundProcessing(false);
+      router.push(`/preview?product_id=${prodId}`);
+
+    } catch (err: any) {
+      console.error(err);
+      alert(err.message || "An error occurred during workflow execution.");
+      setLoading(false);
+      setBackgroundProcessing(false);
     }
   };
 
@@ -171,7 +180,7 @@ export default function UploadPage() {
         </p>
       </div>
 
-      {!loading ? (
+      {!loading && !backgroundProcessing ? (
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-8">
           
           {/* Business details panel */}
@@ -188,7 +197,7 @@ export default function UploadPage() {
                   type="text"
                   value={businessName}
                   onChange={(e) => setBusinessName(e.target.value)}
-                  placeholder="e.g., Kochi Spice Farm"
+                  placeholder="e.g., Green Haven Nursery"
                   className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:border-indigo-500 transition"
                   required
                 />
@@ -200,7 +209,7 @@ export default function UploadPage() {
                   type="text"
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
-                  placeholder="e.g., Kochi, Kerala"
+                  placeholder="e.g., Kottayam, Kerala"
                   className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:border-indigo-500 transition"
                   required
                 />
@@ -213,7 +222,7 @@ export default function UploadPage() {
                     type="text"
                     value={industry}
                     onChange={(e) => setIndustry(e.target.value)}
-                    placeholder="e.g., Spices & Agri"
+                    placeholder="e.g., Nursery & Gardening"
                     className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:border-indigo-500 transition"
                   />
                 </div>
@@ -223,7 +232,7 @@ export default function UploadPage() {
                     type="text"
                     value={contact}
                     onChange={(e) => setContact(e.target.value)}
-                    placeholder="e.g., +91 7306796590"
+                    placeholder="e.g., +91 9744506034"
                     className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:border-indigo-500 transition"
                   />
                 </div>
@@ -245,7 +254,7 @@ export default function UploadPage() {
                   type="text"
                   value={productName}
                   onChange={(e) => setProductName(e.target.value)}
-                  placeholder="e.g., Organic Cardamom"
+                  placeholder="e.g., Fiddle Leaf Fig"
                   className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:border-indigo-500 transition"
                   required
                 />
@@ -257,7 +266,7 @@ export default function UploadPage() {
                   type="number"
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
-                  placeholder="e.g., 350"
+                  placeholder="e.g., 499"
                   className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:border-indigo-500 transition"
                   required
                 />
@@ -268,7 +277,7 @@ export default function UploadPage() {
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="e.g., Handpicked fresh green cardamom sourced directly from the hills of Idukki."
+                  placeholder="e.g., Stunning air-purifying indoor plant with large, glossy fiddle-shaped leaves."
                   rows={2}
                   className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:border-indigo-500 transition"
                   required
@@ -276,6 +285,8 @@ export default function UploadPage() {
               </div>
             </div>
           </div>
+
+
 
           {/* Image Upload Area */}
           <div className="md:col-span-2 glass-panel rounded-2xl p-6 space-y-4">
@@ -299,26 +310,16 @@ export default function UploadPage() {
               ))}
               
               {images.length < 10 && (
-                <div className="flex flex-col gap-2 aspect-video">
-                  <label className="flex-1 rounded-xl bg-slate-900/40 border border-dashed border-slate-800 hover:border-indigo-500/40 hover:bg-slate-900/80 transition flex flex-col items-center justify-center gap-1 text-xs text-slate-500 hover:text-indigo-400 cursor-pointer">
-                    <Upload className="w-5 h-5" />
-                    Add Image
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageUpload}
-                      className="hidden"
-                    />
-                  </label>
-                  <button
-                    type="button"
-                    onClick={handleAddMockImage}
-                    className="py-2 px-3 rounded-xl bg-indigo-600/10 text-indigo-400 border border-indigo-500/20 hover:bg-indigo-600 hover:text-white text-xs font-bold transition flex items-center justify-center gap-1"
-                  >
-                    <Sparkles className="w-3.5 h-3.5" />
-                    Add Demo Image
-                  </button>
-                </div>
+                <label className="aspect-video rounded-xl bg-slate-900/40 border border-dashed border-slate-800 hover:border-indigo-500/40 hover:bg-slate-900/80 transition flex flex-col items-center justify-center gap-1 text-xs text-slate-500 hover:text-indigo-400 cursor-pointer">
+                  <Upload className="w-5 h-5" />
+                  Add Image
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                  />
+                </label>
               )}
             </div>
           </div>
@@ -333,13 +334,16 @@ export default function UploadPage() {
             </button>
           </div>
         </form>
-      ) : (
+      ) : loading ? (
         /* Expanded pipeline tracking overlay */
         <div className="glass-panel rounded-2xl p-8 max-w-2xl mx-auto space-y-6">
           <div className="text-center space-y-2">
             <div className="w-12 h-12 rounded-full border-4 border-t-indigo-500 border-r-transparent border-slate-800 animate-spin mx-auto mb-4" />
             <h3 className="text-2xl font-bold text-white">Deploying Multi-Agent System</h3>
             <p className="text-slate-400 text-sm">Evaluating quality rules and publishing triggers...</p>
+            <p className="text-[10px] font-bold text-indigo-400 mt-1 uppercase tracking-widest animate-pulse">
+              {getEstimatedRemainingTime(currentStep)}
+            </p>
           </div>
 
           <div className="space-y-3.5 border-t border-slate-800 pt-6">
@@ -357,6 +361,49 @@ export default function UploadPage() {
                 </span>
               </div>
             ))}
+          </div>
+        </div>
+      ) : (
+        /* Background Processing Panel */
+        <div className="glass-panel rounded-2xl p-8 max-w-2xl mx-auto space-y-6 text-center">
+          <div className="w-16 h-16 rounded-full bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 mx-auto mb-4 animate-pulse">
+            <Sparkles className="w-8 h-8" />
+          </div>
+          <h3 className="text-2xl font-bold text-slate-100">Processing in Background</h3>
+          <p className="text-slate-400 text-sm max-w-md mx-auto leading-relaxed">
+            The campaign is compiling assets in the background. You do not need to stay on this page. We will redirect you automatically if you stay, or you can check status on the dashboard.
+          </p>
+          
+          <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-4 text-left max-w-md mx-auto space-y-2.5">
+            <span className="text-[10px] text-indigo-400 font-bold block uppercase tracking-wide">Current Step Status</span>
+            <div className="flex items-center gap-2">
+              <div className="w-2.5 h-2.5 rounded-full bg-indigo-500 animate-ping" />
+              <p className="text-xs font-semibold text-slate-200">{progressMessage}</p>
+            </div>
+            <p className="text-[9px] font-bold text-indigo-400 uppercase tracking-widest mt-1 animate-pulse">
+              {getEstimatedRemainingTime(currentStep)}
+            </p>
+            
+            {/* Visual step bar mapping */}
+            <div className="w-full bg-slate-800 rounded-full h-1.5 mt-3 overflow-hidden">
+              <div 
+                className="bg-indigo-500 h-1.5 rounded-full transition-all duration-500" 
+                style={{ width: `${Math.min(100, Math.max(10, (currentStep / pipelineSteps.length) * 100))}%` }}
+              />
+            </div>
+          </div>
+
+          <div className="flex justify-center gap-4 pt-4">
+            <button
+              onClick={() => router.push("/")}
+              className="bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold px-6 py-3 rounded-xl border border-slate-700 transition"
+            >
+              Go to Dashboard
+            </button>
+            <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
+              <div className="w-3.5 h-3.5 rounded-full border-2 border-t-slate-500 border-slate-800 animate-spin" />
+              Waiting for completion...
+            </div>
           </div>
         </div>
       )}

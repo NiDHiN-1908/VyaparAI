@@ -35,21 +35,21 @@ def test_database_operations():
 def test_quality_audits():
     # Complete script
     script_pass = {
-        "title": "Authentic Cardamom Campaign",
-        "hook": "Are you looking for the best cardamom?",
-        "script_text": "Introducing our premium cardamom sourced from organic farms. This is the highest quality spice you can buy online, direct from Munnar hills."
+        "title": "Nursery Greenery Launch Campaign",
+        "hook": "Are your house plants constantly dying?",
+        "script_text": "Introducing our premium house plants sourced from organic nurseries. This is the highest quality fiddle leaf fig you can buy online, direct from Green Haven Nursery."
     }
-    res_pass = audit_campaign_quality(script_pass, ["cardamom", "organic"])
+    res_pass = audit_campaign_quality(script_pass, ["plant", "nursery"])
     assert res_pass["status"] == "APPROVED"
     assert res_pass["score"] >= 80
 
     # Incomplete script failing score < 80
     script_fail = {
-        "title": "Elaichi",
+        "title": "Plant",
         "hook": "",
-        "script_text": "buy elaichi"
+        "script_text": "buy plant"
     }
-    res_fail = audit_campaign_quality(script_fail, ["cardamom"])
+    res_fail = audit_campaign_quality(script_fail, ["plant"])
     assert res_fail["status"] == "REGENERATE"
     assert res_fail["score"] < 80
 
@@ -57,9 +57,10 @@ def test_quality_audits():
 def test_youtube_publishing():
     pub_res = youtube_publish_svc.publish_video(
         video_path="mock_video.mp4",
-        title="Spices Campaign",
-        description="Best organic spices",
-        hashtags=["Spices", "Munnar"]
+        title="Nursery Campaign",
+        description="Best organic house plants",
+        hashtags=["Nursery", "Plants"],
+        simulate=True
     )
     assert pub_res["status"] == "success"
     assert pub_res["youtube_id"] is not None

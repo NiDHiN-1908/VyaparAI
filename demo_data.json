@@ -1,41 +1,41 @@
 {
   "businesses": [
     {
-      "name": "Kochi Spice Farm",
-      "location": "Kochi, Kerala",
-      "contact": "+91 7306796590",
-      "industry": "Agriculture & Retail"
+      "name": "Green Haven Nursery",
+      "location": "Kottayam, Kerala",
+      "contact": "+91 9744506034",
+      "industry": "Nursery & Gardening"
     },
     {
-      "name": "Munnar Tea Gardens",
-      "location": "Idukki, Kerala",
+      "name": "Blooming Bud Nursery",
+      "location": "Thrissur, Kerala",
       "contact": "+91 9447098765",
-      "industry": "Beverages"
+      "industry": "Nursery & Gardening"
     }
   ],
   "products": [
     {
-      "name": "Organic Cardamom",
-      "description": "Handpicked fresh green cardamom sourced directly from the hills of Idukki.",
-      "price": 350.00,
-      "image_url": "/static/media/cardamom.jpg"
+      "name": "Fiddle Leaf Fig",
+      "description": "Stunning air-purifying indoor plant with large, glossy fiddle-shaped leaves. Perfect for home decor.",
+      "price": 499.00,
+      "image_url": "/static/media/fiddle_leaf_fig.jpg"
     },
     {
-      "name": "Pure Virgin Coconut Oil",
-      "description": "100% natural cold-pressed virgin coconut oil, ideal for cooking and hair care.",
-      "price": 299.00,
-      "image_url": "/static/media/coconut_oil.jpg"
+      "name": "Organic Vermicompost",
+      "description": "Premium nutrient-rich organic fertilizer to boost plant growth and soil health. 100% pure.",
+      "price": 150.00,
+      "image_url": "/static/media/vermicompost.jpg"
     }
   ],
   "comments": [
     {
       "username": "rahul_sharma",
-      "comment_text": "What is the price of this cardamom? Do you ship to Delhi?",
+      "comment_text": "What is the price of this Fiddle Leaf Fig? Do you ship to Delhi?",
       "intent_class": "HIGH_INTENT"
     },
     {
       "username": "karthik_v",
-      "comment_text": "Is this product genuine organic?",
+      "comment_text": "Is this plant easy to maintain inside the house?",
       "intent_class": "MEDIUM_INTENT"
     },
     {
@@ -60,7 +60,7 @@
   ],
   "orders": [
     {
-      "amount": 350.00,
+      "amount": 499.00,
       "status": "pending",
       "address": "Flat 402, Sector 12, Dwarka, New Delhi - 110075",
       "payment_method": "upi"

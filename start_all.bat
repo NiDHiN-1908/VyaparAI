@@ -8,6 +8,17 @@ echo          --- Dev Suite Launcher ---
 echo ===================================================
 echo.
 echo [1/3] Checking background dependencies...
+
+rem 0. Verify SSH client is installed (Requirement 3)
+where ssh >nul 2>&1
+if errorlevel 1 (
+    echo.
+    echo [ERROR] OpenSSH client is not installed or not found in system PATH.
+    echo Please install Windows OpenSSH or make sure ssh is available in your environment PATH.
+    echo.
+    pause
+    exit /b 1
+)
 rem 1. Check if Ollama is already listening on port 11434
 netstat -ano | findstr LISTENING | findstr :11434 >nul
 if not errorlevel 1 (
@@ -83,25 +94,17 @@ docker compose -f docker\docker-compose.yml up -d evolution-api
 
 :evolution_ok
 echo.
-echo [2/3] Launching servers and tunnels in parallel windows...
-echo   * Launching Public SSH Tunnel...
-start "VyaparAI SSH Tunnel" cmd /k "backend\venv\Scripts\python.exe backend\start_tunnel.py"
-echo     Waiting 3 seconds for tunnel configuration to sync...
-timeout /t 3 /nobreak > nul
+echo [2/3] Launching servers in parallel...
 
 echo   * Launching FastAPI Backend on http://localhost:8000/
-start "VyaparAI Backend Server" cmd /k "backend\venv\Scripts\python.exe -m uvicorn backend.main:app --host 127.0.0.1 --port 8000 --reload"
-
+start "VyaparAI Backend Server" cmd /k "backend\venv\Scripts\python.exe -m uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload --reload-dir backend --reload-exclude *static* --reload-exclude *database*"
 
 echo   * Launching Next.js Frontend on http://localhost:3000/
 start "VyaparAI Frontend App" cmd /k "cd frontend && npm run dev"
 
 echo.
 echo [3/3] Preparing workspace browser view...
-echo   * Waiting for compilers to initialize (4 seconds)...
-timeout /t 4 /nobreak > nul
-
-echo   * Launching default browser to Comment Inbox...
+echo   * Launching browser immediately (Frontend will monitor backend startup)...
 start "" "http://localhost:3000/comment-inbox"
 
 echo.
