@@ -1,93 +1,129 @@
-# VyaparAI Platform (8-Agent Version) - Installation Guide
+# 🌿 VyaparAI Platform - Complete Installation & Deployment Guide
 
-This guide details instructions to set up, build, and run the expanded VyaparAI platform.
-
-## Prerequisites
-
-1. **Python 3.10+**
-2. **Node.js 18+**
-3. **Ollama** (Local LLM runner running `llama3.1`)
-4. **Docker Desktop** (optional, for Compose deployments)
-5. **Supabase** (PostgreSQL schema setups)
-6. **YouTube Data API v3** secrets file (optional, for real uploads)
+This guide details step-by-step instructions to set up, configure, build, run, and verify the expanded VyaparAI platform (11-Agent Architecture).
 
 ---
 
-## 1. Setup Local LLM (Ollama)
-1. Download and start [Ollama](https://ollama.com).
-2. Pull the required model:
+## 📋 System Prerequisites
+
+1. **Python 3.10+** (Recommended: Python 3.10 or 3.11)
+2. **Node.js 18+** (Recommended: Node.js 18.x or 20.x)
+3. **FFmpeg** (Required for background video rendering, audio compilation, and ASS subtitle burning)
+4. **Ollama** (Local LLM runner running `llama3.1`)
+5. **Supabase Account / Instance** (PostgreSQL schema & realtime database)
+6. **Google Cloud Account** (Optional: YouTube Data API v3 OAuth secrets for live publishing)
+
+---
+
+## ⚡ 1. Set Up Local LLM (Ollama)
+
+1. Download and install [Ollama](https://ollama.com).
+2. Pull the required `llama3.1` model in your terminal:
    ```bash
    ollama pull llama3.1
    ```
+3. Start the Ollama server service:
+   ```bash
+   ollama serve
+   ```
 
 ---
 
-## 2. Set Up Database (Supabase)
-1. Open the SQL Editor in your Supabase Console.
-2. Copy and execute the contents of the updated schema file [001_initial_schema.sql](file:///c:/Users/nidhi/OneDrive/Desktop/VyaparAI/backend/database/migrations/001_initial_schema.sql) to initialize tables (`products`, `keywords`, `scripts`, `thumbnails`, `videos`, `leads`, `conversations`).
-3. Obtain your Supabase API credentials.
+## 💾 2. Database Setup (Supabase & Postgres Migrations)
+
+1. Open the **SQL Editor** in your Supabase Console.
+2. Execute the migration SQL scripts in order from the repository:
+   - [001_initial_schema.sql](file:///c:/Users/nidhi/Desktop/VyaparAI/backend/database/migrations/001_initial_schema.sql) — Initial product, lead, conversation, and order tables.
+   - [002_youtube_schema.sql](file:///c:/Users/nidhi/Desktop/VyaparAI/backend/database/migrations/002_youtube_schema.sql) — YouTube channels, comments, replies, and intent analytics tables.
+   - [003_whatsapp_module.sql](file:///c:/Users/nidhi/Desktop/VyaparAI/backend/database/migrations/003_whatsapp_module.sql) — WhatsApp instance & message payload tables.
+   - [004_video_jobs.sql](file:///c:/Users/nidhi/Desktop/VyaparAI/backend/database/migrations/004_video_jobs.sql) — Asynchronous background video rendering job queue.
+
+3. Obtain your Supabase **Project URL** and **Service/Anon API Key**.
 
 ---
 
-## 3. Configure YouTube API (Optional)
-To enable real uploads instead of sandbox simulation:
-1. Go to the [Google Cloud Console](https://console.cloud.google.com).
-2. Enable the **YouTube Data API v3** for a project.
-3. Configure your OAuth Consent Screen and create **OAuth 2.0 Client IDs** credentials.
-4. Download the JSON file, rename it to `client_secrets.json`, and place it in the `backend/` root directory.
-*Note: If `client_secrets.json` is missing, the platform automatically runs in a secure Sandbox Simulation Mode, creating mock YouTube links.*
+## 🐍 3. Configure & Run Backend Services (FastAPI)
 
----
-
-## 4. Run Backend Services (FastAPI)
-1. Open your terminal and navigate to the backend directory:
+1. Open a terminal and navigate to the backend directory:
    ```bash
    cd backend
    ```
-2. Setup virtual environment:
+2. Create and activate a Python virtual environment:
    ```bash
    python -m venv venv
+   
    # On Windows:
-   venv\Scripts\activate
-   # On Unix:
+   .\venv\Scripts\activate
+   
+   # On Linux/macOS:
    source venv/bin/activate
    ```
-3. Install dependencies:
+3. Install required Python packages:
    ```bash
    pip install -r requirements.txt
    ```
-4. Configure `.env`:
+4. Create your `.env` configuration file in `backend/.env`:
    ```env
+   PORT=8000
    SUPABASE_URL=https://your-supabase-project.supabase.co
    SUPABASE_KEY=your-supabase-service-key
    OLLAMA_BASE_URL=http://localhost:11434
    OLLAMA_MODEL=llama3.1
+   OPENAI_API_KEY=your-openai-api-key-optional
+   EVOLUTION_API_ENDPOINT=http://localhost:8080
+   EVOLUTION_API_KEY=your-evolution-key
    ```
-5. Run dev server:
+5. Start the FastAPI backend server:
    ```bash
    python main.py
    ```
-   *API documentation will run at [http://localhost:8000/docs](http://localhost:8000/docs).*
+   *The API will be available at [http://localhost:8000](http://localhost:8000) (Interactive Swagger Docs at [http://localhost:8000/docs](http://localhost:8000/docs)).*
 
 ---
 
-## 5. Run Frontend App (Next.js)
-1. Navigate to the frontend folder:
+## ⚛️ 4. Configure & Run Frontend Application (Next.js 14)
+
+1. Open a new terminal and navigate to the frontend directory:
    ```bash
    cd frontend
    ```
-2. Install dependencies and start the dev server:
+2. Install npm dependencies:
    ```bash
    npm install
+   ```
+3. Start the Next.js development server:
+   ```bash
    npm run dev
    ```
-3. Open [http://localhost:3000](http://localhost:3000) in your browser.
+4. Open [http://localhost:3000](http://localhost:3000) in your web browser.
 
 ---
 
-## 6. Running Unit Tests
-Verify all QA criteria, model scoring rules, and database version counters:
+## 🚀 5. Quick Launch via Windows Batch Script
+
+To start Ollama, FastAPI Backend, and Next.js Frontend simultaneously in parallel terminal windows, run:
+
+```cmd
+start_all.bat
+```
+
+---
+
+## 🧪 6. Verification & Running Test Suites
+
+Run backend test suites using `pytest`:
+
 ```bash
 cd backend
 pytest -v
+```
+
+Specifically test Nursery Delivery & Discount Rules Engine:
+```bash
+pytest backend/tests/test_delivery_discounts.py -v
+```
+
+Specifically test Module Specifications & Infrastructure:
+```bash
+pytest backend/tests/test_modules_review.py -v
 ```
